@@ -45,10 +45,10 @@ public class ConstChecker implements IErrorChecker, ParseTreeListener {
 
     @Override
     public void enterEveryRule(ParserRuleContext ctx) {
-        if(ctx instanceof BlockContext) {
-            BlockContext blkCtx = (BlockContext) ctx;
-            if(Checker.isVariableOrConst(blkCtx)) {
-                this.verifyVariableOrConst(blkCtx);
+        if(ctx instanceof ExpressionContext) {
+            ExpressionContext exprCtx = (ExpressionContext) ctx;
+            if(Checker.isVariableOrConst(exprCtx)) {
+                this.verifyVariableOrConst(exprCtx);
             }
         }
     }
@@ -59,12 +59,12 @@ public class ConstChecker implements IErrorChecker, ParseTreeListener {
 
     }
 
-    private void verifyVariableOrConst(BlockContext varExprCtx) {
+    private void verifyVariableOrConst(ExpressionContext varExprCtx) {
         PseudoValue pseudoValue = null;
 
         if(ExecutionManager.getInstance().isInFunctionExecution()) {
             PseudoMethod pseudoMethod = ExecutionManager.getInstance().getCurrentFunction();
-            pseudoValue = VariableSearcher.searchVariableInFunction(pseudoMethod, Checker.getIdentifier(varExprCtx));
+            pseudoValue = VariableSearcher.searchVariableInFunction(pseudoMethod, varExprCtx.primary().Identifier().getText());
         }
 
 

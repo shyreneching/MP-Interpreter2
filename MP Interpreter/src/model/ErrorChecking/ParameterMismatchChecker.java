@@ -8,14 +8,14 @@ import java.util.List;
 public class ParameterMismatchChecker implements IErrorChecker {
 
     private PseudoMethod pseudoMethod;
-    private List<FormalParameterContext> exprCtxList;
+    private List<ExpressionContext> exprCtxList;
     private int lineNumber;
 
-    public ParameterMismatchChecker(PseudoMethod pseudoMethod, FormalParameterListContext argumentsCtx) {
+    public ParameterMismatchChecker(PseudoMethod pseudoMethod, ExpressionContext argumentsCtx) {
         this.pseudoMethod = pseudoMethod;
 
-        if(argumentsCtx.formalParameters() != null) {
-            this.exprCtxList = argumentsCtx.formalParameters().formalParameter();
+        if(argumentsCtx.expressionList() != null) {
+            this.exprCtxList = argumentsCtx.expressionList().expression();
         }
 
         this.lineNumber = argumentsCtx.getStart().getLine();

@@ -59,7 +59,7 @@ public class StatementAnalyzer {
 
         BlockContext block = doStatement.block();
 
-        DoWhileCommand doWhileCommand = new DoWhileCommand(doStatement.Identifier(), doStatement.additiveExpression());
+        DoWhileCommand doWhileCommand = new DoWhileCommand(doStatement.Identifier(), doStatement.expression());
         StatementControlOverseer.getInstance().openControlledCommand(doWhileCommand);
 
         BlockAnalyzer blockAnalyzer = new BlockAnalyzer();
