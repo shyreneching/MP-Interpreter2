@@ -8,7 +8,5 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="lib" level="project" />
-    <orderEntry type="library" name="antlr-4.9-complete" level="project" />
-    <orderEntry type="library" name="flowless-0.6.11" level="project" />
   </component>
 </module>

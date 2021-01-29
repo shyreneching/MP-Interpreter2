@@ -116,6 +116,7 @@ statement
 //    |   'switch' parExpression '{' switchBlockStatementGroup* switchLabel* '}'
 //    |   'synchronized' parExpression block
     |   'return' expression? ';'
+    |   'return' result ';' {notifyErrorListeners("cannot return data type");}
 //    |   'throw' expression ';'
     |   'break' ';'
     |   'continue' ';'
