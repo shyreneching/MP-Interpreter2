@@ -4,16 +4,17 @@ import model.PseudoCodeParser;
 
 import java.util.List;
 import model.PseudoCodeParser.*;
+import model.SymbolTable.Scope.ScopeCreator;
 
 public class BlockAnalyzer {
 
     public BlockAnalyzer() {
 //        create intance of children scope;
+        ScopeCreator.getInstance().openScope();
     }
 
     public void analyze(BlockContext ctx) {
-        BlockStatementsContext blockstatments = ctx.blockStatements();
-        List<BlockStatementContext> blockList = blockstatments.blockStatement();
+        List<BlockStatementContext> blockList = ctx.blockStatement();
 
         for(BlockStatementContext blockStatementCtx : blockList) {
             if(blockStatementCtx.statement() != null) {
@@ -21,13 +22,13 @@ public class BlockAnalyzer {
                 StatementAnalyzer statementAnalyzer = new StatementAnalyzer();
                 statementAnalyzer.analyze(statementCtx);
             }
-            else if(blockStatementCtx.localVariableDeclaration() != null) {
-                LocalVariableDeclarationContext localVarDecStatementCtx = blockStatementCtx.localVariableDeclaration();
+            else if(blockStatementCtx.localVariableDeclarationStatement() != null) {
+                LocalVariableDeclarationContext localVarDecStatementCtx = blockStatementCtx.localVariableDeclarationStatement().localVariableDeclaration();
 
                 LocalVariableAnalyzer localVarAnalyzer = new LocalVariableAnalyzer();
                 localVarAnalyzer.analyze(localVarDecStatementCtx);
             }
         }
-//      delete scope
+      ScopeCreator.getInstance().closeScope();
     }
 }

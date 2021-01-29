@@ -30,7 +30,7 @@ public class VariableSearcher {
             pseudoValue = pseudoMethod.getParameter(identifierString);
         }
         else {
-            pseudoValue = ScopeCreator.searchVariableInLocalIterative(identifierString, pseudoMethod.getParentLocalScope());
+            pseudoValue = ScopeCreator.searchVariableInLocalIterative(identifierString, pseudoMethod.getParentScope());
         }
 
         return pseudoValue;

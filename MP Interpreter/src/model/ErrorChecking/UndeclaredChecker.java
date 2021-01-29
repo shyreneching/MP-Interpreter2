@@ -17,21 +17,20 @@ import java.util.regex.Pattern;
 
 public class UndeclaredChecker implements IErrorChecker, ParseTreeListener {
 
-    private ParserRuleContext ctx;
+    private ExpressionContext exprCtx;
     private String prevFunctionName = "";
     private int lineNumber;
 
-    public UndeclaredChecker(ParserRuleContext ctx) {
-        this.ctx = ctx;
+    public UndeclaredChecker(ExpressionContext exprCtx) {
+        this.exprCtx = exprCtx;
 
-        Token firstToken = this.ctx.getStart();
+        Token firstToken = this.exprCtx.getStart();
         this.lineNumber = firstToken.getLine();
     }
-
     @Override
     public void verify() {
         ParseTreeWalker treeWalker = new ParseTreeWalker();
-        treeWalker.walk(this, this.ctx);
+        treeWalker.walk(this, this.exprCtx);
     }
 
     @Override
@@ -48,24 +47,19 @@ public class UndeclaredChecker implements IErrorChecker, ParseTreeListener {
 
     @Override
     public void enterEveryRule(ParserRuleContext ctx) {
-        if(ctx instanceof BlockContext) {
-            BlockContext blkCtx = (BlockContext) ctx;
-            if(Checker.isFunctionCall(blkCtx)) {
+        if(ctx instanceof ExpressionContext) {
+            ExpressionContext exprCtx = (ExpressionContext) ctx;
+            if(Checker.isFunctionCall(exprCtx)) {
                 System.out.println("FUNCTION ENTER " + ctx.getText());
-                String s[] = blkCtx.getText().split("\\(");
+                String s[] = exprCtx.getText().split("\\(");
                 prevFunctionName = s[0];
-                this.verifyFunctionCall(blkCtx);
+                this.verifyFunctionCall(exprCtx);
             }
-            else if(Checker.isVariableOrConst(blkCtx)) {
+            else if(Checker.isVariableOrConst(exprCtx)) {
                 System.out.println("VARIABLE ENTER " + ctx.getText());
-                if(!prevFunctionName.equals(blkCtx.getText()))
-                    this.verifyVariableOrConst(blkCtx);
+                if(!prevFunctionName.equals(exprCtx.getText()))
+                    this.verifyVariableOrConst(exprCtx);
             }
-        } else if (ctx instanceof PrintInvocationContext){
-            for(TerminalNode t: ((PrintInvocationContext) ctx).Identifier()){
-                verifyVariable(t.getText());
-            }
-
         }
     }
 
@@ -75,22 +69,14 @@ public class UndeclaredChecker implements IErrorChecker, ParseTreeListener {
 
     }
 
-    private void verifyFunctionCall(BlockContext funcExprCtx) {
+    private void verifyFunctionCall(ExpressionContext funcExprCtx) {
 
-        //ThisKeywordChecker thisChecker = new ThisKeywordChecker(funcExprCtx.expression(0));
-        //thisChecker.verify();
-
-//        MethodInvocationContext method = funcExprCtx.blockStatements().blockStatement(0).statement().statementWithoutTrailingSubstatement().expressionStatement().statementExpression().methodInvocation();
-        MethodInvocationContext method = Checker.getFunction(funcExprCtx);
-        if(method.argumentList() == null) {
+        if(funcExprCtx.expression(0) == null) {
             return;
         }
 
-        String functionName = method.methodName().getText();
+        String functionName = funcExprCtx.Identifier().getText();
 
-//        ClassScope classScope = SymbolTableManager.getInstance().getClassScope(
-//                ParserHandler.getInstance().getCurrentClassName());
-//        PseudoMethod PseudoMethod = classScope.searchMethod(functionName);
         PseudoMethod pseudoMethod = SymbolTableManager.getInstance().getMethod(functionName);
 
         if(pseudoMethod == null) {
@@ -99,21 +85,16 @@ public class UndeclaredChecker implements IErrorChecker, ParseTreeListener {
         else {
             //Console.log(LogType.DEBUG, "Function found: " +functionName);
         }
+
     }
 
-    private void verifyVariableOrConst(BlockContext varExprCtx) {
+    private void verifyVariableOrConst(ExpressionContext varExprCtx) {
         PseudoValue pseudoValue = null;
 
         if(ExecutionManager.getInstance().isInFunctionExecution()) {
             PseudoMethod pseudoMethod = ExecutionManager.getInstance().getCurrentFunction();
-            pseudoValue = VariableSearcher.searchVariableInFunction(pseudoMethod, Checker.getIdentifier(varExprCtx));
+            pseudoValue = VariableSearcher.searchVariableInFunction(pseudoMethod, varExprCtx.primary().Identifier().getText());
         }
-
-//        //if after function finding, mobi value is still null, search class
-//        if(pseudoValue == null) {
-//            ClassScope classScope = SymbolTableManager.getInstance().getClassScope(ParserHandler.getInstance().getCurrentClassName());
-//            pseudoValue = VariableSearcher.searchVariableInClassIncludingLocal(classScope, Checker.getIdentifier(varExprCtx));
-//        }
 
         //after second pass, we conclude if it cannot be found already
         if(pseudoValue == null) {
@@ -126,26 +107,12 @@ public class UndeclaredChecker implements IErrorChecker, ParseTreeListener {
      */
     public static void verifyVarOrConstForScan(String identifier, StatementContext statementCtx) {
         PseudoMethod pseudoMethod = ExecutionManager.getInstance().getCurrentFunction();
-//        ClassScope classScope = SymbolTableManager.getInstance().getClassScope(ParserHandler.getInstance().getCurrentClassName());
         PseudoValue pseudoValue = VariableSearcher.searchVariableInFunction(pseudoMethod, identifier);
 
         Token firstToken = statementCtx.getStart();
 
         if(pseudoValue == null) {
             PseudoErrorListener.reportCustomError(ErrorRepository.UNDECLARED_VARIABLE, "", identifier, firstToken.getLine());
-        }
-    }
-
-    private void verifyVariable(String identifier) {
-        PseudoValue pseudoValue = null;
-
-        if(ExecutionManager.getInstance().isInFunctionExecution()) {
-            PseudoMethod pseudoMethod = ExecutionManager.getInstance().getCurrentFunction();
-            pseudoValue = VariableSearcher.searchVariableInFunction(pseudoMethod, identifier);
-        }
-
-        if(pseudoValue == null) {
-            PseudoErrorListener.reportCustomError(ErrorRepository.UNDECLARED_VARIABLE, "", identifier, this.lineNumber);
         }
     }
 

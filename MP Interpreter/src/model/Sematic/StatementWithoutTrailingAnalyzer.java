@@ -21,14 +21,19 @@ public class StatementWithoutTrailingAnalyzer {
         }
         else if (statementCtx.continueStatement() != null) {
 
-        }
+    }
         else if (statementCtx.returnStatement() != null) {
             ExpressionContext exprCtx = statementCtx.returnStatement().expression();
             ReturnCommand returnCommand = new ReturnCommand(exprCtx, ExecutionManager.getInstance().getCurrentFunction());
             /*
              * TODO: Return commands supposedly stops a controlled or conditional command and returns back the control to the caller.
              * Find a way to halt such commands if they are inside a controlled command.
-             */
+             */ctionName = ExecutionManager.getInstance().getCurrentFunction().getMethodName();
+                    ExecutionManager.getInstance().getCurrentFunction().setValidReturns(true);
+                    conditionalCommand.addNegativeCommand(returnCommand);
+                }
+            }
+
             StatementControlOverseer statementControl = StatementControlOverseer.getInstance();
 
             if(statementControl.isInConditionalCommand()) {
@@ -38,12 +43,7 @@ public class StatementWithoutTrailingAnalyzer {
                     conditionalCommand.addPositiveCommand(returnCommand);
                 }
                 else {
-                    String functionName = ExecutionManager.getInstance().getCurrentFunction().getMethodName();
-                    ExecutionManager.getInstance().getCurrentFunction().setValidReturns(true);
-                    conditionalCommand.addNegativeCommand(returnCommand);
-                }
-            }
-
+                    String fun
             else if(statementControl.isInControlledCommand()) {
                 IControlledCommand controlledCommand = (IControlledCommand) statementControl.getActiveControlledCommand();
                 controlledCommand.addCommand(returnCommand);
