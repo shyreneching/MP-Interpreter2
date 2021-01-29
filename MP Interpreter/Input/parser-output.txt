@@ -1,0 +1,5 @@
+
+Syntax Error: redundant arithmetic operator symbol found, (Line 3)[Char 23] in file: input\test2.java; 
+Syntax Error: no identifier found for 'int' data type, (Line 5)[Char 8] in file: input\test2.java; 
+Syntax Error: uneven parenthesis, lacking '(', (Line 9)[Char 35] in file: input\test2.java; 
+Syntax Error: redundant parenthesis, (Line 11)[Char 21] in file: input\test2.java; 
