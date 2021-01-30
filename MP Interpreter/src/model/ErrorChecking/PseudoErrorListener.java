@@ -188,4 +188,8 @@ public class PseudoErrorListener implements ANTLRErrorListener {
     public void setSuccessful(boolean b) {
         successful = b;
     }
+
+    public boolean isSuccessful() {
+        return successful;
+    }
 }

@@ -24,7 +24,7 @@ public class SymbolTableManager implements IScope {
         this.methodsTable = new HashMap<String, PseudoMethod>();
     }
 
-    static void initialize(){
+    public static void initialize(){
         sharedInstance = new SymbolTableManager();
     }
 

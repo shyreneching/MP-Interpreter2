@@ -17,6 +17,14 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import model.*;
+import model.ErrorChecking.PseudoErrorListener;
+import model.Execution.ExecutionManager;
+import model.Execution.MethodTracker;
+import model.Sematic.StatementControlOverseer;
+import model.SymbolTable.Scope.Scope;
+import model.SymbolTable.Scope.ScopeCreator;
+import model.SymbolTable.SymbolTableManager;
+import model.Utils.LocalVarTracker;
 import model.notifications.NotificationListener;
 import model.notifications.Notifications;
 import org.antlr.v4.runtime.CharStream;
@@ -46,6 +54,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ParserUI extends Application implements NotificationListener {
+
+    private CodeArea codeArea;
+    private TextArea output_textArea;
+
 
     private static final String[] KEYWORDS = new String[] {
             "abstract", "assert", "bool", "break", "byte",
@@ -98,16 +110,16 @@ public class ParserUI extends Application implements NotificationListener {
 
         //Parent root = FXMLLoader.load(getClass().getResource("ParserUIFXML.fxml"));
         Text text1 = new Text();
-        text1.setText("Parser");
+        text1.setText("PseudoIDE");
         text1.setFont(Font.font("Helvetica", 24));
         text1.setFill(Color.SALMON);
 
         Text text2 = new Text();
-        text2.setText("MP - Parser");
+        text2.setText("MP - Interpreter");
         text2.setFont(Font.font("Helvetica", 10));
         text2.setFill(Color.SALMON);
 
-        CodeArea codeArea = new CodeArea();
+        codeArea = new CodeArea();
         codeArea.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(2), Insets.EMPTY)));
         // add line numbers to the left of area
         codeArea.setParagraphGraphicFactory(LineNumberFactory.get(codeArea));
@@ -138,7 +150,7 @@ public class ParserUI extends Application implements NotificationListener {
         stack.setStyle("-fx-padding: 20px; -fx-border-insets: 20px; -fx-background-insets: 20px;");
 
         Button parse_button = new Button();
-        parse_button.setText("Parse");
+        parse_button.setText("Run");
         parse_button.setPadding(new Insets(5));
         parse_button.setFont(Font.font("Helvetica", 12));
         parse_button.setStyle("-fx-background-color: salmon");
@@ -146,7 +158,7 @@ public class ParserUI extends Application implements NotificationListener {
         parse_button.setAlignment(Pos.CENTER);
         parse_button.setMinWidth(100.0);
 
-        TextArea output_textArea = new TextArea();
+        output_textArea = new TextArea();
         output_textArea.minHeight(200.0);
         output_textArea.setWrapText(true);
         output_textArea.setPrefColumnCount(20);
@@ -174,28 +186,40 @@ public class ParserUI extends Application implements NotificationListener {
         AnchorPane.setLeftAnchor(vbox, 0.0);
         AnchorPane.setRightAnchor(vbox, 0.0);
 
+        SymbolTableManager.initialize();
+        PseudoErrorListener.initialize();
+        ExecutionManager.initialize();
+        ScopeCreator.initialize();
+        StatementControlOverseer.initialize();
+        MethodTracker.initialize();
+        LocalVarTracker.initialize();
+
         parse_button.setOnMouseClicked(e -> {
             try {
 //            CharStream input = CharStreams.fromFileName("input/test2.java");
-            CharStream input = CharStreams.fromStream(new ByteArrayInputStream(codeArea.getText().getBytes(StandardCharsets.UTF_8)));
-            PseudoCodeLexer lexer = new PseudoCodeLexer(input);
-            PseudoCodeParser parser = new PseudoCodeParser(new CommonTokenStream(lexer));
-            parser.addParseListener(new PseudoCodeBaseListener());
-            lexer.removeErrorListeners();
-            parser.removeErrorListeners();
-            lexer.addErrorListener(ErrorListener.INSTANCE);
-            parser.addErrorListener(ErrorListener.INSTANCE);
-            parser.getInterpreter().setPredictionMode(PredictionMode.LL_EXACT_AMBIG_DETECTION);
+                CharStream input = CharStreams.fromStream(new ByteArrayInputStream(codeArea.getText().getBytes(StandardCharsets.UTF_8)));
+                PseudoCodeLexer lexer = new PseudoCodeLexer(input);
+                PseudoCodeParser parser = new PseudoCodeParser(new CommonTokenStream(lexer));
+                parser.addParseListener(new PseudoCodeBaseListener());
+                lexer.removeErrorListeners();
+                parser.removeErrorListeners();
+                lexer.addErrorListener(ErrorListener.INSTANCE);
+                parser.addErrorListener(ErrorListener.INSTANCE);
+                parser.getInterpreter().setPredictionMode(PredictionMode.LL_EXACT_AMBIG_DETECTION);
+
 //            for (PredictionMode c : PredictionMode.values())
 ////                System.out.println(c);
 //            parser.setErrorHandler(new ErrorRecovery());
-            parser.addErrorListener(new ErrorListener());
+                parser.addErrorListener(new ErrorListener());
 
-            ParserRuleContext parserRuleContext = parser.compilationUnit();
-            ParseTreeWalker treeWalker = new ParseTreeWalker();
-            treeWalker.walk(new PseudoCodeCustomListener(), parserRuleContext);
+                parser.compilationUnit();
 
-            System.out.println(ErrorListener.INSTANCE.toString());
+                ParserRuleContext parserRuleContext = parser.compilationUnit();
+                ParseTreeWalker treeWalker = new ParseTreeWalker();
+                treeWalker.walk(new PseudoCodeCustomListener(), parserRuleContext);
+
+                System.out.println(ErrorListener.INSTANCE.toString());
+
 //            var outputname = "input/parser-output.txt";
 //            OutputStream outStream = new FileOutputStream(outputname);
 ////            for (String l: result){
@@ -205,12 +229,31 @@ public class ParserUI extends Application implements NotificationListener {
 //            outStream.write(ErrorListener.INSTANCE.toString().getBytes());
 //            outStream.close();
 
-            output_textArea.setText(ErrorListener.INSTANCE.toString());
-            output_textArea.setMouseTransparent(false);
-        } catch (IOException ex) {
-            //System.out.println(ex);
+                ExecutionManager.reset();
+                ScopeCreator.reset();
+                SymbolTableManager.reset();
+                PseudoErrorListener.getInstance().setSuccessful(true);
+                StatementControlOverseer.reset();
+                MethodTracker.reset();
+                LocalVarTracker.reset();
+                resetOutput();
+
+                if(PseudoErrorListener.getInstance().isSuccessful()) {
+                    ExecutionManager.getInstance().executeAllActions();
+                    System.out.println("PseudoErrorListener executed");
+                    //this.mViewPager.setCurrentItem(1);
+                }
+                else {
+                    System.out.println("Fix identified errors before executing!");
+                }
+
+                output_textArea.replaceText(0,0,ErrorListener.INSTANCE.toString());
+                output_textArea.setMouseTransparent(false);
+                ErrorListener.INSTANCE.resetErrors();
+            } catch (IOException ex) {
+                //System.out.println(ex);
 //            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        }
+            }
         });
 
         Group root = new Group(anchorPane);
@@ -218,7 +261,7 @@ public class ParserUI extends Application implements NotificationListener {
         Scene scene = new Scene(root, scene_width, scene_height);
         scene.getStylesheets().add("/public/java-keywords.css");
         primaryStage.setScene(scene);
-        primaryStage.setTitle("MO - Parser");
+        primaryStage.setTitle("MO - Interpreter");
         primaryStage.show();
     }
 
@@ -276,22 +319,20 @@ public class ParserUI extends Application implements NotificationListener {
         }
     }
 
+    public void resetOutput(){
+        output_textArea.clear();
+    }
+
     public void notified(String notificationString, model.notifications.Parameters params){
         if(notificationString == Notifications.ON_FOUND_SCAN_STATEMENT) {
-            try {
-                TextInputDialog dialog = new TextInputDialog();
-                dialog.getDialogPane();
-                dialog.setTitle("Scan Dialog");
-                dialog.setHeaderText(null);
-                dialog.getDialogPane().getButtonTypes().remove(1);
+            TextInputDialog dialog = new TextInputDialog();
+            dialog.getDialogPane();
+            dialog.setTitle("Scan Dialog");
+            dialog.setHeaderText(null);
+            dialog.getDialogPane().getButtonTypes().remove(1);
 
-                dialog.getEditor().setText("");
-                dialog.setContentText(params.getStringExtra(KeyNames.MESSAGE_DISPLAY_KEY, "Input: "));
-
-
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            dialog.getEditor().setText("");
+            dialog.setContentText(params.getStringExtra("MESSAGE_DISPLAY_KEY", "Input: "));
         }
     }
 }
