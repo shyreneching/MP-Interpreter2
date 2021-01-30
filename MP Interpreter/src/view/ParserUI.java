@@ -22,7 +22,9 @@ import model.notifications.Notifications;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.atn.PredictionMode;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.fxmisc.flowless.VirtualizedScrollPane;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.GenericStyledArea;
@@ -189,7 +191,10 @@ public class ParserUI extends Application implements NotificationListener {
 //            parser.setErrorHandler(new ErrorRecovery());
             parser.addErrorListener(new ErrorListener());
 
-            parser.compilationUnit();
+            ParserRuleContext parserRuleContext = parser.compilationUnit();
+            ParseTreeWalker treeWalker = new ParseTreeWalker();
+            treeWalker.walk(new PseudoCodeCustomListener(), parserRuleContext);
+
             System.out.println(ErrorListener.INSTANCE.toString());
 //            var outputname = "input/parser-output.txt";
 //            OutputStream outStream = new FileOutputStream(outputname);
