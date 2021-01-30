@@ -9,5 +9,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="lib" level="project" />
     <orderEntry type="library" name="antlr-4.9-complete" level="project" />
+    <orderEntry type="library" name="flowless-0.6.1" level="project" />
   </component>
 </module>

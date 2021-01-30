@@ -7,8 +7,12 @@ import java.util.List;
 
 public class MethodCallCommand implements ICommand {
 
-    public MethodCallCommand(TerminalNode functionName, List<ExpressionListContext> exprCtx){
+    private List<ExpressionListContext> exprCtx;
+    private String functionName;
 
+    public MethodCallCommand(TerminalNode functionName, List<ExpressionListContext> exprCtx){
+        this.functionName = functionName.getText();
+        this.exprCtx = exprCtx;
     }
 
     @Override

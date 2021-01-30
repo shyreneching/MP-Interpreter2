@@ -1,109 +1,59 @@
-/**
- * You can test with
- *
- *  $ antlr4 Java8.g4
- *  $ javac *.java
- *  $ grun Java8 compilationUnit *.java
- */
-
 grammar PseudoCode;
 
-literal
-	:	IntegerLiteral
-	|	FloatingPointLiteral
-	|	BooleanLiteral
-	|	StringLiteral
-	;
-
-numericType
-	:	integralType
-	|	floatingPointType
-	;
-
-integralType
-	:	'int'
-	;
-
-floatingPointType
-	:	'float'
-	;
-
-dims
-    :   '[' ']'
-	;
-
-expressionName
-	:	Identifier
-	;
-
-methodName
-	:	Identifier
-	;
-
+// starting point
 compilationUnit
-    :   classBodyDeclaration* mainDeclaration classBodyDeclaration* EOF
-	;
+    :   methodDeclaration* mainDeclaration methodDeclaration* EOF
+    ;
+
+variableModifier
+    :   CONSTANT
+    ;
 
 mainDeclaration
     :   'main' '(' ')' block
     ;
 
-classBodyDeclaration
-	:	classMemberDeclaration
-	;
+methodDeclaration
+    :   'func' (result|'void') methodDeclarator block
+    |   'func' methodDeclarator block {notifyErrorListeners("lacking return type");}
+    |   'func' (result|'void') methodDeclarator {notifyErrorListeners("lacking function body");}
+    ;
 
-classMemberDeclaration
-	:	methodDeclaration
+methodDeclarator
+	:	Identifier '(' formalParameters? ')'
+	|	Identifier '(' formalParameters? {notifyErrorListeners("uneven parenthesis, lacking ')'");}
+	|	Identifier formalParameters? ')' {notifyErrorListeners("uneven parenthesis, lacking '('");}
 	;
 
 variableDeclaratorList
-	:	variableDeclarator (',' variableDeclarator)*
-	;
+    :   variableDeclarator (',' variableDeclarator)*
+    ;
 
 variableDeclarator
-	:	variableDeclaratorId ('=' variableInitializer)?
-	|   unannType ('=' variableInitializer)? {notifyErrorListeners("declaring keyword as variable name");}
-	;
-
-variableDeclaratorId
-    :   Identifier
-	;
+    :	Identifier ('=' variableInitializer)?
+    |   unannType ('=' variableInitializer)? {notifyErrorListeners("declaring keyword as variable name");}
+    ;
 
 variableInitializer
-	:	expression
-	|	arrayInitializer
-	;
+    :   arrayInitializer
+    |   expression
+    ;
 
-unannType
-	:	unannPrimitiveType
-	;
-
-unannPrimitiveType
-	:	numericType
-	|	'bool'
-	|   'String'
-	;
-
-methodDeclaration
-    :   'func' result ('['']')? methodDeclarator block
-    |   'func' methodDeclarator block {notifyErrorListeners("lacking return type");}
-    |   'func' result ('['']')? methodDeclarator {notifyErrorListeners("lacking function body");}
-	;
+arrayInitializer
+    :   'create' unannType '[' expression ']'
+    ;
 
 result
-	:	unannType
-	|	'void'
-	;
+    :   unannType ('[' ']')?
+    ;
 
-methodDeclarator
-	:	Identifier '(' formalParameterList? ')'
-	|	Identifier '(' formalParameterList? {notifyErrorListeners("uneven parenthesis, lacking ')'");}
-	|	Identifier formalParameterList? ')' {notifyErrorListeners("uneven parenthesis, lacking '('");}
-	;
-
-formalParameterList
-    :   formalParameters
-	;
+unannType
+    :   'bool'
+    |   'int'
+    |   'float'
+    |   'String'
+//    |   'array'
+    ;
 
 formalParameters
 	:	formalParameter (',' formalParameter)*
@@ -114,120 +64,83 @@ formalParameters
 	;
 
 formalParameter
-    :   unannType ('['']')? variableDeclaratorId
-    |   variableDeclaratorId {notifyErrorListeners("no specified data type");}
-    |   unannType ('['']')? {notifyErrorListeners("no parameter name");}
-	;
+    :   result Identifier
+    |   Identifier {notifyErrorListeners("no specified data type");}
+    |   result {notifyErrorListeners("no parameter name");}
+    ;
 
-arrayInitializer
-    :   'create' unannType '[' additiveExpression ']'
-	;
+literal
+    :   IntegerLiteral
+    |   FloatingPointLiteral
+//    |   CharacterLiteral
+    |   StringLiteral
+    |   BooleanLiteral
+//    |   'null'
+    ;
+
+// STATEMENTS / BLOCKS
 
 block
-	:	'{' blockStatements? '}'
-	;
-
-blockStatements
-	:	blockStatement+
-	|   blockStatement* returnStatement
-	;
+    :    '{' blockStatement* '}'
+    |    '{' blockStatement* {notifyErrorListeners("no closing bracket '}' found");}
+//    |    blockStatement* '}' {notifyErrorListeners("no open bracket '{' found");}
+    ;
 
 blockStatement
-	:	localVariableDeclarationStatement
-	|	statement
-	;
+    :   localVariableDeclarationStatement
+    |   statement
+    ;
 
 localVariableDeclarationStatement
-	:	localVariableDeclaration ';'
-	;
+    :    localVariableDeclaration ';'
+    ;
 
 localVariableDeclaration
-    :   ('constant') unannType variableDeclaratorList
-    |   unannType '[' additiveExpression ']' variableDeclaratorList
-    |   Identifier unannType dims? variableDeclaratorList {notifyErrorListeners("identifier found before data type in the declaration");}
-	;
+    :   variableModifier? result variableDeclaratorList
+    |   Identifier result variableDeclaratorList {notifyErrorListeners("identifier found before data type in the declaration");}
+    ;
 
 statement
-	:	block
-	|   statementWithoutTrailingSubstatement
-	|	ifThenStatement
-	|	whileStatement
-    |	doStatement
-	|	forStatement
-	;
-
-statementWithoutTrailingSubstatement
-	:	emptyStatement
-	|	expressionStatement
-	|	breakStatement
-	|	continueStatement
-	|	returnStatement
-	;
-
-emptyStatement
-	:	';'
-	;
-
-expressionStatement
-	:	statementExpression ';'
-	;
-
-statementExpression
-	:	assignment
-	|   printInvocation
-	|   scanInvocation
-	|	methodInvocation
-	;
-
-printInvocation
-    :   'print' '(' ((StringLiteral | Identifier ('[' additiveExpression ']')?) ('+' (StringLiteral | Identifier ('[' additiveExpression ']')?))*)? ')'
-    |   'print' '(' ((StringLiteral | Identifier ('[' additiveExpression ']')?) ('+' (StringLiteral | Identifier ('[' additiveExpression ']')?))*)? '+'')' {notifyErrorListeners("additional ‘+’ sign at end of print");}
-    |   'print' '(' ((StringLiteral | ~(StringLiteral | Identifier | ')') | Identifier ('[' additiveExpression ']')?) (StringLiteral | ~(StringLiteral | Identifier | ')') | Identifier ('[' additiveExpression ']')?) (StringLiteral | ~(StringLiteral | Identifier | ')') | Identifier ('[' additiveExpression ']')?)*) ')' {notifyErrorListeners("lacking 'double quotes' in print statement");}
-    |   'print' '(' ~(StringLiteral | Identifier | ')') ')' {notifyErrorListeners("lacking 'double quotes' in print statement");}
+    :   block
+    |   ifThenStatement
+    |   whileStatement
+    |   doStatement
+    |   forStatement
+    |   printInvocation ';'
+//    |   'if' parExpression statement ('else' statement)?
+//    |   'for' '(' forControl ')' statement
+//    |   'while' parExpression statement
+//    |   'do' statement 'while' parExpression ';'
+//    |   'try' block (catchClause+ finallyBlock? | finallyBlock)
+//    |   'try' resourceSpecification block catchClause* finallyBlock?
+//    |   'switch' parExpression '{' switchBlockStatementGroup* switchLabel* '}'
+//    |   'synchronized' parExpression block
+    |   'return' expression? ';'
+    |   'return' result ';' {notifyErrorListeners("cannot return data type");}
+//    |   'throw' expression ';'
+    |   'break' ';'
+    |   'continue' ';'
+    |   ';'
+    |   statementExpression ';'
+//    |   Identifier ':' statement
+//    |   PRINT '(' expression ')' ';'
+    |   scanInvocation
     ;
-
-scanInvocation
-    :   'scan' '(' (StringLiteral | Identifier) ('+' (StringLiteral | Identifier))* ',' Identifier ('[' additiveExpression ']')? ')'
-    ;
-
-ifThenStatement
-    : 'if' '(' onlyConditionalExpression ')' 'then' block ('else' 'if' '(' onlyConditionalExpression ')' 'then' block)* ('else' 'then' block)?
-	;
-
-whileStatement
-    :	'while' Identifier ('[' additiveExpression ']')? 'up to' additiveExpression block
-    |   'while' Identifier ('[' additiveExpression ']')? 'down to' additiveExpression block
-    |   'while' Identifier ('[' additiveExpression ']')? (StringLiteral | Identifier ('[' additiveExpression ']'))+ additiveExpression block {notifyErrorListeners("wrong syntax for 'while loop' should contain 'up to' or 'down to' keyword");}
-	;
-
-doStatement
-    :   'do' block 'while' Identifier ('[' additiveExpression ']')? 'up to' additiveExpression
-    |   'do' block 'while' Identifier ('[' additiveExpression ']')? 'down to' additiveExpression
-    |   'do' block 'while' Identifier ('[' additiveExpression ']')? (StringLiteral | Identifier ('[' additiveExpression ']')?)+ additiveExpression {notifyErrorListeners("wrong syntax for 'do while loop' should contain 'up to' or 'down to' keyword");}
-	;
 
 forStatement
-	:   pseudoForStatement
-    ;
-
-pseudoForStatement
-    :   forheader block
+	:   forheader block
     ;
 
 forheader
-    : 'for' forInit 'up to' additiveExpression
-    | 'for' forInit 'down to' additiveExpression
-    | 'for' forInit (StringLiteral | Identifier ('[' additiveExpression ']')?)+ additiveExpression {notifyErrorListeners("wrong syntax for 'for loop' should contain 'up to' or 'down to' keyword");}
+    : 'for' forinitializer 'up to' expression
+    | 'for' forinitializer 'down to' expression
+    | 'for' forinitializer (StringLiteral | Identifier ('[' expression ']')?)+ expression {notifyErrorListeners("wrong syntax for 'for loop' should contain 'up to' or 'down to' keyword");}
     ;
 
-forInit
-    :   forinitializer
-	;
-
 forinitializer
-    :	unannType? variableDeclaratorId customAssignError
-    |   variableDeclaratorId '[' additiveExpression ']' customAssignError
-    |	Identifier ('[' additiveExpression ']')?
+    :	unannType? Identifier customAssignError
+    |   Identifier '[' expression ']' customAssignError
+    |	Identifier ('[' expression ']')?
     ;
 
 customAssignError
@@ -235,224 +148,135 @@ customAssignError
     |   {notifyErrorListeners("did not find assignment operator");}
     ;
 
-breakStatement
-    :   'break' ';'
+doStatement
+    :   'do' block 'while' Identifier ('[' expression ']')? 'up to' expression
+    |   'do' block 'while' Identifier ('[' expression ']')? 'down to' expression
+    |   'do' block 'while' Identifier ('[' expression ']')? (StringLiteral | Identifier ('[' expression ']')?)+ expression {notifyErrorListeners("wrong syntax for 'do while loop' should contain 'up to' or 'down to' keyword");}
 	;
 
-continueStatement
-	:	'continue' ';'
+whileStatement
+    :	'while' Identifier ('[' expression ']')? 'up to' expression block
+    |   'while' Identifier ('[' expression ']')? 'down to' expression block
+    |   'while' Identifier ('[' expression ']')? (StringLiteral | Identifier ('[' expression ']'))+ expression block {notifyErrorListeners("wrong syntax for 'while loop' should contain 'up to' or 'down to' keyword");}
 	;
 
-returnStatement
-	:	'return' expression? ';'
+ifThenStatement
+    :   'if' '(' conditionalExpression ')' 'then' block ('else' 'if' '(' conditionalExpression ')' 'then' block)* ('else' 'then' block)?
 	;
 
-primary
-	:	primaryNoNewArray_lfno_primary
-	;
+printInvocation
+    :   'print' '(' expression ')'
+    |   'print' '(' expression '+'')' {notifyErrorListeners("additional ‘+’ sign at end of print");}
+    |   'print' '(' ((StringLiteral | ~(StringLiteral | Identifier | ')') | Identifier ('[' expression ']')?) (StringLiteral | ~(StringLiteral | Identifier | ')') | Identifier ('[' expression ']')?)+) ')' {notifyErrorListeners("lacking 'double quotes' in print statement");}
+    |   'print' '(' ~(StringLiteral | Identifier | ')') ')' {notifyErrorListeners("value of keyword cannot be printed");}
+    ;
 
-primaryNoNewArray_lfno_primary
-	:	literal
-	|	'(' expression ')'
-	|	arrayAccess_lfno_primary
-	|	methodInvocation_lfno_primary
-	;
+scanInvocation
+    :   SCAN '(' expression ',' Identifier')' ';'
+    |   SCAN '(' expression ',' Identifier '[' expression ']' ')' ';'
+    ;
 
-arrayAccess
-	:	expressionName '[' additiveExpression ']'
-	;
+// EXPRESSIONS
 
-arrayAccess_lfno_primary
-	:	expressionName '[' additiveExpression ']'
-	;
+expressionList
+    :	expression (',' expression)*
+    |   (expression (',' expression)*)? expression expressionList {notifyErrorListeners("no separator found in parameters");}
+    |   ','* ',' expressionList {notifyErrorListeners("lacking parameter");}
+    |   expressionList ',' ','* {notifyErrorListeners("lacking parameter");}
+    |   expressionList ',' ',' ','* expressionList {notifyErrorListeners("lacking parameter");}
+    ;
+
+statementExpression
+    :   assignment
+    |   methodInvocation
+    ;
 
 methodInvocation
-    :   methodName '(' argumentList? ')'
-	|	methodName '(' argumentList? ')''(' argumentList? ')'{notifyErrorListeners("redundant parentheses");}
-	|   methodName '(' argumentList? {notifyErrorListeners("uneven parenthesis, lacking ')'");}
-	|   methodName argumentList? ')' {notifyErrorListeners("uneven parenthesis, lacking '('");}
-	;
-
-methodInvocation_lfno_primary
-	:	methodName '(' argumentList? ')'
-	|   methodName '(' argumentList? ')''(' argumentList? ')'{notifyErrorListeners("redundant parentheses");}
-    |   methodName '(' argumentList? {notifyErrorListeners("no closing parenthesis");}
-	;
-
-argumentList
-	:	expression (',' expression)*
-	|   (expression (',' expression)*)? expression argumentList {notifyErrorListeners("no separator found in parameters");}
-	|   ','* ',' argumentList {notifyErrorListeners("lacking parameter");}
-	|   argumentList ',' ','* {notifyErrorListeners("lacking parameter");}
-	|   argumentList ',' ',' ','* argumentList {notifyErrorListeners("lacking parameter");}
-	;
-
-expression
-    :   assignmentExpression errorParenthesis
-    |   '(' ')' assignmentExpression  {notifyErrorListeners("redundant parenthesis");}
-    |   ')' assignmentExpression  {notifyErrorListeners("uneven parenthesis, lacking '('");}
-    |   '('  assignmentExpression   {notifyErrorListeners("uneven parenthesis, lacking ')'");}
-    |   unaryExpression unaryExpression  {notifyErrorListeners("no operators found");}
-	;
-
-errorParenthesis
-    :
-    |    '(' ')' {notifyErrorListeners("redundant parenthesis");}
-    |    ')'  {notifyErrorListeners("uneven parenthesis, lacking '('");}
-    |    '('  {notifyErrorListeners("uneven parenthesis, lacking ')'");}
-	;
-
-assignmentExpression
-	:	conditionalExpression
-	;
-
-assignment
-	:	leftHandSide assignmentOperator expression
-	;
-
-leftHandSide
-	:	expressionName
-	|	arrayAccess
-	;
-
-assignmentOperator
-	:	'='
-	;
+    :   Identifier '(' expressionList? ')'
+    |	Identifier '(' expressionList? ')''(' expressionList? ')'{notifyErrorListeners("redundant parentheses");}
+    |   Identifier '(' expressionList? {notifyErrorListeners("uneven parenthesis, lacking ')'");}
+    |   Identifier expressionList? ')' {notifyErrorListeners("uneven parenthesis, lacking '('");}
+    ;
 
 conditionalExpression
-	:	conditionalOrExpression
-	;
-
-onlyConditionalExpression
-    : Identifier | BooleanLiteral | onlyConditionalOrExpression
+    :   expression
+    |   assignment {notifyErrorListeners("assignment operator found, expecting comparison operator");}
     ;
 
-conditionalOrExpression
-	:	conditionalAndExpression
-	|	conditionalOrExpression '||' conditionalAndExpression
-	;
-
-onlyConditionalOrExpression
-	:	onlyConditionalAndExpression
-	|	onlyConditionalOrExpression '||' onlyConditionalAndExpression
-	;
-
-conditionalAndExpression
-	:	inclusiveOrExpression
-	|	conditionalAndExpression '&&' inclusiveOrExpression
-	;
-
-onlyConditionalAndExpression
-	:	onlyEqualityExpression
-	|	onlyConditionalAndExpression '&&' onlyEqualityExpression
-	;
-
-inclusiveOrExpression
-	:	exclusiveOrExpression
-	;
-
-exclusiveOrExpression
-	:	andExpression
-	;
-
-andExpression
-	:	equalityExpression
-	;
-
-equalityExpression
-	:	relationalExpression
-	|   equalityExpression '=' relationalExpression {notifyErrorListeners("assignment operator found, expecting comparison operator");}
-	|	equalityExpression '==' relationalExpression
-	|	equalityExpression '!=' relationalExpression
-	;
-
-onlyEqualityExpression
-	:	onlyRelationalExpression
-	|   equalityExpression '=' relationalExpression {notifyErrorListeners("assignment operator found, expecting comparison operator");}
-	|	equalityExpression '==' relationalExpression
-	|	equalityExpression '!=' relationalExpression
-	;
-
-relationalExpression
-	:	shiftExpression
-	|	relationalExpression '<' shiftExpression
-	|	relationalExpression '>' shiftExpression
-	|	relationalExpression '<=' shiftExpression
-	|	relationalExpression '>=' shiftExpression
-	;
-
-onlyRelationalExpression
-	:	relationalExpression '<' shiftExpression
-    |	relationalExpression '>' shiftExpression
-    |	relationalExpression '<=' shiftExpression
-    |	relationalExpression '>=' shiftExpression
-	;
-
-shiftExpression
-	:	additiveExpression
-	;
-
-additiveExpression
-	:	multiplicativeExpression
-	|   additiveExpression additiveExpressionfactored
-	;
-
-additiveExpressionfactored
-    : arithmetic arithmetic (arithmetic)* multiplicativeExpression  {notifyErrorListeners("redundant arithmetic operator symbol found");}
-    | '+' '+' (arithmetic)+ multiplicativeExpression {notifyErrorListeners("redundant arithmetic operator symbol found");}
-    | '-' '-' (arithmetic)+ multiplicativeExpression {notifyErrorListeners("redundant arithmetic operator symbol found");}
-    | '+' '+' multiplicativeExpression {notifyErrorListeners("redundant '+' operator symbol found");}
-    | '-' '-' multiplicativeExpression {notifyErrorListeners("redundant '-' operator symbol found");}
-    | '**' multiplicativeExpression {notifyErrorListeners("redundant '*' operator symbol found");}
-    | '//' multiplicativeExpression {notifyErrorListeners("redundant '/' operator symbol found");}
-    | '%%' multiplicativeExpression {notifyErrorListeners("redundant '%' operator symbol found");}
-    | addminus {notifyErrorListeners("lacking argument after operator/excess operator");}
-    | addminus multiplicativeExpression
+assignment
+    :   Identifier '=' expression
+    |   Identifier '[' expression ']' '=' expression
     ;
 
-addminus
-    : '+'
-    | '-'
-    ;
-
-multiplicativeExpression
-	:	unaryExpression
-	|	multiplicativeExpression multiplicativeExpressionfactored
-	;
-
-multiplicativeExpressionfactored
-    :    arithmetic arithmetic (arithmetic)* unaryExpression  {notifyErrorListeners("redundant arithmetic operator symbol found");}
-    |   mult {notifyErrorListeners("lacking argument after operator/excess operator");}
-    |   mult unaryExpression
-    ;
-
-arithmetic
-    :   '+'
-    |   '-'
-    |   '*'
-    |   '/'
-    |   '%'
-    ;
-
-mult
-    : '*'
-    | '/'
-    | '%'
+expression
+    :   primary
+//    |   expression '(' arguments ')' ';'
+//    |   expression '.' Identifier
+    //|   expression '.' 'this'
+    //|   expression '.' 'new' nonWildcardTypeArguments? innerCreator
+    //|   expression '.' 'super' superSuffix
+    //|   expression '.' explicitGenericInvocation
+    |   Identifier '[' expression ']'
+    |   Identifier '(' expressionList? ')'
+//    |   'new' creator
+//    |   '(' result ')' expression
+//    |   expression ('++' | '--')
+//    |   ('+'|'-'|'++'|'--') expression
+    |   ('!') expression
+    |   expression ('*'|'/'|'%') expression
+    |   expression ('+'|'-') expression
+//    |   expression ('<' '<' | '>' '>' '>' | '>' '>') expression
+    |   expression ('<=' | '>=' | '>' | '<') expression
+//    |   expression 'instanceof' result
+    |   expression ('==' | '!=') expression
+//    |   expression '&' expression
+//    |   expression '^' expression
+//    |   expression '|' expression
+    |   expression '&&' expression
+    |   expression '||' expression
+//    |   expression '?' expression ':' expression
+//    |   <assoc=right> expression
+//        (   '='
+//        |   '+='
+//        |   '-='
+//        |   '*='
+//        |   '/='
+//        |   '&='
+//        |   '|='
+//        |   '^='
+//        |   '>>='
+//        |   '>>>='
+//        |   '<<='
+//        |   '%='
+//        )
+//        expression
+    |   primary '(' ')' {notifyErrorListeners("redundant parenthesis");}
+    |   primary ')'  {notifyErrorListeners("uneven parenthesis, lacking '('");}
+    |   primary '('  {notifyErrorListeners("uneven parenthesis, lacking ')'");}
+    |   '(' ')' primary  {notifyErrorListeners("redundant parenthesis");}
+    |   ')' primary  {notifyErrorListeners("uneven parenthesis, lacking '('");}
+    |   '('  primary   {notifyErrorListeners("uneven parenthesis, lacking ')'");}
+    |   unaryExpression unaryExpression+  {notifyErrorListeners("no operators found");}
+    |   expression ('+'|'-'|'*'|'/'|'%') ('+'|'-'|'*'|'/'|'%')+ expression {notifyErrorListeners("redundant arithmetic operator symbol found");}
+    |   expression ('+'|'-'|'*'|'/'|'%') {notifyErrorListeners("lacking argument after operator/excess operator");}
     ;
 
 unaryExpression
-    :   unaryExpressionNotPlusMinus
-	;
+    :   primary
+    |   Identifier '[' expression ']'
+    |   Identifier '(' expressionList? ')'
+    ;
 
-unaryExpressionNotPlusMinus
-	:	postfixExpression
-	|	'!' unaryExpression
-	;
-
-postfixExpression
-	:		primary
-		|	expressionName
-	;
+primary
+    :   '(' expression ')'
+//    |   'this'
+//    |   'super'
+    |   literal
+    |   Identifier
+    //|   result '.' 'class'
+    //|   'void' '.' 'class'
+//    |   nonWildcardTypeArguments (explicitGenericInvocationSuffix | 'this' arguments)
+    ;
 
 // LEXER
 
@@ -784,9 +608,9 @@ ASSIGN : '=' ;
 GT : '>' ;
 LT : '<' ;
 BANG : '!' ;
-//TILDE : '~' ;
-//QUESTION : '?' ;
-//COLON : ':' ;
+TILDE : '~' ;
+QUESTION : '?' ;
+COLON : ':' ;
 EQUAL : '==' ;
 LE : '<=' ;
 GE : '>=' ;
@@ -799,9 +623,9 @@ ADD : '+' ;
 SUB : '-' ;
 MUL : '*' ;
 DIV : '/' ;
-//BITAND : '&' ;
-//BITOR : '|' ;
-//CARET : '^' ;
+BITAND : '&' ;
+BITOR : '|' ;
+CARET : '^' ;
 MOD : '%' ;
 //ARROW : '->' ;
 //COLONCOLON : '::' ;

@@ -34,15 +34,15 @@ public class ReturnCommand implements ICommand {
 
     @Override
     public void execute() {
-        Checker checker = new Checker(this.exprContext);
-        checker.execute();
-
-        PseudoValue pseudoValue = this.assignedPseudoMethod.getReturnValue();
-
-        if (checker.isNumericResult())
-            AssignmentUtils.assignAppropriateValue(pseudoValue, checker.getResult());
-        else
-            AssignmentUtils.assignAppropriateValue(pseudoValue, checker.getStringResult());
-        //Console.log(LogType.DEBUG,"Return value is: " +evaluationCommand.getResult().toEngineeringString());
+//        Checker checker = new Checker(this.exprContext);
+//        checker.execute();
+//
+//        PseudoValue pseudoValue = this.assignedPseudoMethod.getReturnValue();
+//
+//        if (checker.isNumericResult())
+//            AssignmentUtils.assignAppropriateValue(pseudoValue, checker.getResult());
+//        else
+//            AssignmentUtils.assignAppropriateValue(pseudoValue, checker.getStringResult());
+//        //Console.log(LogType.DEBUG,"Return value is: " +evaluationCommand.getResult().toEngineeringString());
     }
 }

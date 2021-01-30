@@ -124,7 +124,7 @@ public class PseudoMethod implements IControlledCommand {
         return this.parameterValues.size();
     }
 
-    public void verifyParameterByValueAt(PseudoCodeParser.BlockContext blkCtx, int index) {
+    public void verifyParameterByValueAt(PseudoCodeParser.ExpressionContext blkCtx, int index) {
         if(index >= this.parameterValues.size()) {
             return;
         }
@@ -268,19 +268,19 @@ public class PseudoMethod implements IControlledCommand {
 
     public static MethodType identifyFunctionType(String primitiveTypeString) {
 
-        if(RecognizedKeywords.matchesKeyword(RecognizedKeywords.PRIMITIVE_TYPE_BOOLEAN, primitiveTypeString)) {
+        if(primitiveTypeString.equals("bool")) {
             return MethodType.BOOL_TYPE;
         }
-        else if(RecognizedKeywords.matchesKeyword(RecognizedKeywords.PRIMITIVE_TYPE_CHAR, primitiveTypeString)) {
-            return MethodType.CHAR_TYPE;
+//        else if(primitiveTypeString)) {
+//            return MethodType.CHAR_TYPE;
+//        }
+        else if(primitiveTypeString.equals("float")) {
+            return MethodType.FLOAT_TYPE;
         }
-        else if(RecognizedKeywords.matchesKeyword(RecognizedKeywords.PRIMITIVE_TYPE_DECIMAL, primitiveTypeString)) {
-            return MethodType.DECIMAL_TYPE;
-        }
-        else if(RecognizedKeywords.matchesKeyword(RecognizedKeywords.PRIMITIVE_TYPE_INT, primitiveTypeString)) {
+        else if(primitiveTypeString.equals("int")) {
             return MethodType.INT_TYPE;
         }
-        else if(RecognizedKeywords.matchesKeyword(RecognizedKeywords.PRIMITIVE_TYPE_STRING, primitiveTypeString)) {
+        else if(primitiveTypeString.equals("String")) {
             return MethodType.STRING_TYPE;
         }
 
