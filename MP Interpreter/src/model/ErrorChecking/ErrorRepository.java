@@ -47,7 +47,7 @@ public class ErrorRepository {
         this.errorMessageDictionary.put(MISSING_THIS_KEYWORD, "Missing 'this' keyword for method call '%s' line %d.");
         this.errorMessageDictionary.put(RETURN_IN_VOID, "You can't return a value in a void function at line %d.");
         this.errorMessageDictionary.put(INVALID_INDEX_ASSIGN, "Invalid index in array assignment at line %d.");
-        this.errorMessageDictionary.put(NO_RETURN_STATEMENT, "No return statement in function '%s' at line %d.");
+        this.errorMessageDictionary.put(NO_RETURN_STATEMENT, "No return statement in function '%s' looking for return type '%s' at line %d.");
         this.errorMessageDictionary.put(NOT_A_STATEMENT, "%s is not a statement at line %d.");
         this.errorMessageDictionary.put(DEFAULT, "  at line %d.");
     }

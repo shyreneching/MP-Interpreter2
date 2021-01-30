@@ -48,7 +48,7 @@ public class PseudoErrorListener implements ANTLRErrorListener {
 //            s[1] = s[1].substring(2);
 //        }
 
-        errorMessage = s[0] +s[1].trim() + "(Line "+ Integer.parseInt(number) +")";
+        errorMessage = s[0] +s[1].trim() + " (Line "+ Integer.parseInt(number) +")";
 
         ErrorMessage error = new ErrorMessage(Integer.parseInt(number), errorMessage);
 

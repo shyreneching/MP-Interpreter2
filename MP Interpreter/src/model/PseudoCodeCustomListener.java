@@ -1,7 +1,12 @@
 package model;
 
+import model.ErrorChecking.ErrorRepository;
+import model.ErrorChecking.PseudoErrorListener;
+import model.Item.PseudoMethod;
 import model.Sematic.MainAnalyzer;
 import model.Sematic.MethodAnalyzer;
+import model.SymbolTable.SymbolTableManager;
+import org.antlr.v4.runtime.Token;
 
 public class PseudoCodeCustomListener extends PseudoCodeBaseListener {
 
@@ -16,6 +21,17 @@ public class PseudoCodeCustomListener extends PseudoCodeBaseListener {
         MethodAnalyzer methodAnalyzer = new MethodAnalyzer();
         methodAnalyzer.analyze(ctx);
     }
+
+    @Override
+    public void exitMethodDeclaration(PseudoCodeParser.MethodDeclarationContext ctx) {
+        PseudoMethod pseudoMethod = SymbolTableManager.getInstance().getMethod(ctx.methodDeclarator().Identifier().getText());
+        if(!pseudoMethod.hasValidReturns() && !pseudoMethod.getReturnType().equals(PseudoMethod.MethodType.VOID_TYPE)){
+            Token firstToken = ctx.getStart();
+            int lineNumber = firstToken.getLine();
+            PseudoErrorListener.reportCustomError(ErrorRepository.NO_RETURN_STATEMENT, "", ctx.methodDeclarator().Identifier().getText(), pseudoMethod.getReturnValue().getPrimitiveType(), lineNumber);
+        }
+    }
+
 
 
 }

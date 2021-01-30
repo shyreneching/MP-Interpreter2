@@ -52,13 +52,28 @@ public class PseudoMethod implements IControlledCommand {
     public void setReturnType(MethodType methodType) {
         this.returnType = methodType;
 
-        //create an empty mobi value as a return value
+
         switch(this.returnType) {
-            case BOOL_TYPE: this.returnValue = new PseudoValue(true, "bool"); setValidReturns(false); break;
-            case INT_TYPE: this.returnValue = new PseudoValue(0, "int"); setValidReturns(false); break;
-            case FLOAT_TYPE: this.returnValue = new PseudoValue(0.0, "float"); setValidReturns(false); break;
-            case STRING_TYPE: this.returnValue = new PseudoValue("", "String"); setValidReturns(false); break;
-            case CHAR_TYPE: this.returnValue = new PseudoValue(0, "char"); setValidReturns(false); break;
+            case BOOL_TYPE:
+                this.returnValue = new PseudoValue(true, "bool");
+                setValidReturns(false);
+                break;
+            case INT_TYPE:
+                this.returnValue = new PseudoValue(0, "int");
+                setValidReturns(false);
+                break;
+            case FLOAT_TYPE:
+                this.returnValue = new PseudoValue(0.0, "float");
+                setValidReturns(false);
+                break;
+            case STRING_TYPE:
+                this.returnValue = new PseudoValue("", "String");
+                setValidReturns(false);
+                break;
+            case CHAR_TYPE:
+                this.returnValue = new PseudoValue(0, "char");
+                setValidReturns(false);
+                break;
             default:
                 break;
         }

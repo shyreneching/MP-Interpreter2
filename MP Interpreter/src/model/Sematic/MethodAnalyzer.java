@@ -34,18 +34,18 @@ public class MethodAnalyzer implements ParseTreeListener {
 
         PseudoMethod pseudoMethod = new PseudoMethod();
         pseudoMethod.setMethodName(mthdName);
+        pseudoMethod.setValidReturns(hasReturn);
 
         if(mthd.result() != null){
-            UnannTypeContext type = mthd.result().unannType();
+            String type = mthd.result().unannType().getText();
 
-
-            if (type.equals(PseudoMethod.MethodType.BOOL_TYPE)){
+            if (type.equals("bool")){
                 pseudoMethod.setReturnType(PseudoMethod.MethodType.BOOL_TYPE);
-            } else if (type.equals(PseudoMethod.MethodType.INT_TYPE)){
+            } else if (type.equals("int")){
                 pseudoMethod.setReturnType(PseudoMethod.MethodType.INT_TYPE);
-            } else if (type.equals(PseudoMethod.MethodType.FLOAT_TYPE)){
+            } else if (type.equals("float")){
                 pseudoMethod.setReturnType(PseudoMethod.MethodType.FLOAT_TYPE);
-            } else if (type.equals(PseudoMethod.MethodType.STRING_TYPE)){
+            } else if (type.equals("String")){
                 pseudoMethod.setReturnType(PseudoMethod.MethodType.STRING_TYPE);
             }
 
@@ -96,9 +96,11 @@ public class MethodAnalyzer implements ParseTreeListener {
             if(hasReturn){
                 Token firstToken = ctx.getStart();
                 int lineNumber = firstToken.getLine();
+
                 PseudoErrorListener.reportCustomError(ErrorRepository.DEFAULT, "Double return statement", lineNumber);
             }
             hasReturn = true;
+            pseudoMethod.setValidReturns(hasReturn);
         }
     }
 
