@@ -3,13 +3,17 @@ package model.Commands;
 import model.Item.PseudoValue;
 import model.PseudoCodeParser.*;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
+import org.antlr.v4.runtime.tree.TerminalNode;
+
+import java.util.List;
 
 public class AssignmentCommand implements ICommand  {
 
-    private LeftHandSideContext leftHandExpr;
+    private TerminalNode leftHandExpr;
     private ExpressionContext rightHandExpr;
+    private ExpressionContext arrayAssVal;
 
-    public AssignmentCommand(LeftHandSideContext leftHandExpr,
+    public AssignmentCommand(TerminalNode leftHandExpr,
                              ExpressionContext rightHandExpr) {
         this.leftHandExpr = leftHandExpr;
         this.rightHandExpr = rightHandExpr;
@@ -40,12 +44,19 @@ public class AssignmentCommand implements ICommand  {
 //        typeChecker.verify();
     }
 
+    public AssignmentCommand(TerminalNode leftHandExpr, ExpressionContext arrayAssVal,
+                             ExpressionContext rightHandExpr) {
+        this.leftHandExpr = leftHandExpr;
+        this.rightHandExpr = rightHandExpr;
+        this.arrayAssVal = arrayAssVal;
+    }
+
     @Override
     public void execute() {
 
     }
 
-    public LeftHandSideContext getLeftHandExpr() {
+    public TerminalNode getLeftHandExpr() {
         return leftHandExpr;
     }
 

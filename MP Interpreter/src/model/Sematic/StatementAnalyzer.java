@@ -76,8 +76,6 @@ public class StatementAnalyzer {
 
             StatementControlOverseer.getInstance().reportExitPositiveRule();
         }
-
-        // if ELSE statment exist
         if (ifthenCtx.block(i) != null) {
             BlockContext block = ifthenCtx.block(i);
 
@@ -103,7 +101,6 @@ public class StatementAnalyzer {
     private void handleForStatement(ForStatementContext forStatement) {
 
         ScopeCreator.getInstance().openScope();
-
 
 //        ForControlAnalyzer forControlAnalyzer = new ForControlAnalyzer();
 //        forControlAnalyzer.analyze(forStatement.forheader());
@@ -165,6 +162,6 @@ public class StatementAnalyzer {
 
     }
     private void handleReturnStatement(ExpressionContext returnExpr) {
-        
+
     }
 }

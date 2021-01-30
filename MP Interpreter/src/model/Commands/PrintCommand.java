@@ -36,7 +36,11 @@ public class PrintCommand implements ICommand {
         //print in IDE statement
         System.out.println(printstatement);
 
-        String print_text this.
+        String print_text = this.statement.getText();
+        if(print_text.contains('"' + "")){
+            String[] temp = print_text.split("\"");
+
+        }
 
         printstatement = "";
     }
