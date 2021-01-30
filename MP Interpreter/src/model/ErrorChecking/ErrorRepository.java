@@ -44,7 +44,7 @@ public class ErrorRepository {
 //        this.errorMessageDictionary.put(RUNTIME_ARITHMETIC_EXCEPTION, "Arithmetic exception at line %d. Aborting operation. ");
 //        this.errorMessageDictionary.put(RUNTIME_NEGATIVE_ARRAY_SIZE, "Negative array size at line %d. Aborting operation. ");
         this.errorMessageDictionary.put(MISSING_THIS_KEYWORD, "Missing 'this' keyword for method call %s line %d.");
-        this.errorMessageDictionary.put(RETURN_IN_VOID, "You can't return a value in a void function in line %d.");
+        this.errorMessageDictionary.put(RETURN_IN_VOID, "You can't return a value in a void function at line %d.");
         this.errorMessageDictionary.put(INVALID_INDEX_ASSIGN, "Invalid index in array assignment at line %d.");
         this.errorMessageDictionary.put(NO_RETURN_STATEMENT, "No return statement in function %s at line %d.");
         this.errorMessageDictionary.put(NOT_A_STATEMENT, "%s is not a statement at line %d.");

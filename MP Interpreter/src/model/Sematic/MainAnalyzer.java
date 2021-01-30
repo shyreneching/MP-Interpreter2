@@ -43,7 +43,7 @@ public class MainAnalyzer implements ParseTreeListener {
     @Override
     public void enterEveryRule(ParserRuleContext parserRuleContext) {
         if(parserRuleContext instanceof BlockContext) {
-            BlockContext blockCtx = ((MainDeclarationContext) parserRuleContext).block();
+            BlockContext blockCtx = ((BlockContext) parserRuleContext);
 
             BlockAnalyzer blockAnalyzer = new BlockAnalyzer();
             blockAnalyzer.analyze(blockCtx);

@@ -215,10 +215,10 @@ public class PseudoMethod implements IControlledCommand {
                 if (command instanceof ReturnCommand) {
                     break;
                 } else if (command instanceof IFCommand) {
-                    if (((IFCommand) command).isReturned()) {
-                        ((IFCommand) command).resetReturnFlag();
-                        break;
-                    }
+//                    if (((IFCommand) command).isReturned()) {
+//                        ((IFCommand) command).resetReturnFlag();
+//                        break;
+//                    }
                 }
 
                 if (ExecutionManager.getInstance().isAborted())
@@ -239,8 +239,8 @@ public class PseudoMethod implements IControlledCommand {
 
     private void popBackParameters() {
         for (PseudoValue bV : this.parameterValues.values()) {
-            if(bV.getPrimitiveType() != PseudoValue.PrimitiveType.ARRAY)
-                bV.popBack();
+//            if(bV.getPrimitiveType() != PseudoValue.PrimitiveType.ARRAY)
+//                bV.popBack();
         }
     }
 
@@ -251,10 +251,10 @@ public class PseudoMethod implements IControlledCommand {
 
             if (value != null) {
 
-                if (value.stackSize() > 1) { // prevent from reaching null
-                    if (value.getPrimitiveType() != PseudoValue.PrimitiveType.ARRAY)
-                        value.popBack();
-                }
+//                if (value.stackSize() > 1) { // prevent from reaching null
+//                    if (value.getPrimitiveType() != PseudoValue.PrimitiveType.ARRAY)
+//                        value.popBack();
+//                }
 
             }
 

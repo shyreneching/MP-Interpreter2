@@ -22,8 +22,8 @@ public class TypeChecker implements IErrorChecker, ParseTreeListener {
     private ExpressionContext exprCtx;
     private int lineNumber;
 
-    public TypeChecker(PseudoValue assignmentMobiValue, ExpressionContext exprCtx) {
-        this.pseudoValue = assignmentMobiValue;
+    public TypeChecker(PseudoValue assignmentValue, ExpressionContext exprCtx) {
+        this.pseudoValue = assignmentValue;
         this.exprCtx = exprCtx;
 
         Token firstToken = exprCtx.getStart();

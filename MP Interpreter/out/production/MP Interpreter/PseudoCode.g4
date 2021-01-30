@@ -82,7 +82,7 @@ literal
 
 block
     :    '{' blockStatement* '}'
-    |    '{' blockStatement* {notifyErrorListeners("no closing bracket '}' found");}
+//    |    '{' blockStatement* {notifyErrorListeners("no closing bracket '}' found");}
 //    |    blockStatement* '}' {notifyErrorListeners("no open bracket '{' found");}
     ;
 

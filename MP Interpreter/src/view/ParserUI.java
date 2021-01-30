@@ -17,6 +17,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import model.*;
+import model.ErrorChecking.ErrorRepository;
 import model.ErrorChecking.PseudoErrorListener;
 import model.Execution.ExecutionManager;
 import model.Execution.MethodTracker;
@@ -212,7 +213,7 @@ public class ParserUI extends Application implements NotificationListener {
 //            parser.setErrorHandler(new ErrorRecovery());
                 parser.addErrorListener(new ErrorListener());
 
-                parser.compilationUnit();
+//                parser.compilationUnit();
 
                 ParserRuleContext parserRuleContext = parser.compilationUnit();
                 ParseTreeWalker treeWalker = new ParseTreeWalker();
@@ -220,6 +221,7 @@ public class ParserUI extends Application implements NotificationListener {
 
                 System.out.println(ErrorListener.INSTANCE.toString());
 
+                System.out.println(PseudoErrorListener.INSTANCE.toString());
 //            var outputname = "input/parser-output.txt";
 //            OutputStream outStream = new FileOutputStream(outputname);
 ////            for (String l: result){
@@ -234,6 +236,7 @@ public class ParserUI extends Application implements NotificationListener {
                 SymbolTableManager.reset();
                 PseudoErrorListener.getInstance().setSuccessful(true);
                 StatementControlOverseer.reset();
+                ErrorRepository.reset();
                 MethodTracker.reset();
                 LocalVarTracker.reset();
                 resetOutput();

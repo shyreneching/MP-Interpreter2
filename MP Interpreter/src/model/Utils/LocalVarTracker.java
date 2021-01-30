@@ -30,7 +30,7 @@ public class LocalVarTracker {
 
         if (!sessions.isEmpty()) {
 
-            if (command instanceof MappingCommand) {
+            /*if (command instanceof MappingCommand) {
                 sessions.peek().add(((MappingCommand) command).getIdentifierString());
             } else if (command instanceof AssignmentCommand) {
                 if (!((AssignmentCommand) command).isLeftHandArrayAccessor())
