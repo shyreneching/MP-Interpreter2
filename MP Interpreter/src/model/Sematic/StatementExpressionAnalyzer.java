@@ -4,7 +4,6 @@ import model.Commands.AssignmentCommand;
 import model.Commands.MethodCallCommand;
 import model.ErrorChecking.ErrorRepository;
 import model.ErrorChecking.PseudoErrorListener;
-import model.ErrorChecking.UndeclaredChecker;
 import model.Item.PseudoMethod;
 import model.Item.PseudoValue;
 import model.PseudoCodeParser.*;
@@ -24,7 +23,6 @@ public class StatementExpressionAnalyzer {
     }
 
     private void handleMethod(MethodInvocationContext methodInvocation) {
-        Scope scope = ScopeCreator.getInstance().getActiveScope();
         PseudoMethod pseudoMethod = SymbolTableManager.getInstance().getMethod(methodInvocation.Identifier().getText());
 
         if(pseudoMethod != null){
