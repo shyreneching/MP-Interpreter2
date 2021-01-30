@@ -247,7 +247,6 @@ public class ParserUI extends Application implements NotificationListener {
                 if(PseudoErrorListener.getInstance().isSuccessful()) {
                     ExecutionManager.getInstance().executeAllActions();
                     System.out.println("PseudoErrorListener executed");
-                    //this.mViewPager.setCurrentItem(1);
                 }
                 else {
                     System.out.println("Fix identified errors before executing!");
@@ -269,6 +268,8 @@ public class ParserUI extends Application implements NotificationListener {
                 output_textArea.replaceText(0,0,output);
                 output_textArea.setMouseTransparent(false);
                 ErrorListener.INSTANCE.resetErrors();
+                PseudoErrorListener.getInstance().resetSemanticErrorsList();
+                ErrorListener.INSTANCE.resetSyntaxErrorsList();
             } catch (IOException ex) {
                 //System.out.println(ex);
 //            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
@@ -339,7 +340,7 @@ public class ParserUI extends Application implements NotificationListener {
     }
 
     public void resetOutput(){
-        output_textArea.clear();
+        output_textArea.setText("");
     }
 
     public void notified(String notificationString, model.notifications.Parameters params){

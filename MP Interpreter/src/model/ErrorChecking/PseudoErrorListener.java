@@ -114,4 +114,8 @@ public class PseudoErrorListener implements ANTLRErrorListener {
     public ArrayList<ErrorMessage> getSemanticErrors() {
         return semanticErrors;
     }
+
+    public void resetSemanticErrorsList() {
+        semanticErrors = new ArrayList<ErrorMessage>();
+    }
 }
