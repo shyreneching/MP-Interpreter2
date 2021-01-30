@@ -1,6 +1,5 @@
 package model.ErrorChecking;
 
-import jdk.nashorn.api.tree.IdentifierTree;
 import model.PseudoCodeParser.*;
 import org.antlr.v4.runtime.ParserRuleContext;
 

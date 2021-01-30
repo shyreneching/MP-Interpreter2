@@ -1,7 +1,9 @@
 package model;
 
+import model.Item.ErrorMessage;
 import org.antlr.v4.runtime.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ErrorListener extends BaseErrorListener {
@@ -9,6 +11,7 @@ public class ErrorListener extends BaseErrorListener {
     private static final boolean REPORT_SYNTAX_ERRORS = true;
 
     private String errorMsg = "";
+    private ArrayList<ErrorMessage> syntaxErrors = new ArrayList<ErrorMessage>();
 
     @Override
     public void syntaxError(Recognizer<?, ?> recognizer,
@@ -110,6 +113,9 @@ public class ErrorListener extends BaseErrorListener {
 
         }
 
+        ErrorMessage error = new ErrorMessage(line, msg);
+
+        syntaxErrors.add(error);
 
 //        underlineError(recognizer, offendingSymbol, line, charPositionInLine);
         //System.err.println(msg+ ", line "+line+":"+charPositionInLine+" in file: "+ sourceName);
@@ -143,7 +149,12 @@ public class ErrorListener extends BaseErrorListener {
     public void resetErrors(){
         this.errorMsg = "";
     }
-//    @Override public void reportAmbiguity(org.antlr.v4.runtime.Parser recognizer, org.antlr.v4.runtime.dfa.DFA dfa, int startIndex, int stopIndex, boolean exact, java.util.BitSet ambigAlts, org.antlr.v4.runtime.atn.ATNConfigSet configs) {
+
+    public ArrayList<ErrorMessage> getSyntaxErrors() {
+        return syntaxErrors;
+    }
+
+    //    @Override public void reportAmbiguity(org.antlr.v4.runtime.Parser recognizer, org.antlr.v4.runtime.dfa.DFA dfa, int startIndex, int stopIndex, boolean exact, java.util.BitSet ambigAlts, org.antlr.v4.runtime.atn.ATNConfigSet configs) {
 //        System.err.println(ambigAlts);
 //        System.err.println(configs);
 //    }
