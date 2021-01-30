@@ -139,6 +139,10 @@ public class ErrorListener extends BaseErrorListener {
     public String toString() {
         return errorMsg;
     }
+
+    public void resetErrors(){
+        this.errorMsg = "";
+    }
 //    @Override public void reportAmbiguity(org.antlr.v4.runtime.Parser recognizer, org.antlr.v4.runtime.dfa.DFA dfa, int startIndex, int stopIndex, boolean exact, java.util.BitSet ambigAlts, org.antlr.v4.runtime.atn.ATNConfigSet configs) {
 //        System.err.println(ambigAlts);
 //        System.err.println(configs);
