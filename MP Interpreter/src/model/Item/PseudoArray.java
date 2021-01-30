@@ -73,7 +73,7 @@ public class PseudoArray {
         PseudoValue.PrimitiveType primitiveType = PseudoValue.PrimitiveType.NOT_YET_IDENTIFIED;
 
         if(primitiveTypeString.equals("bool"))
-            primitiveType = PseudoValue.PrimitiveType.BOOL;
+            primitiveType = PseudoValue.PrimitiveType.BOOLEAN;
         else if(primitiveTypeString.equals("float")) {
             primitiveType = PseudoValue.PrimitiveType.FLOAT;
         }
