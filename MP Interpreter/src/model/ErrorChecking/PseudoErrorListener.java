@@ -41,11 +41,6 @@ public class PseudoErrorListener implements ANTLRErrorListener {
         String line = errorMessage.substring(errorMessage.indexOf("line"), errorMessage.indexOf("."));
 
         String number = errorMessage.substring(errorMessage.indexOf("line ") + 5, errorMessage.indexOf(s[1]));
-
-        ErrorMessage error = new ErrorMessage(Integer.parseInt(number), errorMessage);
-
-        semanticErrors.add(error);
-
 //        PseudoError pseudoError = new PseudoError();
 //        if(s[1].length() != 2){
 //            s[1] = "";
@@ -54,6 +49,11 @@ public class PseudoErrorListener implements ANTLRErrorListener {
 //        }
 
         errorMessage = s[0] +s[1].trim() + "(Line "+ Integer.parseInt(number) +")";
+
+        ErrorMessage error = new ErrorMessage(Integer.parseInt(number), errorMessage);
+
+        semanticErrors.add(error);
+
         System.out.println("ERROR: " + errorMessage);
         errorMsg = errorMsg + errorMessage + "\n";
 //        pseudoError.setLineNumber( Integer.parseInt(number) );

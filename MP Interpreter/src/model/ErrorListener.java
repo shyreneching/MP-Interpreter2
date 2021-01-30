@@ -113,14 +113,15 @@ public class ErrorListener extends BaseErrorListener {
 
         }
 
-        ErrorMessage error = new ErrorMessage(line, msg);
-
-        syntaxErrors.add(error);
-
 //        underlineError(recognizer, offendingSymbol, line, charPositionInLine);
         //System.err.println(msg+ ", line "+line+":"+charPositionInLine+" in file: "+ sourceName);
 //        errorMsg = errorMsg + "\n" + "Syntax Error: " + msg+ ", (Line "+line+")[Char "+charPositionInLine+"] in file: "+ sourceName;
-        errorMsg = errorMsg + "Syntax Error: " + msg+ ", (Line "+line+")[Char "+charPositionInLine+"]"+ "\n";
+        //errorMsg = errorMsg + "Syntax Error: " + msg+ ", (Line "+line+")[Char "+charPositionInLine+"]" + "\n";
+        errorMsg = "Syntax Error: " + msg+ ", (Line "+line+")[Char "+charPositionInLine+"]";
+
+        ErrorMessage error = new ErrorMessage(line, errorMsg);
+
+        syntaxErrors.add(error);
     }
 
 //    protected void underlineError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine) {

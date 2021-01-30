@@ -62,8 +62,6 @@ public class ParserUI extends Application implements NotificationListener {
     private CodeArea codeArea;
     private TextArea output_textArea;
 
-    private final String outputErrors = "";
-
     private static final String[] KEYWORDS = new String[] {
             "abstract", "assert", "bool", "break", "byte",
             "case", "catch", "char", "class", "constant",
@@ -261,12 +259,13 @@ public class ParserUI extends Application implements NotificationListener {
 
                 combinedErrorsList.sort(Comparator.comparingInt(ErrorMessage::getLineNumber));
 
+                String output = "";
+
                 for (ErrorMessage error : combinedErrorsList){
-                    String output = outputErrors + error.getErrorMessage() + "\n";
-                    output_textArea.replaceText(0, 0,output);
+                    output = output + error.getErrorMessage() + "\n";
                 }
 
-                //output_textArea.replaceText(0,0,ErrorListener.INSTANCE.toString());
+                output_textArea.replaceText(0,0,output);
                 output_textArea.setMouseTransparent(false);
                 ErrorListener.INSTANCE.resetErrors();
             } catch (IOException ex) {
