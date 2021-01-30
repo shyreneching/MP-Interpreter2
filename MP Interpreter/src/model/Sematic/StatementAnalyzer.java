@@ -37,7 +37,7 @@ public class StatementAnalyzer {
         else if (statementCtx.printInvocation() != null) {
             this.handlePrintStatement(statementCtx.printInvocation().expression(0));
         }
-        else if(statementCtx.printInvocation() != null){
+        else if(statementCtx.statementExpression() != null){
             StatementExpressionAnalyzer expressionAnalyzer = new StatementExpressionAnalyzer();
             expressionAnalyzer.analyze(statementCtx.statementExpression());
         }

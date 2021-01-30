@@ -1,6 +1,8 @@
 package model.Sematic;
 
+import model.ErrorChecking.ErrorRepository;
 import model.ErrorChecking.MultipleMethodDeclarationChecker;
+import model.ErrorChecking.PseudoErrorListener;
 import model.Item.PseudoMethod;
 import model.Item.PseudoValue;
 import model.PseudoCodeParser.*;
@@ -8,6 +10,7 @@ import model.SymbolTable.Scope.Scope;
 import model.SymbolTable.Scope.ScopeCreator;
 import model.SymbolTable.SymbolTableManager;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
@@ -17,6 +20,8 @@ public class MethodAnalyzer implements ParseTreeListener {
 
     private MethodDeclarationContext mthd;
     private PseudoMethod pseudoMethod;
+
+    private boolean hasReturn = false;
 
 
     public void analyze(MethodDeclarationContext mthd) {
@@ -73,13 +78,27 @@ public class MethodAnalyzer implements ParseTreeListener {
         if (ctx instanceof FormalParameterContext) { // check the params
             FormalParameterContext paramsCtx = (FormalParameterContext) ctx;
 
-
             if (paramsCtx.Identifier() != null) {
                 ParameterAnalyzer parameterAnalyzer = new ParameterAnalyzer(pseudoMethod);
                 parameterAnalyzer.analyze(paramsCtx);
             }
+        } else if(ctx instanceof BlockContext){
+            BlockContext blockCtx = ((BlockContext) ctx);
 
-
+            BlockAnalyzer blockAnalyzer = new BlockAnalyzer();
+            blockAnalyzer.analyze(blockCtx);
+        } else if(ctx instanceof StatementContext && ((StatementContext) ctx).RETURN() != null){
+            if(pseudoMethod.getReturnType().equals(PseudoMethod.MethodType.VOID_TYPE)){
+                Token firstToken = ctx.getStart();
+                int lineNumber = firstToken.getLine();
+                PseudoErrorListener.reportCustomError(ErrorRepository.RETURN_IN_VOID, "", lineNumber);
+            }
+            if(hasReturn){
+                Token firstToken = ctx.getStart();
+                int lineNumber = firstToken.getLine();
+                PseudoErrorListener.reportCustomError(ErrorRepository.DEFAULT, "Double return statement", lineNumber);
+            }
+            hasReturn = true;
         }
     }
 

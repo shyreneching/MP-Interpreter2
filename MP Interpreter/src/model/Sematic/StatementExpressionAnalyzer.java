@@ -23,9 +23,10 @@ public class StatementExpressionAnalyzer {
     }
 
     private void handleMethod(MethodInvocationContext methodInvocation) {
+        System.out.println("Enter Method Invocation!!!!!!!!!!!!!");
         PseudoMethod pseudoMethod = SymbolTableManager.getInstance().getMethod(methodInvocation.Identifier().getText());
 
-        if(pseudoMethod != null){
+        if(pseudoMethod == null){
             Token firstToken = methodInvocation.getStart();
             int lineNumber = firstToken.getLine();
             PseudoErrorListener.reportCustomError(ErrorRepository.UNDECLARED_FUNCTION, "", methodInvocation.Identifier().getText(), lineNumber);
@@ -36,10 +37,11 @@ public class StatementExpressionAnalyzer {
     }
 
     private void handleAssignmentStatement(AssignmentContext assignment) {
+        System.out.println("Enter Assignment!!!!!!!!!!!!!");
         Scope scope = ScopeCreator.getInstance().getActiveScope();
         PseudoValue pseudoValue = scope.searchVariableIncludingLocal(assignment.Identifier().getText());
 
-        if(pseudoValue != null){
+        if(pseudoValue == null){
             Token firstToken = assignment.getStart();
             int lineNumber = firstToken.getLine();
             PseudoErrorListener.reportCustomError(ErrorRepository.UNDECLARED_VARIABLE, "", assignment.Identifier().getText(), lineNumber);

@@ -93,6 +93,7 @@ blockStatement
 
 localVariableDeclarationStatement
     :    localVariableDeclaration ';'
+    |    localVariableDeclaration {notifyErrorListeners("lacking ';' at the end of line");}
     ;
 
 localVariableDeclaration
