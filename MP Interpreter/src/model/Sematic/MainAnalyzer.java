@@ -16,6 +16,7 @@ public class MainAnalyzer implements ParseTreeListener {
 //        if(!ExecutionManager.getInstance().hasFoundEntryPoint()) {
 //            ExecutionManager.getInstance().reportFoundEntryPoint(ParserHandler.getInstance().getCurrentClassName());
 //
+
             Scope scope = ScopeCreator.getInstance().openScope();
             scope.setParent(SymbolTableManager.getInstance());
             SymbolTableManager.setParentScope(scope);
