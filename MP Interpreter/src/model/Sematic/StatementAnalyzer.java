@@ -1,9 +1,7 @@
 package model.Sematic;
 
-import model.Commands.DoWhileCommand;
-import model.Commands.ForCommand;
-import model.Commands.IFCommand;
-import model.Commands.WhileCommand;
+import model.Commands.*;
+import model.Execution.ExecutionManager;
 import model.PseudoCodeParser.*;
 import model.SymbolTable.Scope.ScopeCreator;
 
@@ -15,7 +13,7 @@ public class StatementAnalyzer {
             this.handleIfStatement(statementCtx.ifThenStatement());
         }
         else if (statementCtx.whileStatement() != null) {
-            this.handleWhilwStatement(statementCtx.whileStatement());
+            this.handleWhileStatement(statementCtx.whileStatement());
         }
         else if (statementCtx.forStatement() != null) {
             this.handleForStatement(statementCtx.forStatement());
@@ -29,31 +27,22 @@ public class StatementAnalyzer {
             BlockAnalyzer blockAnalyzer = new BlockAnalyzer();
             blockAnalyzer.analyze(blockCtx);
 
-
-//            StatementWithoutTrailingSubstatementContext statementwithSub = statementCtx.statementWithoutTrailingSubstatement();
-//            StatementWithoutTrailingAnalyzer statementAnalyzer = new StatementWithoutTrailingAnalyzer();
-//            statementAnalyzer.analyze(statementwithSub);
-        }
-        else if (statementCtx.BREAK() != null) {
-
         }
         else if (statementCtx.RETURN() != null) {
-
-        }
-        else if (statementCtx.CONTINUE() != null) {
-
+            this.handleReturnStatement(statementCtx.expression());
         }
         else if (statementCtx.scanInvocation() != null) {
-
+            this.handleScanStatement(statementCtx.scanInvocation());
         }
         else if (statementCtx.printInvocation() != null) {
-
+            this.handlePrintStatement(statementCtx.printInvocation().expression(0));
         }
         else if(statementCtx.printInvocation() != null){
             StatementExpressionAnalyzer expressionAnalyzer = new StatementExpressionAnalyzer();
             expressionAnalyzer.analyze(statementCtx.statementExpression());
         }
     }
+
 
     private void handleDoStatement(DoStatementContext doStatement) {
 
@@ -77,7 +66,7 @@ public class StatementAnalyzer {
 
         int i;
         for(i = 0; i < conditionalStatments.size(); i++){
-            IFCommand ifCommand = new IFCommand(ifthenCtx.conditionalExpression(i));
+            IFCommand ifCommand = new IFCommand(ifthenCtx.conditionalExpression(i).expression());
             StatementControlOverseer.getInstance().openConditionalCommand(ifCommand);
 
             BlockContext block = ifthenCtx.block(i);
@@ -99,7 +88,7 @@ public class StatementAnalyzer {
 
     }
 
-    public void handleWhilwStatement(WhileStatementContext whileStatement) {
+    public void handleWhileStatement(WhileStatementContext whileStatement) {
         BlockContext block = whileStatement.block();
 
         WhileCommand whileCommand = new WhileCommand(whileStatement.Identifier(), whileStatement.expression());
@@ -115,10 +104,18 @@ public class StatementAnalyzer {
 
         ScopeCreator.getInstance().openScope();
 
-        ForControlAnalyzer forControlAnalyzer = new ForControlAnalyzer();
-        forControlAnalyzer.analyze(forStatement.forheader());
 
-        ForCommand forCommand = new ForCommand(forControlAnalyzer.getLocalVarDecContext(), forControlAnalyzer.getExprContext(), forControlAnalyzer.getUpdateCommand());
+//        ForControlAnalyzer forControlAnalyzer = new ForControlAnalyzer();
+//        forControlAnalyzer.analyze(forStatement.forheader());
+        String iteration = "";
+        if(forStatement.forheader().UPTO()!=null){
+            iteration = "up to";
+        }else{
+            iteration = "down to";
+        }
+
+
+        ForCommand forCommand = new ForCommand(forStatement.forheader().forinitializer(), forStatement.forheader().expression(0), iteration);
         StatementControlOverseer.getInstance().openControlledCommand(forCommand);
 
         BlockContext blkCtx = forStatement.block();
@@ -129,5 +126,45 @@ public class StatementAnalyzer {
 
         ScopeCreator.getInstance().closeScope();
         System.out.println("End of FOR loop");
+    }
+
+    private void handleScanStatement(ScanInvocationContext scanInvocation) {
+        ScanCommand scanCommand;
+
+        if(scanInvocation.expression(1) != null)
+            scanCommand = new ScanCommand(scanInvocation.expression(0).getText(), scanInvocation.expression(1), scanInvocation.Identifier().getText());
+        else
+            scanCommand = new ScanCommand(scanInvocation.expression(0).getText(), scanInvocation.Identifier().getText());
+
+        CommandExecuter.handleStatementExecution(scanCommand);
+    }
+
+    private void handlePrintStatement(ExpressionContext ctx) {
+        PrintCommand printCommand = new PrintCommand(ctx);
+        CommandExecuter.handleStatementExecution(printCommand);
+//        StatementControlOverseer statementControl = StatementControlOverseer.getInstance();
+//        //add to conditional controlled command
+//        if(statementControl.isInConditionalCommand()) {
+//            IConditionalCommand conditionalCommand = (IConditionalCommand) statementControl.getActiveControlledCommand();
+//
+//            if(statementControl.isInPositiveRule()) {
+//                conditionalCommand.addPositiveCommand(printCommand);
+//            }
+//            else {
+//                conditionalCommand.addNegativeCommand(printCommand);
+//            }
+//        }
+//
+//        else if(statementControl.isInControlledCommand()) {
+//            IControlledCommand controlledCommand = (IControlledCommand) statementControl.getActiveControlledCommand();
+//            controlledCommand.addCommand(printCommand);
+//        }
+//        else {
+//            ExecutionManager.getInstance().addCommand(printCommand);
+//        }
+
+    }
+    private void handleReturnStatement(ExpressionContext returnExpr) {
+        
     }
 }

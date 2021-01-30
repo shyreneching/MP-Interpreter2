@@ -1,18 +1,28 @@
 package model.Commands;
 
+import model.PseudoCodeParser.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class ForCommand implements IControlledCommand  {
 
-    private Object variableUB;
-    private Object exprLB;
+    private ForinitializerContext variableUB;
+    private ExpressionContext exprLB;
 
     private List<ICommand> forstatement;
 
-    public ForCommand(Object variableUB, Object exprLB){
+    private boolean isUpto;
+
+    public ForCommand(ForinitializerContext variableUB, ExpressionContext exprLB, String iteration){
         this.variableUB = variableUB;
         this.exprLB = exprLB;
+
+        if(iteration.equals("up to")){
+            this.isUpto = true;
+        }else{
+            this.isUpto = false;
+        }
 
         this.forstatement = new ArrayList<ICommand>();
     }

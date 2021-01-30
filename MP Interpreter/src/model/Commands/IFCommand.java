@@ -11,14 +11,14 @@ public class IFCommand implements IConditionalCommand  {
     private List<ICommand> positivestatements; //list of commands to execute if the condition holds true
     private List<ICommand> negativestatements; //list of commands to execute if the condition holds false
 
-    private PseudoCodeParser.OnlyConditionalExpressionContext conditionalExpr;
+    private PseudoCodeParser.ExpressionContext conditionalExpr;
     private String modifiedConditionExpr;
 
     private boolean returned;
 
     private ArrayList<String> localVars = new ArrayList<>();
 
-    public IFCommand(OnlyConditionalExpressionContext conditionalExpr) {
+    public IFCommand(ExpressionContext conditionalExpr) {
         this.positivestatements = new ArrayList<ICommand>();
         this.negativestatements = new ArrayList<ICommand>();
 

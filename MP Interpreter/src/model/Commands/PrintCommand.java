@@ -10,22 +10,23 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 public class PrintCommand implements ICommand {
 
     private String printstatement = "";
+    private ExpressionContext statement;
 
-    public PrintCommand(PrintInvocationContext statement) {
+    public PrintCommand(ExpressionContext statement) {
 
-        if(statement.Identifier() != null){
-            UndeclaredChecker undeclaredChecker = new UndeclaredChecker(statement);
-            undeclaredChecker.verify();
-        }
 
-        for(TerminalNode t: statement.Identifier()){
-            t.getText();
-            PseudoValue pv = SymbolTableManager.getInstance().searchVariableIncludingLocal(t.getText());
-        }
-        if(statement.StringLiteral() != null){
-            this.printstatement = statement.StringLiteral().toString();
-        }
+        UndeclaredChecker undeclaredChecker = new UndeclaredChecker(statement);
+        undeclaredChecker.verify();
+        this.statement = statement;
 
+//        for(TerminalNode t: statement.Identifier()){
+//            t.getText();
+//            PseudoValue pv = SymbolTableManager.getInstance().searchVariableIncludingLocal(t.getText());
+//        }
+//        if(statement.StringLiteral() != null){
+//            this.printstatement = statement.StringLiteral().toString();
+//        }
+        this.printstatement = "";
 
 
     }
@@ -34,6 +35,8 @@ public class PrintCommand implements ICommand {
     public void execute() {
         //print in IDE statement
         System.out.println(printstatement);
+
+        String print_text this.
 
         printstatement = "";
     }
