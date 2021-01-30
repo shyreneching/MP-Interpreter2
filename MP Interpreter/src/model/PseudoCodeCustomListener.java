@@ -19,7 +19,7 @@ public class PseudoCodeCustomListener extends PseudoCodeBaseListener {
     @Override
     public void enterMethodDeclaration(PseudoCodeParser.MethodDeclarationContext ctx) {
         MethodAnalyzer methodAnalyzer = new MethodAnalyzer();
-        methodAnalyzer.analyze(ctx);
+        methodAnalyzer.setPseudoMethod(ctx);
     }
 
     @Override

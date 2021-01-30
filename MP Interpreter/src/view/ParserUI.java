@@ -219,6 +219,7 @@ public class ParserUI extends Application implements NotificationListener {
 
                 ParserRuleContext parserRuleContext = parser.compilationUnit();
                 ParseTreeWalker treeWalker = new ParseTreeWalker();
+                treeWalker.walk(new PseudoMethodWalker(), parserRuleContext);
                 treeWalker.walk(new PseudoCodeCustomListener(), parserRuleContext);
 
                 System.out.println(ErrorListener.INSTANCE.toString());

@@ -58,10 +58,20 @@ public class MethodAnalyzer implements ParseTreeListener {
 
         Scope scope = ScopeCreator.getInstance().openScope();
         SymbolTableManager.getInstance().setParentScope(scope);
+
+    }
+
+    public void setPseudoMethod(MethodDeclarationContext mthd){
+        this.mthd = mthd;
+        this.pseudoMethod = SymbolTableManager.getInstance().getMethod(mthd.methodDeclarator().Identifier().getText());
+
+        Traverse();
+    }
+
+    public void Traverse(){
         ParseTreeWalker walker = new ParseTreeWalker();
         walker.walk(this, mthd);
     }
-
 
     @Override
     public void visitTerminal(TerminalNode terminalNode) {
