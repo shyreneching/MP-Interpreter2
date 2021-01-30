@@ -21,6 +21,7 @@ import model.ErrorChecking.ErrorRepository;
 import model.ErrorChecking.PseudoErrorListener;
 import model.Execution.ExecutionManager;
 import model.Execution.MethodTracker;
+import model.Item.ErrorMessage;
 import model.Sematic.StatementControlOverseer;
 import model.SymbolTable.Scope.Scope;
 import model.SymbolTable.Scope.ScopeCreator;
@@ -47,8 +48,10 @@ import java.awt.*;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.regex.Matcher;
@@ -59,6 +62,7 @@ public class ParserUI extends Application implements NotificationListener {
     private CodeArea codeArea;
     private TextArea output_textArea;
 
+    private final String outputErrors = "";
 
     private static final String[] KEYWORDS = new String[] {
             "abstract", "assert", "bool", "break", "byte",
@@ -250,7 +254,19 @@ public class ParserUI extends Application implements NotificationListener {
                     System.out.println("Fix identified errors before executing!");
                 }
 
-                output_textArea.replaceText(0,0,ErrorListener.INSTANCE.toString());
+                ArrayList<ErrorMessage> combinedErrorsList = new ArrayList<ErrorMessage>();
+
+                combinedErrorsList.addAll(PseudoErrorListener.getInstance().getSemanticErrors());
+                combinedErrorsList.addAll(ErrorListener.INSTANCE.getSyntaxErrors());
+
+                combinedErrorsList.sort(Comparator.comparingInt(ErrorMessage::getLineNumber));
+
+                for (ErrorMessage error : combinedErrorsList){
+                    String output = outputErrors + error.getErrorMessage() + "\n";
+                    output_textArea.replaceText(0, 0,output);
+                }
+
+                //output_textArea.replaceText(0,0,ErrorListener.INSTANCE.toString());
                 output_textArea.setMouseTransparent(false);
                 ErrorListener.INSTANCE.resetErrors();
             } catch (IOException ex) {

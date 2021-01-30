@@ -1,16 +1,18 @@
 package model.ErrorChecking;
 
 import model.ErrorListener;
+import model.Item.ErrorMessage;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.atn.ATNConfigSet;
 import org.antlr.v4.runtime.dfa.DFA;
 
 import javax.swing.text.View;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
 
 public class PseudoErrorListener implements ANTLRErrorListener {
-    public static ErrorListener INSTANCE = new ErrorListener();
+    public static PseudoErrorListener INSTANCE = new PseudoErrorListener();
     private static final boolean REPORT_SYNTAX_ERRORS = true;
 
     private static PseudoErrorListener sharedInstance = null;
@@ -18,6 +20,8 @@ public class PseudoErrorListener implements ANTLRErrorListener {
     private boolean successful = true;
 
     private static String errorMsg = "";
+
+    private static ArrayList<ErrorMessage> semanticErrors = new ArrayList<ErrorMessage>();
 
     public static PseudoErrorListener getInstance() {
         return sharedInstance;
@@ -38,6 +42,10 @@ public class PseudoErrorListener implements ANTLRErrorListener {
 
         String number = errorMessage.substring(errorMessage.indexOf("line ") + 5, errorMessage.indexOf(s[1]));
 
+        ErrorMessage error = new ErrorMessage(Integer.parseInt(number), errorMessage);
+
+        semanticErrors.add(error);
+
 //        PseudoError pseudoError = new PseudoError();
 //        if(s[1].length() != 2){
 //            s[1] = "";
@@ -47,7 +55,7 @@ public class PseudoErrorListener implements ANTLRErrorListener {
 
         errorMessage = s[0] +s[1].trim() + "(Line "+ Integer.parseInt(number) +")";
         System.out.println("ERROR: " + errorMessage);
-        errorMsg = errorMsg + "\n"  +s[0] + " " +s[1] + "(Line "+ Integer.parseInt(number) +")";
+        errorMsg = errorMsg + errorMessage + "\n";
 //        pseudoError.setLineNumber( Integer.parseInt(number) );
 //        pseudoError.setErrorPrefix(s[0]);
 //        pseudoError.setLineLayout(line);
@@ -101,5 +109,9 @@ public class PseudoErrorListener implements ANTLRErrorListener {
 
     public boolean isSuccessful() {
         return successful;
+    }
+
+    public ArrayList<ErrorMessage> getSemanticErrors() {
+        return semanticErrors;
     }
 }
