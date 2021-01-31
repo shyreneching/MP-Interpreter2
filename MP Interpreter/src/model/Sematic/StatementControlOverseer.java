@@ -9,8 +9,6 @@ import java.util.Stack;
 
 public class StatementControlOverseer {
 
-    private final static String TAG = "MobiProg_StatementControlOverseer";
-
     private static StatementControlOverseer sharedInstance = null;
 
     public static StatementControlOverseer getInstance() {
