@@ -23,7 +23,7 @@ public class PseudoValue {
     public PseudoValue(Object value, String primitiveType){
         PrimitiveType pt = convert(primitiveType);
 
-        if(checkType(value, pt)){
+        if(checkType(value, pt) && value != null){
             this.value = value;
             this.type = pt;
         }else {
