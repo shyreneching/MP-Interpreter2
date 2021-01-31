@@ -1,7 +1,12 @@
 package model.Commands;
 
+import model.Execution.ExecutionManager;
+import model.Execution.ExecutionMonitor;
+import model.Execution.MethodTracker;
 import model.PseudoCodeParser;
 import model.PseudoCodeParser.*;
+import model.Sematic.IdentifierMapper;
+import model.Utils.LocalVarTracker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,29 +30,47 @@ public class IFCommand implements IConditionalCommand  {
         this.conditionalExpr = conditionalExpr;
     }
 
-    public boolean evaluate() {
-        int value = 0;
-
-        //replace value in look up table
-        // evaluate expreassion
-
-       return (value == 1);
-
-    }
-
     @Override
     public void execute() {
-        if(evaluate()){
-            for (ICommand command : this.positivestatements) {
-                command.execute();
-            }
-        } else {
-            for (ICommand command : this.negativestatements) {
-                command.execute();
+        this.identifyVariables();
 
+        ExecutionMonitor executionMonitor = ExecutionManager.getInstance().getExecutionMonitor();
+
+        try {
+            if (evaluateCondition(this.conditionalExpr)) {
+                for (ICommand command : this.positivestatements) {
+                    executionMonitor.tryExecution();
+                    command.execute();
+
+                    LocalVarTracker.getInstance().populateLocalVars(command);
+
+                    if (command instanceof ReturnCommand) {
+                        returned = true;
+                        break;
+                    }
+
+                    if (ExecutionManager.getInstance().isAborted())
+                        break;
+                }
             }
+            else {
+                for (ICommand command : this.negativestatements) {
+                    executionMonitor.tryExecution();
+                    command.execute();
+
+                    LocalVarTracker.getInstance().populateLocalVars(command);
+
+                    if (command instanceof ReturnCommand) {
+                        returned = true;
+                        break;
+                    }
+                    if (ExecutionManager.getInstance().isAborted())
+                        break;
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Block interrupted! " + e.getMessage());
         }
-
     }
 
     public void clearAllCommands() {
@@ -61,7 +84,6 @@ public class IFCommand implements IConditionalCommand  {
 
     public int getNegativeCommandsCount() {
         return this.negativestatements.size();
-
     }
 
     @Override
@@ -77,5 +99,38 @@ public class IFCommand implements IConditionalCommand  {
     @Override
     public void addNegativeCommand(ICommand command) {
         this.negativestatements.add(command);
+    }
+
+    public boolean isReturned() {
+        return returned;
+    }
+
+    public void resetReturn(){
+        this.returned = false;
+    }
+
+    public ArrayList<String> getLocalVars() {
+        return localVars;
+    }
+
+    private void identifyVariables() {
+        IdentifierMapper identifierMapper = new IdentifierMapper(this.conditionalExpr.getText(), MethodTracker.getInstance().getLatestFunction());
+        identifierMapper.analyze(this.conditionalExpr);
+
+        this.modifiedConditionExpr = identifierMapper.getModifiedExp();
+    }
+
+    public static boolean evaluateCondition(ExpressionContext expressionContext) {
+        if(expressionContext.getText().equals("T")) {
+            return true;
+        }
+        else if(expressionContext.getText().equals("F")) {
+            return false;
+        }
+
+        ExpressionCommand expressionCommand = new ExpressionCommand(expressionContext);
+        expressionCommand.execute();
+
+        return expressionCommand.getValueResult().intValue() == 1;
     }
 }
