@@ -210,14 +210,6 @@ public class ParserUI extends Application implements NotificationListener {
                 LocalVarTracker.reset();
                 resetOutput();
 
-                if(PseudoErrorListener.getInstance().isSuccessful()) {
-                    ExecutionManager.getInstance().executeAllActions();
-                    System.out.println("PseudoErrorListener executed");
-                }
-                else {
-                    System.out.println("Fix identified errors before executing!");
-                }
-
                 //printToOutput("I hate this 2");
 
 //            CharStream input = CharStreams.fromFileName("input/test2.java");
@@ -247,6 +239,16 @@ public class ParserUI extends Application implements NotificationListener {
                 System.out.println(ErrorListener.INSTANCE.toString());
 
                 System.out.println(PseudoErrorListener.INSTANCE.toString());
+
+                if(PseudoErrorListener.getInstance().isSuccessful()) {
+                    //System.out.println("executionList number: " + ExecutionManager.getInstance().getExecutionList().size());
+                    ExecutionManager.getInstance().executeAllActions();
+                    System.out.println("PseudoErrorListener executed");
+                }
+                else {
+                    System.out.println("Fix identified errors before executing!");
+                }
+
 //            var outputname = "input/parser-output.txt";
 //            OutputStream outStream = new FileOutputStream(outputname);
 ////            for (String l: result){
@@ -262,7 +264,7 @@ public class ParserUI extends Application implements NotificationListener {
                 combinedErrorsList.addAll(PseudoErrorListener.getInstance().getSemanticErrors());
 
                 combinedErrorsList.sort(Comparator.comparingInt(ErrorMessage::getLineNumber));
-                System.out.println(combinedErrorsList.size());
+                //System.out.println(combinedErrorsList.size());
 
                 if (combinedErrorsList.size() > 0){
                     String output = "";
