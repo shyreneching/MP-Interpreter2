@@ -117,6 +117,7 @@ public class LocalVariableAnalyzer implements ParseTreeListener {
             }
             System.out.println(pseudoValue);
             Scope scope = ScopeCreator.getInstance().getActiveScope();
+            System.out.println("THIS IS CURRENT SCOPE " + scope.getParent());
             if(pseudoValue != null){
                 scope.addPseudoValue(varCtx.Identifier().getText(), pseudoValue);
             }

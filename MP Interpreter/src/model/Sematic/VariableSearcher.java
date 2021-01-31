@@ -3,6 +3,7 @@ package model.Sematic;
 import model.Execution.MethodTracker;
 import model.Item.PseudoMethod;
 import model.Item.PseudoValue;
+import model.SymbolTable.Scope.Scope;
 import model.SymbolTable.Scope.ScopeCreator;
 import model.SymbolTable.SymbolTableManager;
 
@@ -13,6 +14,8 @@ public class VariableSearcher {
 
         if(MethodTracker.getInstance().isInsideFunction()) {
             pseudoValue = searchVariableInFunction(MethodTracker.getInstance().getLatestFunction(), identifierString);
+        } else{
+            pseudoValue = VariableSearcher.searchVariableInMain(SymbolTableManager.getInstance().getParentScope(), identifierString);
         }
 
 //        if(pseudoValue == null) {
@@ -32,6 +35,16 @@ public class VariableSearcher {
         else {
             pseudoValue = ScopeCreator.searchVariableInLocalIterative(identifierString, pseudoMethod.getParentScope());
         }
+
+        return pseudoValue;
+    }
+
+    public static PseudoValue searchVariableInMain(Scope scope, String identifierString) {
+        PseudoValue pseudoValue = null;
+
+
+        pseudoValue = ScopeCreator.searchVariableInLocalIterative(identifierString, scope);
+
 
         return pseudoValue;
     }

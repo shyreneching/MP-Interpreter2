@@ -1,5 +1,10 @@
 package model.Sematic;
 
+import model.Commands.MethodCallCommand;
+import model.ErrorChecking.ErrorRepository;
+import model.ErrorChecking.PseudoErrorListener;
+import model.Execution.ExecutionManager;
+import model.Item.PseudoMethod;
 import model.PseudoCodeParser.*;
 import model.SymbolTable.Scope.Scope;
 import model.SymbolTable.Scope.ScopeCreator;
@@ -15,11 +20,15 @@ public class MainAnalyzer implements ParseTreeListener {
     public void analyze(MainDeclarationContext ctx) {
 //        if(!ExecutionManager.getInstance().hasFoundEntryPoint()) {
 //            ExecutionManager.getInstance().reportFoundEntryPoint(ParserHandler.getInstance().getCurrentClassName());
-//
-
+////
+//            PseudoMethod pseudoMethod = new PseudoMethod();
+//            pseudoMethod.setMethodName("main");
+//            SymbolTableManager.getInstance().addPseudoMethod("main", pseudoMethod);
             Scope scope = ScopeCreator.getInstance().openScope();
-            scope.setParent(SymbolTableManager.getInstance());
+            scope.setParent(scope);
+//            pseudoMethod.setParentScope(scope);
             SymbolTableManager.setParentScope(scope);
+//            ExecutionManager.getInstance().openFunctionExecution(pseudoMethod);
 
             ParseTreeWalker treeWalker = new ParseTreeWalker();
             treeWalker.walk(this, ctx);
@@ -48,6 +57,9 @@ public class MainAnalyzer implements ParseTreeListener {
 
             BlockAnalyzer blockAnalyzer = new BlockAnalyzer();
             blockAnalyzer.analyze(blockCtx);
+        } else if(parserRuleContext instanceof StatementContext && ((StatementContext) parserRuleContext).RETURN() != null){
+            PseudoErrorListener.reportCustomError(ErrorRepository.DEFAULT, "can not have return in main", parserRuleContext.getStart().getLine());
+
         }
     }
 

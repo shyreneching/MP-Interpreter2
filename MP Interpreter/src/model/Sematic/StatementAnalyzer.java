@@ -55,6 +55,7 @@ public class StatementAnalyzer {
         blockAnalyzer.analyze(block);
 
         StatementControlOverseer.getInstance().compileControlledCommand();
+
     }
 
 

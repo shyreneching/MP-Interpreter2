@@ -299,7 +299,8 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
 
     private void evaluateVariable(PseudoCodeParser.ExpressionContext exprCtx) {
         PseudoValue pseudoValue = VariableSearcher.searchVariable(exprCtx.getText());
-
+        System.out.println("Entering expression command " + exprCtx.getText());
+        System.out.println("Pseudo value: " + pseudoValue);
         if (pseudoValue == null || pseudoValue.getPrimitiveType() == PseudoValue.PrimitiveType.ARRAY) {
             return;
         }
@@ -313,6 +314,7 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
                 this.modifiedExp = this.modifiedExp.replaceFirst(exprCtx.getText(),
                         pseudoValue.getValue().toString());
             }
+            System.out.println("modified exp: " + modifiedExp);
 
         } catch (NullPointerException e) {
             if (pseudoValue.getPrimitiveType() == PseudoValue.PrimitiveType.INT) {

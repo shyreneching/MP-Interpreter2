@@ -40,6 +40,10 @@ public class SymbolTableManager implements IScope {
         parentScope = scope;
     }
 
+    public Scope getParentScope() {
+        return parentScope;
+    }
+
     @Override
     public boolean isParent() {
         return true;

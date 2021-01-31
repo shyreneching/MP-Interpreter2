@@ -72,7 +72,7 @@ public class MethodAnalyzer implements ParseTreeListener {
             Scope scope = ScopeCreator.getInstance().openScope();
             pseudoMethod.setParentScope(scope);
             MethodTracker.getInstance().reportEnterFunction(pseudoMethod);
-            MethodTracker.getInstance().getLatestFunction();
+
 
             Traverse();
         }
