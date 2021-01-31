@@ -12,7 +12,6 @@ import model.PseudoCodeParser;
 import model.Sematic.VariableSearcher;
 import model.SymbolTable.Scope.ScopeCreator;
 import model.SymbolTable.SymbolTableManager;
-import model.Utils.StringUtils;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
