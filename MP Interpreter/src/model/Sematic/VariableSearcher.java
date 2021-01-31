@@ -36,11 +36,11 @@ public class VariableSearcher {
         return pseudoValue;
     }
 
-//    public static BaracoValue searchVariableInClassIncludingLocal(ClassScope classScope, String identifierString) {
+//    public static PseudoValue searchVariableInClassIncludingLocal(ClassScope classScope, String identifierString) {
 //        return classScope.searchVariableIncludingLocal(identifierString);
 //    }
 //
-//    public static BaracoValue searchVariableInClass(ClassScope classScope, String identifierString) {
+//    public static PseudoValue searchVariableInClass(ClassScope classScope, String identifierString) {
 //        return classScope.searchVariable(identifierString);
 //    }
 }

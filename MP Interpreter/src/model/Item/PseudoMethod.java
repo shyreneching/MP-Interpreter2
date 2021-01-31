@@ -200,7 +200,7 @@ public class PseudoMethod implements IControlledCommand {
 
     public PseudoValue getReturnValue() {
         if(this.returnType == MethodType.VOID_TYPE) {
-            System.out.println(this.methodName + " is a void function. Null mobi value is returned");
+            System.out.println(this.methodName + " is a void function. Null value is returned");
             return null;
         }
         else {

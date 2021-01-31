@@ -27,9 +27,6 @@ public class MultipleVariableDeclarationChecker implements IErrorChecker, ParseT
         this.lineNumber = firstToken.getLine();
     }
 
-    /* (non-Javadoc)
-     * @see com.neildg.mobiprog.builder.errorcheckers.IErrorChecker#verify()
-     */
     @Override
     public void verify() {
         ParseTreeWalker treeWalker = new ParseTreeWalker();

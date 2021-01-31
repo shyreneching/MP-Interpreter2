@@ -23,8 +23,8 @@ public class MethodTracker {
 
     public static void reset() { }
 
-    public void reportEnterFunction(PseudoMethod baracoMethod) {
-        this.callStack.push(baracoMethod);
+    public void reportEnterFunction(PseudoMethod pseudoMethod) {
+        this.callStack.push(pseudoMethod);
     }
 
     public void reportExitFunction() {
