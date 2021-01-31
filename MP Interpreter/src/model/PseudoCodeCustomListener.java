@@ -2,6 +2,7 @@ package model;
 
 import model.ErrorChecking.ErrorRepository;
 import model.ErrorChecking.PseudoErrorListener;
+import model.Execution.ExecutionManager;
 import model.Execution.MethodTracker;
 import model.Item.PseudoMethod;
 import model.Sematic.MainAnalyzer;
@@ -35,6 +36,7 @@ public class PseudoCodeCustomListener extends PseudoCodeBaseListener {
             }
 
             ScopeCreator.getInstance().closeScope();
+            ExecutionManager.getInstance().closeFunctionExecution();
 //            MethodTracker.getInstance().reportEnterFunction(SymbolTableManager.getInstance().getMethod(ctx.methodDeclarator().Identifier().getText()));
         }
     }

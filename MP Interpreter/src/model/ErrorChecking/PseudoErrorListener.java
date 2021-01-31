@@ -54,7 +54,7 @@ public class PseudoErrorListener implements ANTLRErrorListener {
 
         semanticErrors.add(error);
 
-//        System.out.println("ERROR: " + errorMessage);
+        System.out.println("ERROR: " + errorMessage);
         errorMsg = errorMsg + errorMessage + "\n";
 //        pseudoError.setLineNumber( Integer.parseInt(number) );
 //        pseudoError.setErrorPrefix(s[0]);

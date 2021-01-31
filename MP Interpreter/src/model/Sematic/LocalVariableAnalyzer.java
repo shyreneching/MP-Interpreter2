@@ -1,5 +1,6 @@
 package model.Sematic;
 
+import model.Commands.AssignmentCommand;
 import model.Commands.ExpressionCommand;
 import model.ErrorChecking.ErrorRepository;
 import model.ErrorChecking.PseudoErrorListener;
@@ -87,6 +88,8 @@ public class LocalVariableAnalyzer implements ParseTreeListener {
                     if(isFinal){
                         pseudoValue.makeConst();
                     }
+                    AssignmentCommand assignmentCommand = new AssignmentCommand(varCtx.Identifier(), varCtx.variableInitializer().expression());
+                    CommandExecuter.handleStatementExecution(assignmentCommand);
 
                 } else{
                     Token firstToken = varCtx.getStart();
@@ -98,26 +101,33 @@ public class LocalVariableAnalyzer implements ParseTreeListener {
                     ExpressionCommand expressionCommand = new ExpressionCommand(varCtx.variableInitializer().arrayInitializer().expression());
                     expressionCommand.execute();
                     // evaluate varCtx.variableInitializer().arrayInitializer().expression();)
-                    TypeChecker.isNumeric(varCtx.variableInitializer().arrayInitializer().expression().getText());
-                    int arraysize = expressionCommand.getValueResult().intValue();
-
-
-                    varCtx.variableInitializer().arrayInitializer().expression();
-                    PseudoArray pseudoArray = PseudoArray.createArray(type,varCtx.Identifier().getText());
+//                    TypeChecker.isNumeric(varCtx.variableInitializer().arrayInitializer().expression().getText());
+                    int arraysize;
+                    if(expressionCommand.isNumeric() && !expressionCommand.getValueResult().toString().contains(".") ){
+                        arraysize = expressionCommand.getValueResult().intValue();
+                        PseudoArray pseudoArray = PseudoArray.createArray(type,varCtx.Identifier().getText());
 //                    if(!(arraysize instanceof Integer)){
 //                        PseudoErrorListener.reportCustomError(ErrorRepository.DEFAULT, "Invalid array inatialization.", lineNumber);
 //                    }
-                    pseudoArray.initializeSize(arraysize);
-                    if(isFinal){
-                        pseudoArray.markFinal();
+                        pseudoArray.initializeSize(arraysize);
+                        if(isFinal){
+                            pseudoArray.markFinal();
+                        }
+                        pseudoValue = new PseudoValue(pseudoArray, "array");
                     }
+                    Scope scope = ScopeCreator.getInstance().getActiveScope();
+                    if(pseudoValue != null){
+                        scope.addPseudoValue(varCtx.Identifier().getText(), pseudoValue);
+                    }
+//                    AssignmentCommand assignmentCommand = new AssignmentCommand(varCtx.Identifier(), varCtx.variableInitializer().expression());
+//                    CommandExecuter.handleStatementExecution(assignmentCommand);
                 }
             } else {
                 pseudoValue = PseudoValue.createEmptyVariable(type);
             }
             System.out.println(pseudoValue);
             Scope scope = ScopeCreator.getInstance().getActiveScope();
-            System.out.println("THIS IS CURRENT SCOPE " + scope.getParent());
+//            System.out.println("THIS IS CURRENT SCOPE " + scope.getParent());
             if(pseudoValue != null){
                 scope.addPseudoValue(varCtx.Identifier().getText(), pseudoValue);
             }

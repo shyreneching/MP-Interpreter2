@@ -34,7 +34,7 @@ public class AssignmentCommand implements ICommand, ParseTreeListener {
         this.rightHandExpr = rightHandExpr;
         leftHandArrayAccessor = false;
 
-        UndeclaredChecker.verifyVariableOrConst(leftHandExpr);
+//        UndeclaredChecker.verifyVariableOrConst(leftHandExpr);
 
         ConstChecker.verifyVariableOrConst(leftHandExpr);
 

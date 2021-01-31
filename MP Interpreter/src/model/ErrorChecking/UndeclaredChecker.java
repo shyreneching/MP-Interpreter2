@@ -98,9 +98,12 @@ public class UndeclaredChecker implements IErrorChecker, ParseTreeListener {
 
             pseudoValue = VariableSearcher.searchVariableInFunction(pseudoMethod, varExprCtx.primary().Identifier().getText());
         } else{
+
+            System.out.println("Searching in Main");
+
             pseudoValue = VariableSearcher.searchVariableInMain(SymbolTableManager.getInstance().getParentScope(), varExprCtx.primary().Identifier().getText());
         }
-
+        System.out.println("pseudoValue " + pseudoValue);
         if(pseudoValue == null) {
             PseudoErrorListener.reportCustomError(ErrorRepository.UNDECLARED_VARIABLE, "", varExprCtx.getText(), this.lineNumber);
         }
@@ -112,6 +115,8 @@ public class UndeclaredChecker implements IErrorChecker, ParseTreeListener {
         if(ExecutionManager.getInstance().isInFunctionExecution()) {
             PseudoMethod pseudoMethod = ExecutionManager.getInstance().getCurrentFunction();
             pseudoValue = VariableSearcher.searchVariableInFunction(pseudoMethod, node.getText());
+        } else{
+            pseudoValue = VariableSearcher.searchVariableInMain(SymbolTableManager.getInstance().getParentScope(), node.getText());
         }
 
 
