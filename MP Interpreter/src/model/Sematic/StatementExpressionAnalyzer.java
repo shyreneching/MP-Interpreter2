@@ -38,14 +38,14 @@ public class StatementExpressionAnalyzer {
 
     private void handleAssignmentStatement(AssignmentContext assignment) {
 //        System.out.println("Enter Assignment!!!!!!!!!!!!!");
-        Scope scope = ScopeCreator.getInstance().getActiveScope();
-        PseudoValue pseudoValue = scope.searchVariableIncludingLocal(assignment.Identifier().getText());
-
-        if(pseudoValue == null){
-            Token firstToken = assignment.getStart();
-            int lineNumber = firstToken.getLine();
-            PseudoErrorListener.reportCustomError(ErrorRepository.UNDECLARED_VARIABLE, "", assignment.Identifier().getText(), lineNumber);
-        }
+//        Scope scope = ScopeCreator.getInstance().getActiveScope();
+//        PseudoValue pseudoValue = scope.searchVariableIncludingLocal(assignment.Identifier().getText());
+//
+//        if(pseudoValue == null){
+//            Token firstToken = assignment.getStart();
+//            int lineNumber = firstToken.getLine();
+//            PseudoErrorListener.reportCustomError(ErrorRepository.UNDECLARED_VARIABLE, "", assignment.Identifier().getText(), lineNumber);
+//        }
 
         AssignmentCommand assignmentCommand;
         if(assignment.expression(1) != null){

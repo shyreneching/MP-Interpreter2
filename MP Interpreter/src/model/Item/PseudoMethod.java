@@ -120,15 +120,15 @@ public class PseudoMethod implements IControlledCommand {
             return;
         }
 
-        /*BaracoArray baracoArray = (BaracoArray) baracoValue.getValue();
+        /*PseudoArray pseudoArray = (PseudoArray) pseudoValue.getValue();
 
-        BaracoArray newArray = new BaracoArray(baracoArray.getPrimitiveType(), identifier);
-        BaracoValue newValue = new BaracoValue(newArray, PrimitiveType.ARRAY);
+        PseudoArray newArray = new PseudoArray(pseudoArray.getPrimitiveType(), identifier);
+        PseudoValue newValue = new PseudoValue(newArray, PrimitiveType.ARRAY);
 
-        newArray.initializeSize(baracoArray.getSize());
+        newArray.initializeSize(pseudoArray.getSize());
 
         for(int i = 0; i < newArray.getSize(); i++) {
-            newArray.updateValueAt(baracoArray.getValueAt(i), i);
+            newArray.updateValueAt(pseudoArray.getValueAt(i), i);
         }*/
 
         this.parameterValues.put(this.getParameterKeyAt(index), pseudoValue);

@@ -17,10 +17,12 @@ methodDeclaration
     :   'func' (result|'void') methodDeclarator block
     |   'func' methodDeclarator block {notifyErrorListeners("lacking return type");}
     |   'func' (result|'void') methodDeclarator {notifyErrorListeners("lacking function body");}
+    |   'func' (result|'void') block {notifyErrorListeners("can't find function name");}
     ;
 
 methodDeclarator
 	:	Identifier '(' formalParameters? ')'
+	|	'(' formalParameters? ')' {notifyErrorListeners("can't find function name");}
 	|	Identifier '(' formalParameters? {notifyErrorListeners("uneven parenthesis, lacking ')'");}
 	|	Identifier formalParameters? ')' {notifyErrorListeners("uneven parenthesis, lacking '('");}
 	;

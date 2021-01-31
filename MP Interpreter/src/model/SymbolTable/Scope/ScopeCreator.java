@@ -38,6 +38,10 @@ public class ScopeCreator {
         return this.activeScope;
     }
 
+    public void setActiveScope(Scope scope) {
+        this.activeScope = scope;
+    }
+
     public Scope getActiveScope() {
         return activeScope;
     }

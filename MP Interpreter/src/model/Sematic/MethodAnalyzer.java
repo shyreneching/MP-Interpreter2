@@ -3,6 +3,7 @@ package model.Sematic;
 import model.ErrorChecking.ErrorRepository;
 import model.ErrorChecking.MultipleMethodDeclarationChecker;
 import model.ErrorChecking.PseudoErrorListener;
+import model.Execution.ExecutionManager;
 import model.Execution.MethodTracker;
 import model.Item.PseudoMethod;
 import model.Item.PseudoValue;
@@ -27,50 +28,59 @@ public class MethodAnalyzer implements ParseTreeListener {
 
     public void analyze(MethodDeclarationContext mthd) {
 
-        MultipleMethodDeclarationChecker checker = new MultipleMethodDeclarationChecker(mthd.methodDeclarator());
-        checker.verify();
+        if(mthd.methodDeclarator().Identifier() != null){
+            MultipleMethodDeclarationChecker checker = new MultipleMethodDeclarationChecker(mthd.methodDeclarator());
+            checker.verify();
 
-        String mthdName = mthd.methodDeclarator().Identifier().getText();
+            String mthdName = mthd.methodDeclarator().Identifier().getText();
 
 
-        PseudoMethod pseudoMethod = new PseudoMethod();
-        pseudoMethod.setMethodName(mthdName);
-        pseudoMethod.setValidReturns(hasReturn);
+            PseudoMethod pseudoMethod = new PseudoMethod();
+            pseudoMethod.setMethodName(mthdName);
+            pseudoMethod.setValidReturns(hasReturn);
 
-        if(mthd.result() != null){
-            String type = mthd.result().unannType().getText();
+            if(mthd.result() != null){
+                String type = mthd.result().unannType().getText();
 
-            if (type.equals("bool")){
-                pseudoMethod.setReturnType(PseudoMethod.MethodType.BOOL_TYPE);
-            } else if (type.equals("int")){
-                pseudoMethod.setReturnType(PseudoMethod.MethodType.INT_TYPE);
-            } else if (type.equals("float")){
-                pseudoMethod.setReturnType(PseudoMethod.MethodType.FLOAT_TYPE);
-            } else if (type.equals("String")){
-                pseudoMethod.setReturnType(PseudoMethod.MethodType.STRING_TYPE);
+                if (type.equals("bool")){
+                    pseudoMethod.setReturnType(PseudoMethod.MethodType.BOOL_TYPE);
+                } else if (type.equals("int")){
+                    pseudoMethod.setReturnType(PseudoMethod.MethodType.INT_TYPE);
+                } else if (type.equals("float")){
+                    pseudoMethod.setReturnType(PseudoMethod.MethodType.FLOAT_TYPE);
+                } else if (type.equals("String")){
+                    pseudoMethod.setReturnType(PseudoMethod.MethodType.STRING_TYPE);
+                }
+
+            } else if (mthd.VOID() != null){
+                pseudoMethod.setReturnType(PseudoMethod.MethodType.VOID_TYPE);
             }
 
-        } else if (mthd.VOID() != null){
-            pseudoMethod.setReturnType(PseudoMethod.MethodType.VOID_TYPE);
-        }
+            this.pseudoMethod = pseudoMethod;
+            SymbolTableManager.getInstance().addPseudoMethod(mthdName, pseudoMethod);
 
-        this.pseudoMethod = pseudoMethod;
-        SymbolTableManager.getInstance().addPseudoMethod(mthdName, pseudoMethod);
 
-        Scope scope = ScopeCreator.getInstance().openScope();
 //        SymbolTableManager.getInstance().setParentScope(scope);
+        }
 
     }
 
     public void setPseudoMethod(MethodDeclarationContext mthd){
-        this.mthd = mthd;
-        this.pseudoMethod = SymbolTableManager.getInstance().getMethod(mthd.methodDeclarator().Identifier().getText());
-        MethodTracker.getInstance().reportEnterFunction(pseudoMethod);
+        if(mthd.methodDeclarator().Identifier() != null){
+            this.mthd = mthd;
+            this.pseudoMethod = SymbolTableManager.getInstance().getMethod(mthd.methodDeclarator().Identifier().getText());
+            Scope scope = ScopeCreator.getInstance().openScope();
+            pseudoMethod.setParentScope(scope);
+            MethodTracker.getInstance().reportEnterFunction(pseudoMethod);
+            MethodTracker.getInstance().getLatestFunction();
 
-        Traverse();
+            Traverse();
+        }
     }
 
     public void Traverse(){
+
+        ExecutionManager.getInstance().openFunctionExecution(pseudoMethod);
         ParseTreeWalker walker = new ParseTreeWalker();
         walker.walk(this, mthd);
     }

@@ -26,15 +26,17 @@ public class PseudoCodeCustomListener extends PseudoCodeBaseListener {
 
     @Override
     public void exitMethodDeclaration(PseudoCodeParser.MethodDeclarationContext ctx) {
-        PseudoMethod pseudoMethod = SymbolTableManager.getInstance().getMethod(ctx.methodDeclarator().Identifier().getText());
-        if(!pseudoMethod.hasValidReturns() && !pseudoMethod.getReturnType().equals(PseudoMethod.MethodType.VOID_TYPE)){
-            Token firstToken = ctx.getStart();
-            int lineNumber = firstToken.getLine();
-            PseudoErrorListener.reportCustomError(ErrorRepository.NO_RETURN_STATEMENT, "", ctx.methodDeclarator().Identifier().getText(), pseudoMethod.getReturnValue().getPrimitiveType(), lineNumber);
-        }
+        if(ctx.methodDeclarator().Identifier() != null){
+            PseudoMethod pseudoMethod = SymbolTableManager.getInstance().getMethod(ctx.methodDeclarator().Identifier().getText());
+            if(!pseudoMethod.hasValidReturns() && !pseudoMethod.getReturnType().equals(PseudoMethod.MethodType.VOID_TYPE)){
+                Token firstToken = ctx.getStart();
+                int lineNumber = firstToken.getLine();
+                PseudoErrorListener.reportCustomError(ErrorRepository.NO_RETURN_STATEMENT, "", ctx.methodDeclarator().Identifier().getText(), pseudoMethod.getReturnValue().getPrimitiveType(), lineNumber);
+            }
 
-        ScopeCreator.getInstance().closeScope();
-        MethodTracker.getInstance().reportEnterFunction(SymbolTableManager.getInstance().getMethod(ctx.methodDeclarator().Identifier().getText()));
+            ScopeCreator.getInstance().closeScope();
+//            MethodTracker.getInstance().reportEnterFunction(SymbolTableManager.getInstance().getMethod(ctx.methodDeclarator().Identifier().getText()));
+        }
     }
 
 

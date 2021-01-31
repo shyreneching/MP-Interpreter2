@@ -1,6 +1,7 @@
 package model.ErrorChecking;
 
 import model.Execution.ExecutionManager;
+import model.Execution.MethodTracker;
 import model.Item.PseudoMethod;
 import model.Item.PseudoValue;
 import model.PseudoCodeParser.*;
@@ -93,6 +94,7 @@ public class UndeclaredChecker implements IErrorChecker, ParseTreeListener {
 
         if(ExecutionManager.getInstance().isInFunctionExecution()) {
             PseudoMethod pseudoMethod = ExecutionManager.getInstance().getCurrentFunction();
+//            PseudoMethod pseudoMethod = MethodTracker.getInstance().getLatestFunction();
             pseudoValue = VariableSearcher.searchVariableInFunction(pseudoMethod, varExprCtx.primary().Identifier().getText());
         }
 

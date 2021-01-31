@@ -361,8 +361,8 @@ public class ParserUI extends Application implements NotificationListener {
 
     public void printToOutput(String output) {
         String toPrint = output;
-        System.out.println("I'm here!");
-        System.out.println("toPrint: " + toPrint);
+//        System.out.println("I'm here!");
+//        System.out.println("toPrint: " + toPrint);
 //        output_textArea.setEditable(false);
 //        output_textArea.setText(output);
         output_textArea.appendText(toPrint);
@@ -371,7 +371,7 @@ public class ParserUI extends Application implements NotificationListener {
 //            output_textArea.setText(toPrint);
 //        });
 
-        System.out.println("I supposedly printed!");
+//        System.out.println("I supposedly printed!");
     }
 
     public void notified(String notificationString, model.notifications.Parameters params){
