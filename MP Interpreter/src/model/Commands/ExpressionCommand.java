@@ -346,10 +346,10 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
                     return;
 
                 if (arrayValue.getPrimitiveType() == PseudoValue.PrimitiveType.STRING) {
-                    //this.modifiedExp = this.modifiedExp.replaceFirst(exprCtx.expression(0).getText() + "\\[([a-zA-Z0-9]*)]", "\"" + arrayMobiValue.getValue().toString() + "\"");
+                    //this.modifiedExp = this.modifiedExp.replaceFirst(exprCtx.expression(0).getText() + "\\[([a-zA-Z0-9]*)]", "\"" + arrayPseudoValue.getValue().toString() + "\"");
                     this.modifiedExp = this.modifiedExp.replace(exprCtx.getText(), "\"" + arrayValue.getValue().toString() + "\"");
                 } else {
-                    //this.modifiedExp = this.modifiedExp.replaceFirst(exprCtx.expression(0).getText() + "\\[([a-zA-Z0-9]*)]", arrayMobiValue.getValue().toString());
+                    //this.modifiedExp = this.modifiedExp.replaceFirst(exprCtx.expression(0).getText() + "\\[([a-zA-Z0-9]*)]", arrayPseudoValue.getValue().toString());
                     this.modifiedExp = this.modifiedExp.replace(exprCtx.getText(), arrayValue.getValue().toString());
                 }
 

@@ -25,7 +25,6 @@ public class AssignmentUtils {
         }
         else {
             System.out.println("AssignmentUtils: DID NOT FIND APPROPRIATE TYPE!!");
-            //Console.log(LogType.DEBUG, "MobiValue: DID NOT FIND APPROPRIATE TYPE!!");
         }
     }
 
@@ -83,14 +82,14 @@ public class AssignmentUtils {
 
             pseudoValue.setValue(finalValue + "");
         }
-        /*else if(baracoValue.getPrimitiveType() == BaracoValue.PrimitiveType.BOOL) {
+        /*else if(pseudoMethod.getPrimitiveType() == PseudoValue.PrimitiveType.BOOL) {
             int result = evaluationValue.intValue();
 
             if(result == 1) {
-                baracoValue.setValue(RecognizedKeywords.BOOLEAN_TRUE);
+                pseudoMethod.setValue(RecognizedKeywords.BOOLEAN_TRUE);
             }
             else {
-                baracoValue.setValue(RecognizedKeywords.BOOLEAN_FALSE);
+                pseudoMethod.setValue(RecognizedKeywords.BOOLEAN_FALSE);
             }
         }*/
     }

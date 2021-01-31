@@ -39,7 +39,6 @@ public class PseudoArray {
             //StatementControlOverseer.getInstance().setCurrentCatchClause(IAttemptCommand.CatchTypeEnum.NEGATIVE_ARRAY_SIZE);
 //            ExecutionManager.getInstance().setCurrentCatchType(IAttemptCommand.CatchTypeEnum.NEGATIVE_ARRAY_SIZE);
         }
-        //System.out.println(TAG + ": Mobi array initialized to size " +this.baracoValueArray.length);
     }
 
     public int getSize() {

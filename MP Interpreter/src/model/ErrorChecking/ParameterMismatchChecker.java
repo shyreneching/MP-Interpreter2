@@ -21,6 +21,16 @@ public class ParameterMismatchChecker implements IErrorChecker {
         this.lineNumber = argumentsCtx.getStart().getLine();
     }
 
+    public ParameterMismatchChecker(PseudoMethod pseudoMethod, ExpressionListContext argumentsCtx) {
+        this.pseudoMethod = pseudoMethod;
+
+        if(argumentsCtx.expressionList() != null) {
+            this.exprCtxList = argumentsCtx.expression();
+        }
+
+        this.lineNumber = argumentsCtx.getStart().getLine();
+    }
+
 
     @Override
     public void verify() {
