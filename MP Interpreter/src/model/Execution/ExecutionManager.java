@@ -31,6 +31,8 @@ public class ExecutionManager implements NotificationListener {
     private boolean aborted = false;
     private int currentCheckedLineNumber = -1;
 
+    private boolean isMain;
+
     public static ExecutionManager getInstance() {
         return sharedInstance;
     }
@@ -130,6 +132,14 @@ public class ExecutionManager implements NotificationListener {
 
     public boolean isInFunctionExecution() {
         return (this.activeExecutionAdder instanceof MethodExecutionAdder);
+    }
+
+    public boolean isInMain() {
+        return isMain;
+    }
+
+    public void setIsMain(boolean ismain){
+        isMain = ismain;
     }
 
     public PseudoMethod getCurrentFunction() {

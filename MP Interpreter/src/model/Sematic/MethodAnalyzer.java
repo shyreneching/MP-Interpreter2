@@ -71,7 +71,7 @@ public class MethodAnalyzer implements ParseTreeListener {
             this.pseudoMethod = SymbolTableManager.getInstance().getMethod(mthd.methodDeclarator().Identifier().getText());
             Scope scope = ScopeCreator.getInstance().openScope();
             pseudoMethod.setParentScope(scope);
-            MethodTracker.getInstance().reportEnterFunction(pseudoMethod);
+
 
 
             Traverse();

@@ -77,7 +77,7 @@ public class MethodCallCommand implements ICommand, ParseTreeListener {
     }
 
     private void verifyParameters() {
-        if(this.ctx.expression() == null || this.ctx == null) {
+        if(this.ctx == null || this.ctx.expression() == null ) {
             return;
         }
 

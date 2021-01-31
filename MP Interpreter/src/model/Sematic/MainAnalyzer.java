@@ -4,6 +4,7 @@ import model.Commands.MethodCallCommand;
 import model.ErrorChecking.ErrorRepository;
 import model.ErrorChecking.PseudoErrorListener;
 import model.Execution.ExecutionManager;
+import model.Execution.MethodTracker;
 import model.Item.PseudoMethod;
 import model.PseudoCodeParser.*;
 import model.SymbolTable.Scope.Scope;
@@ -21,17 +22,21 @@ public class MainAnalyzer implements ParseTreeListener {
 //        if(!ExecutionManager.getInstance().hasFoundEntryPoint()) {
 //            ExecutionManager.getInstance().reportFoundEntryPoint(ParserHandler.getInstance().getCurrentClassName());
 ////
-//            PseudoMethod pseudoMethod = new PseudoMethod();
-//            pseudoMethod.setMethodName("main");
-//            SymbolTableManager.getInstance().addPseudoMethod("main", pseudoMethod);
-            Scope scope = ScopeCreator.getInstance().openScope();
-            scope.setParent(scope);
-//            pseudoMethod.setParentScope(scope);
-            SymbolTableManager.setParentScope(scope);
-//            ExecutionManager.getInstance().openFunctionExecution(pseudoMethod);
 
-            ParseTreeWalker treeWalker = new ParseTreeWalker();
-            treeWalker.walk(this, ctx);
+//        MethodTracker.reset();
+//        PseudoMethod pseudoMethod = new PseudoMethod();
+//        pseudoMethod.setMethodName("main");
+//        SymbolTableManager.getInstance().addPseudoMethod("main", pseudoMethod);
+        Scope scope = ScopeCreator.getInstance().openScope();
+        scope.setParent(scope);
+//        pseudoMethod.setParentScope(scope);
+         SymbolTableManager.setParentScope(scope);
+//        ExecutionManager.getInstance().openFunctionExecution(pseudoMethod);
+//        ExecutionManager.getInstance().setIsMain(true);
+//        pseudoMethod.execute();
+//        MethodTracker.getInstance().reportEnterFunction(pseudoMethod);
+        ParseTreeWalker treeWalker = new ParseTreeWalker();
+        treeWalker.walk(this, ctx);
 
 //
 //        }

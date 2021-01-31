@@ -369,6 +369,8 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
                 pseudoValue =  pseudoMethod.getParameter(identifier);
             }
             else {
+                System.out.println("method------------->" + pseudoMethod.getMethodName());
+                System.out.println("method------------->" + pseudoMethod.getParentScope());
                 pseudoValue = ScopeCreator.searchVariableInLocalIterative(identifier, pseudoMethod.getParentScope());
             }
         }

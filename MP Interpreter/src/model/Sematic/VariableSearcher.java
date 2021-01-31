@@ -28,7 +28,9 @@ public class VariableSearcher {
 
     public static PseudoValue searchVariableInFunction(PseudoMethod pseudoMethod, String identifierString) {
         PseudoValue pseudoValue = null;
-
+//        if(MethodTracker.getInstance().getLatestFunction().getMethodName().equals("main")){
+//            pseudoValue = VariableSearcher.searchVariableInMain(SymbolTableManager.getInstance().getParentScope(), identifierString);
+//        }  else
         if(pseudoMethod.hasParameter(identifierString)) {
             pseudoValue = pseudoMethod.getParameter(identifierString);
         }
