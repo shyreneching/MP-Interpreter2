@@ -1,7 +1,9 @@
 package model.Sematic;
 
+import model.Commands.ExpressionCommand;
 import model.ErrorChecking.ErrorRepository;
 import model.ErrorChecking.PseudoErrorListener;
+import model.ErrorChecking.TypeChecker;
 import model.Item.PseudoArray;
 import model.Item.PseudoValue;
 import model.PseudoCodeParser.*;
@@ -12,6 +14,8 @@ import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 import org.antlr.v4.runtime.tree.TerminalNode;
+
+import java.math.BigDecimal;
 
 public class LocalVariableAnalyzer implements ParseTreeListener {
     private boolean isFinal = false;
@@ -47,11 +51,29 @@ public class LocalVariableAnalyzer implements ParseTreeListener {
             PseudoValue pseudoValue = null;
             if(varCtx.variableInitializer() != null){
                 if(!this.type.equals("array")){
-                    ExpressionContext value = varCtx.variableInitializer().expression();
 
-                    // Evaluate value
+                    pseudoValue = PseudoValue.createEmptyVariable(type);
+                    ExpressionCommand expressionCommand = new ExpressionCommand(varCtx.variableInitializer().expression());
+                    expressionCommand.execute();
+                    Object value = null;
+                    TypeChecker typeChecker = new TypeChecker(pseudoValue,varCtx.variableInitializer().expression());
+                    typeChecker.verify();
+                    if(this.type.equals("bool")){
+                        if(expressionCommand.getValueResult().compareTo(new BigDecimal("0")) == 0){
+                            value = false;
+                        } else {
+                            value = true;
+                        }
+                    } else if(this.type.equals("int")){
+                        value = expressionCommand.getValueResult().intValue();
+                    } else if(this.type.equals("float")){
+                        value = expressionCommand.getValueResult().floatValue();
+                    } else if(this.type.equals("String")){
+                        value = expressionCommand.getStringResult();
+                    }
 
-                    pseudoValue = new PseudoValue(value, type);
+
+                    pseudoValue.setValue(value.toString());
                     if(isFinal){
                         pseudoValue.makeConst();
                     }
@@ -63,9 +85,11 @@ public class LocalVariableAnalyzer implements ParseTreeListener {
 
                         PseudoErrorListener.reportCustomError(ErrorRepository.TYPE_MISMATCH, "", lineNumber);
                     }
-
+                    ExpressionCommand expressionCommand = new ExpressionCommand(varCtx.variableInitializer().arrayInitializer().expression());
+                    expressionCommand.execute();
                     // evaluate varCtx.variableInitializer().arrayInitializer().expression();)
-//                    int arraysize = varCtx.variableInitializer().arrayInitializer().expression();
+                    TypeChecker.isNumeric(varCtx.variableInitializer().arrayInitializer().expression().getText());
+                    int arraysize = expressionCommand.getValueResult().intValue();
 
 
                     varCtx.variableInitializer().arrayInitializer().expression();
@@ -73,7 +97,7 @@ public class LocalVariableAnalyzer implements ParseTreeListener {
 //                    if(!(arraysize instanceof Integer)){
 //                        PseudoErrorListener.reportCustomError(ErrorRepository.DEFAULT, "Invalid array inatialization.", lineNumber);
 //                    }
-//                    pseudoArray.initializeSize(arraysize);
+                    pseudoArray.initializeSize(arraysize);
                     if(isFinal){
                         pseudoArray.markFinal();
                     }
