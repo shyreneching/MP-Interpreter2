@@ -58,9 +58,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ParserUI extends Application implements NotificationListener {
-
     private CodeArea codeArea;
-    private TextArea output_textArea;
+    private TextArea output_textArea = new TextArea();
 
     private static final String[] KEYWORDS = new String[] {
             "abstract", "assert", "bool", "break", "byte",
@@ -104,6 +103,7 @@ public class ParserUI extends Application implements NotificationListener {
     @Override
     public void start(Stage primaryStage) throws IOException {
 
+        UIHolder.initialize(this);
         GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
         int width = gd.getDisplayMode().getWidth();
         int height = gd.getDisplayMode().getHeight();
@@ -199,41 +199,7 @@ public class ParserUI extends Application implements NotificationListener {
 
         parse_button.setOnMouseClicked(e -> {
             try {
-//            CharStream input = CharStreams.fromFileName("input/test2.java");
-                CharStream input = CharStreams.fromStream(new ByteArrayInputStream(codeArea.getText().getBytes(StandardCharsets.UTF_8)));
-                PseudoCodeLexer lexer = new PseudoCodeLexer(input);
-                PseudoCodeParser parser = new PseudoCodeParser(new CommonTokenStream(lexer));
-                parser.addParseListener(new PseudoCodeBaseListener());
-                lexer.removeErrorListeners();
-                parser.removeErrorListeners();
-                lexer.addErrorListener(ErrorListener.INSTANCE);
-                parser.addErrorListener(ErrorListener.INSTANCE);
-                parser.getInterpreter().setPredictionMode(PredictionMode.LL_EXACT_AMBIG_DETECTION);
-
-//            for (PredictionMode c : PredictionMode.values())
-////                System.out.println(c);
-//            parser.setErrorHandler(new ErrorRecovery());
-                parser.addErrorListener(new ErrorListener());
-
-//                parser.compilationUnit();
-
-                ParserRuleContext parserRuleContext = parser.compilationUnit();
-                ParseTreeWalker treeWalker = new ParseTreeWalker();
-                treeWalker.walk(new PseudoMethodWalker(), parserRuleContext);
-                treeWalker.walk(new PseudoCodeCustomListener(), parserRuleContext);
-
-                System.out.println(ErrorListener.INSTANCE.toString());
-
-                System.out.println(PseudoErrorListener.INSTANCE.toString());
-//            var outputname = "input/parser-output.txt";
-//            OutputStream outStream = new FileOutputStream(outputname);
-////            for (String l: result){
-////                outStream.write(l.getBytes());
-////                outStream.write("\r\n".getBytes());
-////            }
-//            outStream.write(ErrorListener.INSTANCE.toString().getBytes());
-//            outStream.close();
-
+                //printToOutput("I hate this");
                 ExecutionManager.reset();
                 ScopeCreator.reset();
                 SymbolTableManager.reset();
@@ -252,20 +218,63 @@ public class ParserUI extends Application implements NotificationListener {
                     System.out.println("Fix identified errors before executing!");
                 }
 
+                //printToOutput("I hate this 2");
+
+//            CharStream input = CharStreams.fromFileName("input/test2.java");
+                CharStream input = CharStreams.fromStream(new ByteArrayInputStream(codeArea.getText().getBytes(StandardCharsets.UTF_8)));
+                PseudoCodeLexer lexer = new PseudoCodeLexer(input);
+                PseudoCodeParser parser = new PseudoCodeParser(new CommonTokenStream(lexer));
+                parser.addParseListener(new PseudoCodeBaseListener());
+                lexer.removeErrorListeners();
+                parser.removeErrorListeners();
+                lexer.addErrorListener(ErrorListener.INSTANCE);
+                parser.addErrorListener(ErrorListener.INSTANCE);
+                parser.getInterpreter().setPredictionMode(PredictionMode.LL_EXACT_AMBIG_DETECTION);
+//            for (PredictionMode c : PredictionMode.values())
+////                System.out.println(c);
+//            parser.setErrorHandler(new ErrorRecovery());
+                parser.addErrorListener(new ErrorListener());
+
+//                parser.compilationUnit();
+
+                ParserRuleContext parserRuleContext = parser.compilationUnit();
+                ParseTreeWalker treeWalker = new ParseTreeWalker();
+                treeWalker.walk(new PseudoMethodWalker(), parserRuleContext);
+                treeWalker.walk(new PseudoCodeCustomListener(), parserRuleContext);
+
+                //printToOutput("What");
+
+                System.out.println(ErrorListener.INSTANCE.toString());
+
+                System.out.println(PseudoErrorListener.INSTANCE.toString());
+//            var outputname = "input/parser-output.txt";
+//            OutputStream outStream = new FileOutputStream(outputname);
+////            for (String l: result){
+////                outStream.write(l.getBytes());
+////                outStream.write("\r\n".getBytes());
+////            }
+//            outStream.write(ErrorListener.INSTANCE.toString().getBytes());
+//            outStream.close();
+
                 ArrayList<ErrorMessage> combinedErrorsList = new ArrayList<ErrorMessage>();
 
-                combinedErrorsList.addAll(PseudoErrorListener.getInstance().getSemanticErrors());
                 combinedErrorsList.addAll(ErrorListener.INSTANCE.getSyntaxErrors());
+                combinedErrorsList.addAll(PseudoErrorListener.getInstance().getSemanticErrors());
 
                 combinedErrorsList.sort(Comparator.comparingInt(ErrorMessage::getLineNumber));
+                System.out.println(combinedErrorsList.size());
 
-                String output = "";
+                if (combinedErrorsList.size() > 0){
+                    String output = "";
 
-                for (ErrorMessage error : combinedErrorsList){
-                    output = output + error.getErrorMessage() + "\n";
+                    for (ErrorMessage error : combinedErrorsList){
+                        output = output + error.getErrorMessage() + "\n";
+                    }
+
+                    printToOutput(output);
+                    System.out.println("I printed!");
                 }
 
-                output_textArea.replaceText(0,0,output);
                 output_textArea.setMouseTransparent(false);
                 ErrorListener.INSTANCE.resetErrors();
                 PseudoErrorListener.getInstance().resetSemanticErrorsList();
@@ -275,6 +284,11 @@ public class ParserUI extends Application implements NotificationListener {
 //            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
+
+//        parse_button.setOnMouseClicked( event -> {
+//            resetOutput();
+//            test();
+//        });
 
         Group root = new Group(anchorPane);
 
@@ -343,6 +357,21 @@ public class ParserUI extends Application implements NotificationListener {
         output_textArea.setText("");
     }
 
+    public void printToOutput(String output) {
+        String toPrint = output;
+        System.out.println("I'm here!");
+        System.out.println("toPrint: " + toPrint);
+//        output_textArea.setEditable(false);
+//        output_textArea.setText(output);
+        output_textArea.appendText(toPrint);
+
+//        Platform.runLater(() -> {
+//            output_textArea.setText(toPrint);
+//        });
+
+        System.out.println("I supposedly printed!");
+    }
+
     public void notified(String notificationString, model.notifications.Parameters params){
         if(notificationString == Notifications.ON_FOUND_SCAN_STATEMENT) {
             TextInputDialog dialog = new TextInputDialog();
@@ -354,5 +383,12 @@ public class ParserUI extends Application implements NotificationListener {
             dialog.getEditor().setText("");
             dialog.setContentText(params.getStringExtra("MESSAGE_DISPLAY_KEY", "Input: "));
         }
+    }
+
+    public void test (){
+        printToOutput("Hi");
+        printToOutput("\n");
+        printToOutput("Hello");
+        printToOutput("\n");
     }
 }
