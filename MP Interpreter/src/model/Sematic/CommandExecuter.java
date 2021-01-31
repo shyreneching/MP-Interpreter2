@@ -11,7 +11,6 @@ public class CommandExecuter {
 
         StatementControlOverseer statementControl = StatementControlOverseer.getInstance();
 
-        //add to conditional controlled command
         if(statementControl.isInConditionalCommand()) {
             IConditionalCommand conditionalCommand = (IConditionalCommand) statementControl.getActiveControlledCommand();
 
@@ -29,6 +28,7 @@ public class CommandExecuter {
         }
         else {
             ExecutionManager.getInstance().addCommand(command);
+            //System.out.println("executionList number: " + ExecutionManager.getInstance().getExecutionList().size());
         }
 
     }

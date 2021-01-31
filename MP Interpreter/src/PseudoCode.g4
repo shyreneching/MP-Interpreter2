@@ -108,6 +108,7 @@ statement
     |   doStatement
     |   forStatement
     |   printInvocation ';'
+    |   printInvocation {notifyErrorListeners("lacking ';' at the end of line");}
 //    |   'if' parExpression statement ('else' statement)?
 //    |   'for' '(' forControl ')' statement
 //    |   'while' parExpression statement
@@ -123,9 +124,11 @@ statement
     |   'continue' ';'
     |   ';'
     |   statementExpression ';'
+    |   statementExpression {notifyErrorListeners("lacking ';' at the end of line");}
 //    |   Identifier ':' statement
 //    |   PRINT '(' expression ')' ';'
-    |   scanInvocation
+    |   scanInvocation ';'
+    |   scanInvocation {notifyErrorListeners("lacking ';' at the end of line");}
     ;
 
 forStatement
@@ -173,8 +176,8 @@ printInvocation
     ;
 
 scanInvocation
-    :   SCAN '(' expression ',' Identifier')' ';'
-    |   SCAN '(' expression ',' Identifier '[' expression ']' ')' ';'
+    :   SCAN '(' expression ',' Identifier')'
+    |   SCAN '(' expression ',' Identifier '[' expression ']' ')'
     ;
 
 // EXPRESSIONS

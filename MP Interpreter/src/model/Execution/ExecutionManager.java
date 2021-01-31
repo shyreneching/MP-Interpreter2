@@ -177,4 +177,8 @@ public class ExecutionManager implements NotificationListener {
         }
     }
 
+    //temp for checking list
+//    public ArrayList<ICommand> getExecutionList() {
+//        return executionList;
+//    }
 }
