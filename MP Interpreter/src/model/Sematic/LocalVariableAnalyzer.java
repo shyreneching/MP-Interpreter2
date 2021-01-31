@@ -13,6 +13,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.math.BigDecimal;
@@ -32,6 +33,8 @@ public class LocalVariableAnalyzer implements ParseTreeListener {
         } else {
             this.type = "array";
         }
+        ParseTreeWalker walker = new ParseTreeWalker();
+        walker.walk(this, localVariableDeclaration);
     }
 
     @Override
@@ -46,34 +49,41 @@ public class LocalVariableAnalyzer implements ParseTreeListener {
 
     @Override
     public void enterEveryRule(ParserRuleContext ctx) {
+
         if (ctx instanceof VariableDeclaratorContext) {
             VariableDeclaratorContext varCtx = (VariableDeclaratorContext) ctx;
             PseudoValue pseudoValue = null;
             if(varCtx.variableInitializer() != null){
                 if(!this.type.equals("array")){
+//                    System.out.println("HELOOOOOOOOOOOOOOOO");
+//                    System.out.println("type: "+ type);
 
-                    pseudoValue = PseudoValue.createEmptyVariable(type);
+//                    pseudoValue = PseudoValue.createEmptyVariable(type);
                     ExpressionCommand expressionCommand = new ExpressionCommand(varCtx.variableInitializer().expression());
                     expressionCommand.execute();
                     Object value = null;
-                    TypeChecker typeChecker = new TypeChecker(pseudoValue,varCtx.variableInitializer().expression());
-                    typeChecker.verify();
+
                     if(this.type.equals("bool")){
                         if(expressionCommand.getValueResult().compareTo(new BigDecimal("0")) == 0){
                             value = false;
                         } else {
                             value = true;
                         }
+                        pseudoValue = new PseudoValue(value, type);
                     } else if(this.type.equals("int")){
                         value = expressionCommand.getValueResult().intValue();
+                        pseudoValue = new PseudoValue(value, type);
                     } else if(this.type.equals("float")){
                         value = expressionCommand.getValueResult().floatValue();
+                        pseudoValue = new PseudoValue(value, type);
                     } else if(this.type.equals("String")){
                         value = expressionCommand.getStringResult();
+                        pseudoValue = new PseudoValue(value, type);
                     }
 
 
-                    pseudoValue.setValue(value.toString());
+                    TypeChecker typeChecker = new TypeChecker(pseudoValue,varCtx.variableInitializer().expression());
+                    typeChecker.verify();
                     if(isFinal){
                         pseudoValue.makeConst();
                     }
@@ -105,6 +115,7 @@ public class LocalVariableAnalyzer implements ParseTreeListener {
             } else {
                 pseudoValue = PseudoValue.createEmptyVariable(type);
             }
+            System.out.println(pseudoValue);
             Scope scope = ScopeCreator.getInstance().getActiveScope();
             if(pseudoValue != null){
                 scope.addPseudoValue(varCtx.Identifier().getText(), pseudoValue);

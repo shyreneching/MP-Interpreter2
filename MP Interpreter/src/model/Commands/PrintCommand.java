@@ -40,11 +40,11 @@ public class PrintCommand implements ICommand, ParseTreeListener {
     public void execute() {
         //print in IDE statement
 
-        System.out.println("I'm executing!");
+//        System.out.println("I'm executing!");
         ParseTreeWalker parseTreeWalker = new ParseTreeWalker();
         parseTreeWalker.walk(this, this.statement);
 
-        System.out.println("Printstatement: " + printstatement);
+//        System.out.println("Printstatement: " + printstatement);
 //        if(printstatement.contains('"' + "")){
 //            System.out.println("I'm entering this if statement");
 //            String[] temp = printstatement.split("\"");
@@ -66,7 +66,7 @@ public class PrintCommand implements ICommand, ParseTreeListener {
 
     @Override
     public void enterEveryRule(ParserRuleContext context) {
-        System.out.println("Entering rule!");
+//        System.out.println("Entering rule!");
 
         if (context instanceof ExpressionContext && !evaluated) {
 

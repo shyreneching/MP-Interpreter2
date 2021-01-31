@@ -3,6 +3,7 @@ package model.Sematic;
 import model.ErrorChecking.ErrorRepository;
 import model.ErrorChecking.MultipleMethodDeclarationChecker;
 import model.ErrorChecking.PseudoErrorListener;
+import model.Execution.MethodTracker;
 import model.Item.PseudoMethod;
 import model.Item.PseudoValue;
 import model.PseudoCodeParser.*;
@@ -57,13 +58,14 @@ public class MethodAnalyzer implements ParseTreeListener {
         SymbolTableManager.getInstance().addPseudoMethod(mthdName, pseudoMethod);
 
         Scope scope = ScopeCreator.getInstance().openScope();
-        SymbolTableManager.getInstance().setParentScope(scope);
+//        SymbolTableManager.getInstance().setParentScope(scope);
 
     }
 
     public void setPseudoMethod(MethodDeclarationContext mthd){
         this.mthd = mthd;
         this.pseudoMethod = SymbolTableManager.getInstance().getMethod(mthd.methodDeclarator().Identifier().getText());
+        MethodTracker.getInstance().reportEnterFunction(pseudoMethod);
 
         Traverse();
     }

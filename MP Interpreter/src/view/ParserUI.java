@@ -274,7 +274,7 @@ public class ParserUI extends Application implements NotificationListener {
                     }
 
                     printToOutput(output);
-                    System.out.println("I printed!");
+//                    System.out.println("I printed!");
                 }
 
                 output_textArea.setMouseTransparent(false);
