@@ -38,7 +38,7 @@ public class VariableSearcher {
 
         return pseudoValue;
     }
-    
+
     public static PseudoValue searchVariableInMain(Scope scope, String identifierString) {
         PseudoValue pseudoValue = null;
 
