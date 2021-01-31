@@ -49,12 +49,30 @@ public class PseudoValue {
                 return PrimitiveType.FLOAT;
             case "double":
                 return PrimitiveType.DOUBLE;
-            case "String":
+            case "string":
                 return PrimitiveType.STRING;
 //            case "array":
 //                return PrimitiveType.ARRAY;
             default:
                 return PrimitiveType.NOT_YET_IDENTIFIED;
+        }
+
+    }
+
+    public static String convert(PrimitiveType primitiveType){
+        switch (primitiveType){
+            case BOOLEAN:
+                return "bool";
+            case INT:
+                return "int";
+            case FLOAT:
+                return "float";
+            case STRING:
+                return "String";
+            case ARRAY:
+                return "array";
+            default:
+                return "";
         }
 
     }

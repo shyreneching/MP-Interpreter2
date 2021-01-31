@@ -72,4 +72,18 @@ public class ConstChecker implements IErrorChecker, ParseTreeListener {
             PseudoErrorListener.reportCustomError(ErrorRepository.CONST_REASSIGNMENT, "", varExprCtx.getText(), this.lineNumber);
         }
     }
+
+    public static void verifyVariableOrConst(TerminalNode node) {
+        PseudoValue pseudoValue = null;
+
+        if(ExecutionManager.getInstance().isInFunctionExecution()) {
+            PseudoMethod pseudoMethod = ExecutionManager.getInstance().getCurrentFunction();
+            pseudoValue = VariableSearcher.searchVariableInFunction(pseudoMethod, node.getText());
+        }
+
+
+        if(pseudoValue != null && pseudoValue.isConst()) {
+            PseudoErrorListener.reportCustomError(ErrorRepository.CONST_REASSIGNMENT, "", node.getText(), node.getSymbol().getLine());
+        }
+    }
 }

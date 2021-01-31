@@ -102,6 +102,20 @@ public class UndeclaredChecker implements IErrorChecker, ParseTreeListener {
         }
     }
 
+    public static void verifyVariableOrConst(TerminalNode node) {
+        PseudoValue pseudoValue = null;
+
+        if(ExecutionManager.getInstance().isInFunctionExecution()) {
+            PseudoMethod pseudoMethod = ExecutionManager.getInstance().getCurrentFunction();
+            pseudoValue = VariableSearcher.searchVariableInFunction(pseudoMethod, node.getText());
+        }
+
+        //after second pass, we conclude if it cannot be found already
+        if(pseudoValue == null) {
+            PseudoErrorListener.reportCustomError(ErrorRepository.UNDECLARED_VARIABLE, "", node.getText(), node.getSymbol().getLine());
+        }
+    }
+
     /*
      * Verifies a var or const identifier from a scan statement since scan grammar is different.
      */
