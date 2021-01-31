@@ -12,8 +12,8 @@ public class PseudoValue {
 //        LONG,
         FLOAT,
         DOUBLE,
-        STRING
-//        ARRAY
+        STRING,
+        ARRAY
     }
 
     private Object value;
