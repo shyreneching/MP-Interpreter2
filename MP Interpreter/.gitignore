@@ -4,7 +4,5 @@
 /.idea/
 /.idea/*
 
-.out/*
-/.out/
-/.out/*
 
+/MP Interpreter/out/
