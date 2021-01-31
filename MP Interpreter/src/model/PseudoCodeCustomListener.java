@@ -5,6 +5,7 @@ import model.ErrorChecking.PseudoErrorListener;
 import model.Item.PseudoMethod;
 import model.Sematic.MainAnalyzer;
 import model.Sematic.MethodAnalyzer;
+import model.SymbolTable.Scope.ScopeCreator;
 import model.SymbolTable.SymbolTableManager;
 import org.antlr.v4.runtime.Token;
 
@@ -30,6 +31,8 @@ public class PseudoCodeCustomListener extends PseudoCodeBaseListener {
             int lineNumber = firstToken.getLine();
             PseudoErrorListener.reportCustomError(ErrorRepository.NO_RETURN_STATEMENT, "", ctx.methodDeclarator().Identifier().getText(), pseudoMethod.getReturnValue().getPrimitiveType(), lineNumber);
         }
+
+        ScopeCreator.getInstance().closeScope();
     }
 
 

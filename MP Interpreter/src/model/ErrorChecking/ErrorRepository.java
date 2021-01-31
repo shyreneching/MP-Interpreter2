@@ -49,7 +49,7 @@ public class ErrorRepository {
         this.errorMessageDictionary.put(INVALID_INDEX_ASSIGN, "Invalid index in array assignment at line %d.");
         this.errorMessageDictionary.put(NO_RETURN_STATEMENT, "No return statement in function '%s' looking for return type '%s' at line %d.");
         this.errorMessageDictionary.put(NOT_A_STATEMENT, "%s is not a statement at line %d.");
-        this.errorMessageDictionary.put(DEFAULT, "  at line %d.");
+        this.errorMessageDictionary.put(DEFAULT, "  at line %d");
     }
 
     public static String getErrorMessage(int errorCode) {
