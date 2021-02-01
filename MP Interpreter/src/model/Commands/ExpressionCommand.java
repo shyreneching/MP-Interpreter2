@@ -114,7 +114,8 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
 
                 e.setVariable("T", "true");
                 e.setVariable("F", "false");
-
+                System.out.println("ExpressionCommand - modifiedExp: " + this.modifiedExp);
+                System.out.println("ExpressionCommand - valueResult: " + e.eval());
                 this.valueResult = e.eval();
                 isNumeric = true;
             }else if (this.exprCtx.expression().size() != 0 && !isArrayElement(exprCtx) && !isFunctionCall(exprCtx)) {

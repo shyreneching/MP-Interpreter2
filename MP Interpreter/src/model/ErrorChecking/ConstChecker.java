@@ -65,6 +65,8 @@ public class ConstChecker implements IErrorChecker, ParseTreeListener {
         if(ExecutionManager.getInstance().isInFunctionExecution()) {
             PseudoMethod pseudoMethod = ExecutionManager.getInstance().getCurrentFunction();
             pseudoValue = VariableSearcher.searchVariableInFunction(pseudoMethod, varExprCtx.primary().Identifier().getText());
+        }else{
+            pseudoValue = VariableSearcher.searchVariableInMain(SymbolTableManager.getInstance().getParentScope(), varExprCtx.primary().Identifier().getText());
         }
 
 
@@ -79,6 +81,8 @@ public class ConstChecker implements IErrorChecker, ParseTreeListener {
         if(ExecutionManager.getInstance().isInFunctionExecution()) {
             PseudoMethod pseudoMethod = ExecutionManager.getInstance().getCurrentFunction();
             pseudoValue = VariableSearcher.searchVariableInFunction(pseudoMethod, node.getText());
+        }else{
+            pseudoValue = VariableSearcher.searchVariableInMain(SymbolTableManager.getInstance().getParentScope(), node.getText());
         }
 
 
