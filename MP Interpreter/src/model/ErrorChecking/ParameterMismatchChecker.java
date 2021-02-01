@@ -34,6 +34,8 @@ public class ParameterMismatchChecker implements IErrorChecker {
 
     @Override
     public void verify() {
+        System.out.println("paramteter mismatch checker " + pseudoMethod.getMethodName());
+        System.out.println("paramteter mismatch checker " + pseudoMethod.getParameterValueSize());
         if(this.pseudoMethod == null) {
             return;
         }

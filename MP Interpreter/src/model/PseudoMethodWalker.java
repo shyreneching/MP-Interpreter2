@@ -8,5 +8,6 @@ public class PseudoMethodWalker extends PseudoCodeBaseListener {
     public void enterMethodDeclaration(PseudoCodeParser.MethodDeclarationContext ctx) {
         MethodAnalyzer methodAnalyzer = new MethodAnalyzer();
         methodAnalyzer.analyze(ctx);
+        System.out.println(ctx.methodDeclarator().Identifier());
     }
 }

@@ -149,6 +149,10 @@ public class PseudoMethod implements IControlledCommand {
         typeChecker.verify();
     }
 
+    public LinkedHashMap<String, PseudoValue> getParameterValues() {
+        return parameterValues;
+    }
+
     public void addParameter(String identifierString, PseudoValue pseudoValue) {
         this.parameterValues.put(identifierString, pseudoValue);
         System.out.println(this.methodName + " added an empty parameter " +identifierString+ " type " + pseudoValue.getPrimitiveType());

@@ -58,7 +58,7 @@ public class PrintCommand implements ICommand, ParseTreeListener {
 //        }
 
         String s = this.printstatement.replace("\\n", "\n");
-        UIHolder.getInstance().getParserUI().printToOutput(s + "\n");
+        UIHolder.getInstance().getParserUI().printToOutput(s);
 
         printstatement = "";
         evaluated = false;

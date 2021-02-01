@@ -18,6 +18,8 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
+import java.util.LinkedHashMap;
+
 public class MethodAnalyzer implements ParseTreeListener {
 
     private MethodDeclarationContext mthd;
@@ -55,10 +57,12 @@ public class MethodAnalyzer implements ParseTreeListener {
             } else if (mthd.VOID() != null){
                 pseudoMethod.setReturnType(PseudoMethod.MethodType.VOID_TYPE);
             }
+            Scope scope = ScopeCreator.getInstance().openScope();
+            pseudoMethod.setParentScope(scope);
 
             this.pseudoMethod = pseudoMethod;
             SymbolTableManager.getInstance().addPseudoMethod(mthdName, pseudoMethod);
-
+            addParameter(mthd);
 
 //        SymbolTableManager.getInstance().setParentScope(scope);
         }
@@ -72,6 +76,10 @@ public class MethodAnalyzer implements ParseTreeListener {
             Scope scope = ScopeCreator.getInstance().openScope();
             pseudoMethod.setParentScope(scope);
 
+//            LinkedHashMap<String, PseudoValue> mthdParams =pseudoMethod.getParameterValues();
+//            for (String i : mthdParams.keySet()){
+//                scope.addPseudoValue(i, mthdParams.get(i));
+//            }
 
 
             Traverse();
@@ -98,12 +106,7 @@ public class MethodAnalyzer implements ParseTreeListener {
     @Override
     public void enterEveryRule(ParserRuleContext ctx) {
         if (ctx instanceof FormalParameterContext) { // check the params
-            FormalParameterContext paramsCtx = (FormalParameterContext) ctx;
-
-            if (paramsCtx.Identifier() != null) {
-                ParameterAnalyzer parameterAnalyzer = new ParameterAnalyzer(pseudoMethod);
-                parameterAnalyzer.analyze(paramsCtx);
-            }
+            
         } else if(ctx instanceof BlockContext){
             BlockContext blockCtx = ((BlockContext) ctx);
 
@@ -128,6 +131,20 @@ public class MethodAnalyzer implements ParseTreeListener {
 
     @Override
     public void exitEveryRule(ParserRuleContext parserRuleContext) {
+
+    }
+
+    public void addParameter(MethodDeclarationContext method) {
+        FormalParametersContext parameterlist =  method.methodDeclarator().formalParameters();
+        for(FormalParameterContext paramsCtx: parameterlist.formalParameter()){
+            System.out.println("Should be adding parameter");
+            if (paramsCtx.Identifier() != null) {
+                ParameterAnalyzer parameterAnalyzer = new ParameterAnalyzer(pseudoMethod);
+                parameterAnalyzer.analyze(paramsCtx);
+            }
+        }
+
+
 
     }
 }
