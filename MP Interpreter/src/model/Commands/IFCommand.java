@@ -32,6 +32,7 @@ public class IFCommand implements IConditionalCommand  {
 
     @Override
     public void execute() {
+        System.out.println("I'm IF. I'm Executing!");
         this.identifyVariables();
 
         ExecutionMonitor executionMonitor = ExecutionManager.getInstance().getExecutionMonitor();
@@ -40,6 +41,7 @@ public class IFCommand implements IConditionalCommand  {
             if (evaluateCondition(this.conditionalExpr)) {
                 for (ICommand command : this.positivestatements) {
                     executionMonitor.tryExecution();
+                    System.out.println("I'm command in IF. I'm Executing!");
                     command.execute();
 
                     LocalVarTracker.getInstance().populateLocalVars(command);
@@ -114,10 +116,15 @@ public class IFCommand implements IConditionalCommand  {
     }
 
     private void identifyVariables() {
-        IdentifierMapper identifierMapper = new IdentifierMapper(this.conditionalExpr.getText(), MethodTracker.getInstance().getLatestFunction());
-        identifierMapper.analyze(this.conditionalExpr);
+        if(MethodTracker.getInstance().isInsideFunction()) {
+            IdentifierMapper identifierMapper = new IdentifierMapper(this.conditionalExpr.getText(), MethodTracker.getInstance().getLatestFunction());
+            identifierMapper.analyze(this.conditionalExpr);
 
-        this.modifiedConditionExpr = identifierMapper.getModifiedExp();
+            this.modifiedConditionExpr = identifierMapper.getModifiedExp();
+        } else {
+            this.modifiedConditionExpr = this.conditionalExpr.getText();
+        }
+
     }
 
     public static boolean evaluateCondition(ExpressionContext expressionContext) {

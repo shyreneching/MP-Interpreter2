@@ -46,7 +46,7 @@ public class StatementExpressionAnalyzer {
 //            int lineNumber = firstToken.getLine();
 //            PseudoErrorListener.reportCustomError(ErrorRepository.UNDECLARED_VARIABLE, "", assignment.Identifier().getText(), lineNumber);
 //        }
-        System.out.println("hello");
+
         AssignmentCommand assignmentCommand;
         if(assignment.expression(1) != null){
             assignmentCommand = new AssignmentCommand(assignment.Identifier(), assignment.expression(1), assignment.expression(0));

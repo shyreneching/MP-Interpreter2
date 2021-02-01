@@ -45,8 +45,8 @@ public class ParameterAnalyzer implements ParseTreeListener {
             FormalParameterContext parameterCtx = (FormalParameterContext) ctx;
             String type = parameterCtx.result().unannType().getText();
 
-            System.out.println("pseudo method parameter added: " + pseudoMethod.getParentScope());
-            System.out.println("pseudo method parameter added: " + type);
+//            System.out.println("pseudo method parameter added: " + pseudoMethod.getParentScope());
+//            System.out.println("pseudo method parameter added: " + type);
 
             if (pseudoMethod.hasParameter(parameterCtx.Identifier().getText())) {
                 PseudoErrorListener.reportCustomError(ErrorRepository.DEFAULT, "parameter already exist", ctx.getStart().getLine());

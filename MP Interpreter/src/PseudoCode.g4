@@ -91,6 +91,7 @@ block
 blockStatement
     :   localVariableDeclarationStatement
     |   statement
+//    |   expression
     ;
 
 localVariableDeclarationStatement

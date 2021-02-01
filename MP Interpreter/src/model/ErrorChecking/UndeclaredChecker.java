@@ -71,8 +71,8 @@ public class UndeclaredChecker implements IErrorChecker, ParseTreeListener {
     }
 
     private void verifyFunctionCall(ExpressionContext funcExprCtx) {
-
-        if(funcExprCtx.expression(0) == null) {
+        System.out.println("ExpressionCommand - evaluating function : " +exprCtx.getText());
+        if(funcExprCtx.Identifier() == null) {
             return;
         }
 
@@ -99,11 +99,11 @@ public class UndeclaredChecker implements IErrorChecker, ParseTreeListener {
             pseudoValue = VariableSearcher.searchVariableInFunction(pseudoMethod, varExprCtx.primary().Identifier().getText());
         } else{
 
-            System.out.println("Searching in Main");
+//            System.out.println("Undeclared Checker - Searching in Main");
 
             pseudoValue = VariableSearcher.searchVariableInMain(SymbolTableManager.getInstance().getParentScope(), varExprCtx.primary().Identifier().getText());
         }
-        System.out.println("pseudoValue " + pseudoValue);
+        System.out.println("Undeclared Checker - pseudoValue " + pseudoValue.getValue());
         if(pseudoValue == null) {
             PseudoErrorListener.reportCustomError(ErrorRepository.UNDECLARED_VARIABLE, "", varExprCtx.getText(), this.lineNumber);
         }

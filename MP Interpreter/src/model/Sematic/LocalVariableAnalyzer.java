@@ -60,6 +60,7 @@ public class LocalVariableAnalyzer implements ParseTreeListener {
 //                    System.out.println("type: "+ type);
 
 //                    pseudoValue = PseudoValue.createEmptyVariable(type);
+                    System.out.println("Local Variable Analyzer - expr: " +varCtx.variableInitializer().expression().getText());
                     ExpressionCommand expressionCommand = new ExpressionCommand(varCtx.variableInitializer().expression());
                     expressionCommand.execute();
                     Object value = null;
@@ -82,7 +83,7 @@ public class LocalVariableAnalyzer implements ParseTreeListener {
                         pseudoValue = new PseudoValue(value, type);
                     }
 
-
+                    System.out.println("LocalVariableAnalyzer - Value: "+ value);
                     TypeChecker typeChecker = new TypeChecker(pseudoValue,varCtx.variableInitializer().expression());
                     typeChecker.verify();
                     if(isFinal){

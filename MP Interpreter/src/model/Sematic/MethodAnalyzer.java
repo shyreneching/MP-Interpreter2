@@ -106,7 +106,7 @@ public class MethodAnalyzer implements ParseTreeListener {
     @Override
     public void enterEveryRule(ParserRuleContext ctx) {
         if (ctx instanceof FormalParameterContext) { // check the params
-            
+
         } else if(ctx instanceof BlockContext){
             BlockContext blockCtx = ((BlockContext) ctx);
 
@@ -144,6 +144,7 @@ public class MethodAnalyzer implements ParseTreeListener {
                     ParameterAnalyzer parameterAnalyzer = new ParameterAnalyzer(pseudoMethod);
                     parameterAnalyzer.analyze(paramsCtx);
                 }
+
             }
         }
 
