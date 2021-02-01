@@ -20,6 +20,7 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -29,9 +30,11 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
     private PseudoCodeParser.ExpressionContext exprCtx;
     private String modifiedExp, stringResult = "";
     private BigDecimal valueResult;
+    private HashMap<String, String> map;
 
     public ExpressionCommand(PseudoCodeParser.ExpressionContext exprCtx) {
         this.exprCtx = exprCtx;
+        this.map = new HashMap<>();
     }
 
     @Override
@@ -39,11 +42,11 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
 
 
         this.modifiedExp = this.exprCtx.getText();
-        if(modifiedExp.equals("T")){
-            modifiedExp = "true";
-        } else if(modifiedExp.equals("F")){
-            modifiedExp = "false";
-        }
+//        if(modifiedExp.equals("T")){
+//            modifiedExp = "true";
+//        } else if(modifiedExp.equals("F")){
+//            modifiedExp = "false";
+//        }
 
         if(modifiedExp.charAt(modifiedExp.length() - 1) == 'f'){
 //            System.out.println(TypeChecker.isDecimal(modifiedExp.substring(0,modifiedExp.length()-1)));
@@ -55,7 +58,10 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
                 ExpressionCommand expressionCommand = new ExpressionCommand(eCtx);
                 expressionCommand.execute();
 
-                this.modifiedExp = this.modifiedExp.replace(eCtx.getText(), expressionCommand.getModifiedExp());
+                if(!map.containsKey(eCtx.getText())){
+                    map.put(eCtx.getText(), expressionCommand.getModifiedExp());
+                }
+//                this.modifiedExp = this.modifiedExp.replace(eCtx.getText(), expressionCommand.getModifiedExp());
             }
         }
 
@@ -114,6 +120,10 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
 
                 e.setVariable("T", "true");
                 e.setVariable("F", "false");
+                for(String s : map.keySet()){
+                    e.setVariable(s, map.get(s));
+                }
+                System.out.println(modifiedExp);
 
                 this.valueResult = e.eval();
                 isNumeric = true;
@@ -148,7 +158,10 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
             Expression evalEx = new Expression(this.modifiedExp);
             evalEx.setVariable("T", "true");
             evalEx.setVariable("F", "false");
-
+            for(String s : map.keySet()){
+                evalEx.setVariable(s, map.get(s));
+            }
+            System.out.println(modifiedExp);
             try {
                 this.valueResult = evalEx.eval(false);
                 this.stringResult = this.valueResult.toEngineeringString();
@@ -297,11 +310,17 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
 
 
             if (pseudoMethod.getReturnType() == PseudoMethod.MethodType.STRING_TYPE) {
-                this.modifiedExp = this.modifiedExp.replace(exprCtx.getText(),
-                        "\"" + pseudoMethod.getReturnValue().getValue().toString() + "\"");
+                if(!map.containsKey(exprCtx.getText())){
+                    map.put(exprCtx.getText(), "\"" + pseudoMethod.getReturnValue().getValue().toString() + "\"");
+                }
+//                this.modifiedExp = this.modifiedExp.replace(exprCtx.getText(),
+//                        "\"" + pseudoMethod.getReturnValue().getValue().toString() + "\"");
             } else {
-                this.modifiedExp = this.modifiedExp.replace(exprCtx.getText(),
-                        pseudoMethod.getReturnValue().getValue().toString());
+                if(!map.containsKey(exprCtx.getText())){
+                    map.put(exprCtx.getText(), "\"" + pseudoMethod.getReturnValue().getValue().toString());
+                }
+//                this.modifiedExp = this.modifiedExp.replace(exprCtx.getText(),
+//                        pseudoMethod.getReturnValue().getValue().toString());
             }
 
             //System.out.println(TAG + ": " + "After modified EXP function call: " + this.modifiedExp);
@@ -320,21 +339,38 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
         try {
 
             if (pseudoValue.getPrimitiveType() == PseudoValue.PrimitiveType.STRING) {
-                this.modifiedExp = this.modifiedExp.replaceFirst(exprCtx.getText(),
-                        "\"" + pseudoValue.getValue().toString() + "\"");
+                if(!map.containsKey(exprCtx.getText())){
+                    map.put(exprCtx.getText(), "\"" + pseudoValue.getValue().toString() + "\"");
+                }
+//                this.modifiedExp = this.modifiedExp.replaceFirst(exprCtx.getText(),
+//                        "\"" + pseudoValue.getValue().toString() + "\"");
             } else {
-                this.modifiedExp = this.modifiedExp.replaceFirst(exprCtx.getText(),
-                        pseudoValue.getValue().toString());
+                String s = pseudoValue.getValue().toString();
+                if(s.equals("true") && pseudoValue.getPrimitiveType() == PseudoValue.PrimitiveType.BOOLEAN)
+                    s = "T";
+                else if(s.equals("false") && pseudoValue.getPrimitiveType() == PseudoValue.PrimitiveType.BOOLEAN)
+                    s = "F";
+                if(!map.containsKey(exprCtx.getText())){
+                    map.put(exprCtx.getText(), s);
+                }
+//                this.modifiedExp = this.modifiedExp.replaceFirst(exprCtx.getText(),
+//                        pseudoValue.getValue().toString());
             }
 //            System.out.println("modified exp: " + modifiedExp);
 
         } catch (NullPointerException e) {
             if (pseudoValue.getPrimitiveType() == PseudoValue.PrimitiveType.INT) {
-                this.modifiedExp = this.modifiedExp.replaceFirst(exprCtx.getText(),
-                        "0");
+                if(!map.containsKey(exprCtx.getText())){
+                    map.put(exprCtx.getText(), "0");
+                }
+//                this.modifiedExp = this.modifiedExp.replaceFirst(exprCtx.getText(),
+//                        "0");
             }else {
-                this.modifiedExp = this.modifiedExp.replaceFirst(exprCtx.getText(),
-                        "null");
+                if(!map.containsKey(exprCtx.getText())){
+                    map.put(exprCtx.getText(), "null");
+                }
+//                this.modifiedExp = this.modifiedExp.replaceFirst(exprCtx.getText(),
+//                        "null");
             }
 
         }
@@ -359,10 +395,18 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
 
                 if (arrayValue.getPrimitiveType() == PseudoValue.PrimitiveType.STRING) {
                     //this.modifiedExp = this.modifiedExp.replaceFirst(exprCtx.expression(0).getText() + "\\[([a-zA-Z0-9]*)]", "\"" + arrayPseudoValue.getValue().toString() + "\"");
-                    this.modifiedExp = this.modifiedExp.replace(exprCtx.getText(), "\"" + arrayValue.getValue().toString() + "\"");
+//                    this.modifiedExp = this.modifiedExp.replace(exprCtx.getText(), "\"" + arrayValue.getValue().toString() + "\"");
+
+                    if(!map.containsKey(exprCtx.getText())){
+                        map.put(exprCtx.getText(), "\"" + arrayValue.getValue().toString() + "\"");
+                    }
                 } else {
                     //this.modifiedExp = this.modifiedExp.replaceFirst(exprCtx.expression(0).getText() + "\\[([a-zA-Z0-9]*)]", arrayPseudoValue.getValue().toString());
-                    this.modifiedExp = this.modifiedExp.replace(exprCtx.getText(), arrayValue.getValue().toString());
+//                    this.modifiedExp = this.modifiedExp.replace(exprCtx.getText(), arrayValue.getValue().toString());
+
+                    if(!map.containsKey(exprCtx.getText())){
+                        map.put(exprCtx.getText(), arrayValue.getValue().toString());
+                    }
                 }
 
             }

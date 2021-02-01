@@ -142,7 +142,12 @@ public class PseudoValue {
     private Object attemptTypeCast(String value) {
         switch(this.type) {
             case CHAR: return Character.valueOf(value.charAt(0));
-            case BOOLEAN: return Boolean.valueOf(value);
+            case BOOLEAN:
+                if (value.equals("T"))
+                    value = "true";
+                else if (value.equals("F"))
+                    value = "false";
+                return Boolean.valueOf(value);
             case INT:
                 String s = value;
 
