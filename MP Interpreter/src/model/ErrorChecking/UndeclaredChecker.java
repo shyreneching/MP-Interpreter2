@@ -103,7 +103,7 @@ public class UndeclaredChecker implements IErrorChecker, ParseTreeListener {
 
             pseudoValue = VariableSearcher.searchVariableInMain(SymbolTableManager.getInstance().getParentScope(), varExprCtx.primary().Identifier().getText());
         }
-        System.out.println("Undeclared Checker - pseudoValue " + pseudoValue.getValue());
+//        System.out.println("Undeclared Checker - pseudoValue " + pseudoValue.getValue());
         if(pseudoValue == null) {
             PseudoErrorListener.reportCustomError(ErrorRepository.UNDECLARED_VARIABLE, "", varExprCtx.getText(), this.lineNumber);
         }
