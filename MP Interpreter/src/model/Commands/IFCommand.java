@@ -32,6 +32,7 @@ public class IFCommand implements IConditionalCommand  {
 
     @Override
     public void execute() {
+        System.out.println("I'm IF. I'm Executing!");
         this.identifyVariables();
 
         ExecutionMonitor executionMonitor = ExecutionManager.getInstance().getExecutionMonitor();
@@ -40,6 +41,7 @@ public class IFCommand implements IConditionalCommand  {
             if (evaluateCondition(this.conditionalExpr)) {
                 for (ICommand command : this.positivestatements) {
                     executionMonitor.tryExecution();
+                    System.out.println("I'm command in IF. I'm Executing!");
                     command.execute();
 
                     LocalVarTracker.getInstance().populateLocalVars(command);

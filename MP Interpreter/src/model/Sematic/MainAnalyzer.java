@@ -18,6 +18,8 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 
 public class MainAnalyzer implements ParseTreeListener {
 
+    private boolean evaluated = false;
+
     public void analyze(MainDeclarationContext ctx) {
 //        if(!ExecutionManager.getInstance().hasFoundEntryPoint()) {
 //            ExecutionManager.getInstance().reportFoundEntryPoint(ParserHandler.getInstance().getCurrentClassName());
@@ -43,6 +45,7 @@ public class MainAnalyzer implements ParseTreeListener {
 //        else {
 //            System.out.println("Already found main in " + ExecutionManager.getInstance().getEntryClassName());
 //        }
+        evaluated = false;
     }
 
     @Override
@@ -57,11 +60,13 @@ public class MainAnalyzer implements ParseTreeListener {
 
     @Override
     public void enterEveryRule(ParserRuleContext parserRuleContext) {
-        if(parserRuleContext instanceof BlockContext) {
+        if(parserRuleContext instanceof BlockContext && !evaluated) {
             BlockContext blockCtx = ((BlockContext) parserRuleContext);
 
             BlockAnalyzer blockAnalyzer = new BlockAnalyzer();
             blockAnalyzer.analyze(blockCtx);
+
+            evaluated = true;
         } else if(parserRuleContext instanceof StatementContext && ((StatementContext) parserRuleContext).RETURN() != null){
             PseudoErrorListener.reportCustomError(ErrorRepository.DEFAULT, "can not have return in main", parserRuleContext.getStart().getLine());
 

@@ -105,6 +105,9 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
                     }
                 });
 
+                e.setVariable("T", "true");
+                e.setVariable("F", "false");
+
                 this.valueResult = e.eval();
                 isNumeric = true;
             }else if (this.exprCtx.expression().size() != 0 && !isArrayElement(exprCtx) && !isFunctionCall(exprCtx)) {
@@ -136,6 +139,8 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
             }
 
             Expression evalEx = new Expression(this.modifiedExp);
+            evalEx.setVariable("T", "true");
+            evalEx.setVariable("F", "false");
 
             try {
                 this.valueResult = evalEx.eval(false);
