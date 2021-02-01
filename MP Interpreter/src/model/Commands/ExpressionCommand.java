@@ -3,6 +3,7 @@ package model.Commands;
 import com.udojava.evalex.Expression;
 import model.ErrorChecking.ErrorRepository;
 import model.ErrorChecking.PseudoErrorListener;
+import model.ErrorChecking.TypeChecker;
 import model.Execution.ExecutionManager;
 import model.Execution.MethodTracker;
 import model.Item.PseudoArray;
@@ -35,12 +36,18 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
 
     @Override
     public void execute() {
-        //System.out.println("EvaluationCommand: executing");
+
+
         this.modifiedExp = this.exprCtx.getText();
         if(modifiedExp.equals("T")){
             modifiedExp = "true";
         } else if(modifiedExp.equals("F")){
             modifiedExp = "false";
+        }
+
+        if(modifiedExp.charAt(modifiedExp.length() - 1) == 'f'){
+//            System.out.println(TypeChecker.isDecimal(modifiedExp.substring(0,modifiedExp.length()-1)));
+            modifiedExp = modifiedExp.substring(0,modifiedExp.length()-1);
         }
 
         for (PseudoCodeParser.ExpressionContext eCtx : this.exprCtx.expression()) {
@@ -304,8 +311,8 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
 
     private void evaluateVariable(PseudoCodeParser.ExpressionContext exprCtx) {
         PseudoValue pseudoValue = VariableSearcher.searchVariable(exprCtx.getText());
-        System.out.println("Entering expression command " + exprCtx.getText());
-        System.out.println("Pseudo value: " + pseudoValue);
+//        System.out.println("Entering expression command " + exprCtx.getText());
+//        System.out.println("Pseudo value: " + pseudoValue.getValue());
         if (pseudoValue == null || pseudoValue.getPrimitiveType() == PseudoValue.PrimitiveType.ARRAY) {
             return;
         }
@@ -319,7 +326,7 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
                 this.modifiedExp = this.modifiedExp.replaceFirst(exprCtx.getText(),
                         pseudoValue.getValue().toString());
             }
-            System.out.println("modified exp: " + modifiedExp);
+//            System.out.println("modified exp: " + modifiedExp);
 
         } catch (NullPointerException e) {
             if (pseudoValue.getPrimitiveType() == PseudoValue.PrimitiveType.INT) {
