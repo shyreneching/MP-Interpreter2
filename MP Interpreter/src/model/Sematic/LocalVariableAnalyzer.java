@@ -83,7 +83,7 @@ public class LocalVariableAnalyzer implements ParseTreeListener {
                         pseudoValue = new PseudoValue(value, type);
                     }
 
-                    System.out.println("Value: "+ value);
+                    System.out.println("LocalVariableAnalyzer - Value: "+ value);
                     TypeChecker typeChecker = new TypeChecker(pseudoValue,varCtx.variableInitializer().expression());
                     typeChecker.verify();
                     if(isFinal){

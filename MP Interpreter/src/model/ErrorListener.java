@@ -13,6 +13,8 @@ public class ErrorListener extends BaseErrorListener {
     private String errorMsg = "";
     private ArrayList<ErrorMessage> syntaxErrors = new ArrayList<ErrorMessage>();
 
+    private boolean successful = true;
+
     @Override
     public void syntaxError(Recognizer<?, ?> recognizer,
                             Object offendingSymbol,
@@ -122,6 +124,8 @@ public class ErrorListener extends BaseErrorListener {
         ErrorMessage error = new ErrorMessage(line, errorMsg);
 
         syntaxErrors.add(error);
+
+        INSTANCE.successful = false;
     }
 
 //    protected void underlineError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine) {
@@ -157,6 +161,14 @@ public class ErrorListener extends BaseErrorListener {
 
     public void resetSyntaxErrorsList() {
         syntaxErrors = new ArrayList<ErrorMessage>();
+    }
+
+    public boolean isSuccessful() {
+        return successful;
+    }
+
+    public void setSuccessful(boolean successful) {
+        this.successful = successful;
     }
 
     //    @Override public void reportAmbiguity(org.antlr.v4.runtime.Parser recognizer, org.antlr.v4.runtime.dfa.DFA dfa, int startIndex, int stopIndex, boolean exact, java.util.BitSet ambigAlts, org.antlr.v4.runtime.atn.ATNConfigSet configs) {

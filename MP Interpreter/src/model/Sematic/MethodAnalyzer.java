@@ -136,10 +136,15 @@ public class MethodAnalyzer implements ParseTreeListener {
 
     public void addParameter(MethodDeclarationContext method) {
         FormalParametersContext parameterlist =  method.methodDeclarator().formalParameters();
-        for(FormalParameterContext paramsCtx: parameterlist.formalParameter()){
-            if (paramsCtx.Identifier() != null) {
-                ParameterAnalyzer parameterAnalyzer = new ParameterAnalyzer(pseudoMethod);
-                parameterAnalyzer.analyze(paramsCtx);
+
+        if (parameterlist != null){
+            for(FormalParameterContext paramsCtx: parameterlist.formalParameter()){
+                System.out.println("Should be adding parameter");
+                if (paramsCtx.Identifier() != null) {
+                    ParameterAnalyzer parameterAnalyzer = new ParameterAnalyzer(pseudoMethod);
+                    parameterAnalyzer.analyze(paramsCtx);
+                }
+
             }
         }
 
