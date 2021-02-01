@@ -74,7 +74,7 @@ public class ParserUI extends Application implements NotificationListener {
             "transient", "try", "void", "volatile", "while",
 
             "up to", "down to", "func", "print", "scan", "String",
-            "create", "then"
+            "create", "then", "T", "F"
     };
 
     private static final String KEYWORD_PATTERN = "\\b(" + String.join("|", KEYWORDS) + ")\\b";
@@ -204,6 +204,7 @@ public class ParserUI extends Application implements NotificationListener {
                 ScopeCreator.reset();
                 SymbolTableManager.reset();
                 PseudoErrorListener.getInstance().setSuccessful(true);
+                ErrorListener.INSTANCE.setSuccessful(true);
                 StatementControlOverseer.reset();
                 ErrorRepository.reset();
                 MethodTracker.reset();
@@ -240,10 +241,14 @@ public class ParserUI extends Application implements NotificationListener {
 
                 System.out.println(PseudoErrorListener.INSTANCE.toString());
 
-                if(PseudoErrorListener.getInstance().isSuccessful()) {
+                System.out.println(PseudoErrorListener.getInstance().isSuccessful());
+                System.out.println(ErrorListener.INSTANCE.isSuccessful());
+
+                if(PseudoErrorListener.getInstance().isSuccessful() && ErrorListener.INSTANCE.isSuccessful()) {
                     //System.out.println("executionList number: " + ExecutionManager.getInstance().getExecutionList().size());
                     ExecutionManager.getInstance().executeAllActions();
                     System.out.println("PseudoErrorListener executed");
+                    System.out.println("ErrorListener executed");
                 }
                 else {
                     System.out.println("Fix identified errors before executing!");
