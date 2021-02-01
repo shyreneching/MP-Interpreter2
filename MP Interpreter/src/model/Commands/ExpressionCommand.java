@@ -255,6 +255,7 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
 
     private void evaluateFunctionCall(PseudoCodeParser.ExpressionContext exprCtx) {
 
+
         for (PseudoCodeParser.ExpressionContext eCtx : exprCtx.expression()) {
 
             String functionName = eCtx.getText();

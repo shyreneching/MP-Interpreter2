@@ -71,8 +71,8 @@ public class UndeclaredChecker implements IErrorChecker, ParseTreeListener {
     }
 
     private void verifyFunctionCall(ExpressionContext funcExprCtx) {
-
-        if(funcExprCtx.expression(0) == null) {
+        System.out.println("ExpressionCommand - evaluating function : " +exprCtx.getText());
+        if(funcExprCtx.Identifier() == null) {
             return;
         }
 
