@@ -169,7 +169,7 @@ public class TypeChecker implements IErrorChecker, ParseTreeListener {
         return false;
     }
 
-    private boolean isDecimal(String text) {
+    public static boolean isDecimal(String text) {
         try {
             Float.parseFloat(text);
 
