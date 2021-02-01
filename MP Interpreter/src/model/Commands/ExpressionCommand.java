@@ -36,7 +36,7 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
 
     @Override
     public void execute() {
-        
+
 
         this.modifiedExp = this.exprCtx.getText();
         if(modifiedExp.equals("T")){
