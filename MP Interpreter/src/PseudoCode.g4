@@ -554,7 +554,7 @@ BooleanLiteral
 // §3.10.5 String Literals
 
 StringLiteral
-	:	'"' StringCharacters? '"'
+	:	DQUOTE StringCharacters? DQUOTE
 	;
 fragment
 StringCharacters
@@ -635,6 +635,7 @@ BITAND : '&' ;
 BITOR : '|' ;
 CARET : '^' ;
 MOD : '%' ;
+DQUOTE : '"';
 //ARROW : '->' ;
 //COLONCOLON : '::' ;
 
