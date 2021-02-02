@@ -65,38 +65,44 @@ public class LocalVariableAnalyzer implements ParseTreeListener {
 //                    System.out.println("type: "+ type);
 
 //                    pseudoValue = PseudoValue.createEmptyVariable(type);
-                    System.out.println("LocalVariableAnalyzer - expr: " +varCtx.variableInitializer().expression().getText());
-                    ExpressionCommand expressionCommand = new ExpressionCommand(varCtx.variableInitializer().expression());
-                    expressionCommand.execute();
-                    Object value = null;
+                    ExpressionAnalyzer expressionAnalyzer = new ExpressionAnalyzer();
+                    expressionAnalyzer.analyze(varCtx.variableInitializer().expression());
 
-                    if(this.type.equals("bool")){
-                        if(expressionCommand.getValueResult().compareTo(new BigDecimal("0")) == 0){
-                            value = false;
-                        } else {
-                            value = true;
+                    if(!expressionAnalyzer.isHasSemanticError()){
+                        System.out.println("LocalVariableAnalyzer - expr: " +varCtx.variableInitializer().expression().getText());
+                        ExpressionCommand expressionCommand = new ExpressionCommand(varCtx.variableInitializer().expression());
+                        expressionCommand.execute();
+                        Object value = null;
+
+                        if(this.type.equals("bool")){
+                            if(expressionCommand.getValueResult().compareTo(new BigDecimal("0")) == 0){
+                                value = false;
+                            } else {
+                                value = true;
+                            }
+                            pseudoValue = new PseudoValue(value, type);
+                        } else if(this.type.equals("int")){
+                            value = expressionCommand.getValueResult().intValue();
+                            pseudoValue = new PseudoValue(value, type);
+                        } else if(this.type.equals("float")){
+                            value = expressionCommand.getValueResult().floatValue();
+                            pseudoValue = new PseudoValue(value, type);
+                        } else if(this.type.equals("String")){
+                            value = expressionCommand.getStringResult();
+                            pseudoValue = new PseudoValue(value, type);
                         }
-                        pseudoValue = new PseudoValue(value, type);
-                    } else if(this.type.equals("int")){
-                        value = expressionCommand.getValueResult().intValue();
-                        pseudoValue = new PseudoValue(value, type);
-                    } else if(this.type.equals("float")){
-                        value = expressionCommand.getValueResult().floatValue();
-                        pseudoValue = new PseudoValue(value, type);
-                    } else if(this.type.equals("String")){
-                        value = expressionCommand.getStringResult();
-                        pseudoValue = new PseudoValue(value, type);
+
+                        System.out.println("LocalVariableAnalyzer - Value: "+ value);
+                        TypeChecker typeChecker = new TypeChecker(pseudoValue,varCtx.variableInitializer().expression());
+                        typeChecker.verify();
+                        if(isFinal){
+                            pseudoValue.makeConst();
+                        }
+                        //Shyrene added - using variable declaration assignment command
+                        AssignmentCommand assignmentCommand = new AssignmentCommand(varCtx.Identifier(), varCtx.variableInitializer().expression(), pseudoValue.getPrimitiveType());
+                        CommandExecuter.handleStatementExecution(assignmentCommand);
                     }
 
-                    System.out.println("LocalVariableAnalyzer - Value: "+ value);
-                    TypeChecker typeChecker = new TypeChecker(pseudoValue,varCtx.variableInitializer().expression());
-                    typeChecker.verify();
-                    if(isFinal){
-                        pseudoValue.makeConst();
-                    }
-                    //Shyrene added - using variable declaration assignment command
-                    AssignmentCommand assignmentCommand = new AssignmentCommand(varCtx.Identifier(), varCtx.variableInitializer().expression(), pseudoValue.getPrimitiveType());
-                    CommandExecuter.handleStatementExecution(assignmentCommand);
 
                 } else{
                     Token firstToken = varCtx.getStart();
@@ -106,32 +112,37 @@ public class LocalVariableAnalyzer implements ParseTreeListener {
                     System.out.println("LocalVariableAnalyzer - ititialize type: "+ varCtx.variableInitializer().arrayInitializer().unannType().getText());
 
                     if(!arrayType.equals(varCtx.variableInitializer().arrayInitializer().unannType().getText())){
-
                         PseudoErrorListener.reportCustomError(ErrorRepository.TYPE_MISMATCH, "", lineNumber);
                     }
-                    ExpressionCommand expressionCommand = new ExpressionCommand(varCtx.variableInitializer().arrayInitializer().expression());
-                    expressionCommand.execute();
-                    // evaluate varCtx.variableInitializer().arrayInitializer().expression();)
+
+                    ExpressionAnalyzer expressionAnalyzer = new ExpressionAnalyzer();
+                    expressionAnalyzer.analyze(varCtx.variableInitializer().expression());
+
+                    if(!expressionAnalyzer.isHasSemanticError()){
+                        ExpressionCommand expressionCommand = new ExpressionCommand(varCtx.variableInitializer().arrayInitializer().expression());
+                        expressionCommand.execute();
+                        // evaluate varCtx.variableInitializer().arrayInitializer().expression();)
 //                    TypeChecker.isNumeric(varCtx.variableInitializer().arrayInitializer().expression().getText());
-                    int arraysize;
-                    if(!expressionCommand.isString() && !expressionCommand.getValueResult().toString().contains(".") ){
-                        arraysize = expressionCommand.getValueResult().intValue();
-                        PseudoArray pseudoArray = PseudoArray.createArray(arrayType,varCtx.Identifier().getText());
+                        int arraysize;
+                        if(!expressionCommand.isString() && !expressionCommand.getValueResult().toString().contains(".") ){
+                            arraysize = expressionCommand.getValueResult().intValue();
+                            PseudoArray pseudoArray = PseudoArray.createArray(arrayType,varCtx.Identifier().getText());
 //                    if(!(arraysize instanceof Integer)){
 //                        PseudoErrorListener.reportCustomError(ErrorRepository.DEFAULT, "Invalid array inatialization.", lineNumber);
 //                    }
-                        pseudoArray.initializeSize(arraysize);
-                        if(isFinal){
-                            pseudoArray.markFinal();
+                            pseudoArray.initializeSize(arraysize);
+                            if(isFinal){
+                                pseudoArray.markFinal();
+                            }
+                            pseudoValue = new PseudoValue(pseudoArray, "array");
                         }
-                        pseudoValue = new PseudoValue(pseudoArray, "array");
-                    }
-                    Scope scope = ScopeCreator.getInstance().getActiveScope();
-                    if(pseudoValue != null){
-                        scope.addPseudoValue(varCtx.Identifier().getText(), pseudoValue);
-                    }
+                        Scope scope = ScopeCreator.getInstance().getActiveScope();
+                        if(pseudoValue != null){
+                            scope.addPseudoValue(varCtx.Identifier().getText(), pseudoValue);
+                        }
 //                    AssignmentCommand assignmentCommand = new AssignmentCommand(varCtx.Identifier(), varCtx.variableInitializer().expression());
 //                    CommandExecuter.handleStatementExecution(assignmentCommand);
+                    }
                 }
             } else {
                 pseudoValue = PseudoValue.createEmptyVariable(type);

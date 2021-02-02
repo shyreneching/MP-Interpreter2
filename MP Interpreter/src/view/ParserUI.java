@@ -410,14 +410,14 @@ public class ParserUI extends Application implements NotificationListener {
 
             // If this element is not present in newList
             // then add it
-            System.out.println("Error message in errorMessageArrayList: " + error.getErrorMessage() + "\n");
+//            System.out.println("Error message in errorMessageArrayList: " + error.getErrorMessage() + "\n");
             contains = removedDuplicatesList.contains(error);
-            System.out.println(contains + "\n");
+//            System.out.println(contains + "\n");
 
             if (!removedDuplicatesList.contains(error)) {
 
                 removedDuplicatesList.add(error);
-                System.out.println("Added error to list: " + error.getErrorMessage());
+//                System.out.println("Added error to list: " + error.getErrorMessage());
             }
         }
 
