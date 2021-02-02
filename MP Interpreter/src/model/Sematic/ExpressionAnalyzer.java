@@ -45,9 +45,9 @@ public class ExpressionAnalyzer implements ParseTreeListener {
 //            } else if (isArrayElement(exprCtx)) {
 
             }
-            else if (Checker.isVariableOrConst(exprCtx)) {
-//                this.evaluateVariable(exprCtx);
-            }
+//            else if (Checker.isVariableOrConst(exprCtx)) {
+////                this.evaluateVariable(exprCtx);
+//            }
 
         }
     }

@@ -58,8 +58,6 @@ public class ErrorListener extends BaseErrorListener {
             } else{
                 msg = "irrelevant character '"+ temp[1] +"' found";
             }
-
-
         }
         else if (msg.contains("missing")){
             temp = msg.split("'");
@@ -116,8 +114,8 @@ public class ErrorListener extends BaseErrorListener {
         } else if(msg.contains("cannot find symbol")) {
             msg = "No symbol '" + msg.split("'")[1] + "' found";
 
-//        } else {
-
+//        } else if(msg.contains("redundant arithmetic operator symbol found")){
+//            msg = msg.substring(0, 9) +" '"+ ((Token)offendingSymbol).getText()+ "' " +msg.substring(9, msg.length());
         }
 
 //        underlineError(recognizer, offendingSymbol, line, charPositionInLine);

@@ -1,6 +1,8 @@
 package model.Sematic;
 
 import model.Commands.*;
+import model.ErrorChecking.MultipleVariableDeclarationChecker;
+import model.ErrorChecking.UndeclaredChecker;
 import model.Execution.ExecutionManager;
 import model.PseudoCodeParser.*;
 import model.SymbolTable.Scope.ScopeCreator;
@@ -101,29 +103,45 @@ public class StatementAnalyzer {
 
     private void handleForStatement(ForStatementContext forStatement) {
 
-        ScopeCreator.getInstance().openScope();
+        ForinitializerContext forinitializerCtx = forStatement.forheader().forinitializer();
+        if(forinitializerCtx.INT() == null){ //Shyrene added - checking if upeerbound just assignment
 
-//        ForControlAnalyzer forControlAnalyzer = new ForControlAnalyzer();
-//        forControlAnalyzer.analyze(forStatement.forheader());
-        String iteration = "";
-        if(forStatement.forheader().UPTO()!=null){
-            iteration = "up to";
-        }else{
-            iteration = "down to";
+            UndeclaredChecker.verifyVariableOrConst(forStatement.forheader().forinitializer().Identifier());
+        } else{
+            MultipleVariableDeclarationChecker.verifyVariableOrConst(forinitializerCtx.Identifier());
+
+        }
+
+        ExpressionCommand laterBound= new ExpressionCommand(forStatement.forheader().expression(0));
+        laterBound.execute();
+        ExpressionCommand firstBound = new ExpressionCommand(forStatement.forheader().forinitializer().customAssignError().expression());
+        firstBound.execute();
+        if (!firstBound.isString() && firstBound.getValueResult().stripTrailingZeros().scale() <= 0 &&!laterBound.isString() && laterBound.getValueResult().stripTrailingZeros().scale() <= 0){
+            ScopeCreator.getInstance().openScope();
+
+            String iteration = "";
+            if(forStatement.forheader().UPTO()!=null){
+                iteration = "up to";
+            }else{
+                iteration = "down to";
+            }
+
+            ForCommand forCommand = new ForCommand(forStatement.forheader().forinitializer(), forStatement.forheader().expression(0), iteration);
+            StatementControlOverseer.getInstance().openControlledCommand(forCommand);
+
+            BlockContext blkCtx = forStatement.block();
+            BlockAnalyzer blockAnalyzer = new BlockAnalyzer();
+            blockAnalyzer.analyze(blkCtx);
+
+            StatementControlOverseer.getInstance().compileControlledCommand();
+
+            ScopeCreator.getInstance().closeScope();
+            System.out.println("End of FOR loop");
         }
 
 
-        ForCommand forCommand = new ForCommand(forStatement.forheader().forinitializer(), forStatement.forheader().expression(0), iteration);
-        StatementControlOverseer.getInstance().openControlledCommand(forCommand);
 
-        BlockContext blkCtx = forStatement.block();
-        BlockAnalyzer blockAnalyzer = new BlockAnalyzer();
-        blockAnalyzer.analyze(blkCtx);
 
-        StatementControlOverseer.getInstance().compileControlledCommand();
-
-        ScopeCreator.getInstance().closeScope();
-        System.out.println("End of FOR loop");
     }
 
     private void handleScanStatement(ScanInvocationContext scanInvocation) {

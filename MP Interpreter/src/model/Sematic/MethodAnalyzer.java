@@ -118,12 +118,12 @@ public class MethodAnalyzer implements ParseTreeListener {
                 int lineNumber = firstToken.getLine();
                 PseudoErrorListener.reportCustomError(ErrorRepository.RETURN_IN_VOID, "", lineNumber);
             }
-            if(hasReturn){
-                Token firstToken = ctx.getStart();
-                int lineNumber = firstToken.getLine();
-
-                PseudoErrorListener.reportCustomError(ErrorRepository.DEFAULT, "Double return statement ", lineNumber);
-            }
+//            if(hasReturn){
+//                Token firstToken = ctx.getStart();
+//                int lineNumber = firstToken.getLine();
+//
+//                PseudoErrorListener.reportCustomError(ErrorRepository.DEFAULT, "Double return statement ", lineNumber);
+//            }
             hasReturn = true;
             pseudoMethod.setValidReturns(hasReturn);
         }
