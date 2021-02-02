@@ -108,7 +108,7 @@ statement
     :   block
     |   ifThenStatement
     |   whileStatement
-    |   doStatement
+    |   doStatement ';'
     |   forStatement
     |   printInvocation ';'
     |   printInvocation {notifyErrorListeners("lacking ';' at the end of line");}

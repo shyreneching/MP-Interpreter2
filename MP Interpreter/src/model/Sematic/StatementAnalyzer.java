@@ -53,7 +53,18 @@ public class StatementAnalyzer {
 
         BlockContext block = doStatement.block();
 
-        DoWhileCommand doWhileCommand = new DoWhileCommand(doStatement.Identifier(), doStatement.expression());
+        DoWhileCommand doWhileCommand;
+        if(doStatement.expression().size() == 1) {
+            if (doStatement.UPTO() != null)
+                doWhileCommand = new DoWhileCommand(doStatement.Identifier(0), doStatement.expression(0), "up to");
+            else
+                doWhileCommand = new DoWhileCommand(doStatement.Identifier(0), doStatement.expression(0), "down to");
+        } else {
+            if (doStatement.UPTO() != null)
+                doWhileCommand = new DoWhileCommand(doStatement.Identifier(0), doStatement.expression(0), doStatement.expression(1), "up to");
+            else
+                doWhileCommand = new DoWhileCommand(doStatement.Identifier(0), doStatement.expression(0), doStatement.expression(1), "down to");
+        }
         StatementControlOverseer.getInstance().openControlledCommand(doWhileCommand);
 
         BlockAnalyzer blockAnalyzer = new BlockAnalyzer();
