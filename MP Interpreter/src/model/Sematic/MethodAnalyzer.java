@@ -7,6 +7,7 @@ import model.Execution.ExecutionManager;
 import model.Execution.MethodTracker;
 import model.Item.PseudoMethod;
 import model.Item.PseudoValue;
+import model.PseudoCodeParser;
 import model.PseudoCodeParser.*;
 import model.SymbolTable.Scope.Scope;
 import model.SymbolTable.Scope.ScopeCreator;
@@ -26,6 +27,7 @@ public class MethodAnalyzer implements ParseTreeListener {
     private PseudoMethod pseudoMethod;
 
     private boolean hasReturn = false;
+    private boolean evaluated = false;
 
 
     public void analyze(MethodDeclarationContext mthd) {
@@ -91,6 +93,8 @@ public class MethodAnalyzer implements ParseTreeListener {
         ExecutionManager.getInstance().openFunctionExecution(pseudoMethod);
         ParseTreeWalker walker = new ParseTreeWalker();
         walker.walk(this, mthd);
+
+        evaluated = false;
     }
 
     @Override
@@ -107,11 +111,12 @@ public class MethodAnalyzer implements ParseTreeListener {
     public void enterEveryRule(ParserRuleContext ctx) {
         if (ctx instanceof FormalParameterContext) { // check the params
 
-        } else if(ctx instanceof BlockContext){
+        } else if(ctx instanceof BlockContext && !evaluated){
             BlockContext blockCtx = ((BlockContext) ctx);
 
             BlockAnalyzer blockAnalyzer = new BlockAnalyzer();
             blockAnalyzer.analyze(blockCtx);
+            evaluated = true;
         } else if(ctx instanceof StatementContext && ((StatementContext) ctx).RETURN() != null){
             if(pseudoMethod.getReturnType().equals(PseudoMethod.MethodType.VOID_TYPE)){
                 Token firstToken = ctx.getStart();
@@ -124,9 +129,18 @@ public class MethodAnalyzer implements ParseTreeListener {
 //
 //                PseudoErrorListener.reportCustomError(ErrorRepository.DEFAULT, "Double return statement ", lineNumber);
 //            }
-            hasReturn = true;
+            hasReturn = true && !isInMethod(ctx);
             pseudoMethod.setValidReturns(hasReturn);
         }
+    }
+
+    public boolean isInMethod(ParserRuleContext exprCtx){
+        if(exprCtx.getParent().getParent().equals(mthd))
+            return false;
+        else if (exprCtx.getParent() instanceof BlockContext)
+            return isInMethod(exprCtx.getParent());
+        else
+            return true;
     }
 
     @Override
