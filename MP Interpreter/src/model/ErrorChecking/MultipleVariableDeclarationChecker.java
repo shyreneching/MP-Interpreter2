@@ -94,7 +94,7 @@ public class MultipleVariableDeclarationChecker implements IErrorChecker, ParseT
 //        }
 //    }
 
-    public static void verifyVariableOrConst(TerminalNode node) {
+    public static boolean verifyVariableOrConst(TerminalNode node) {
         PseudoValue pseudoValue = null;
 
         if(ExecutionManager.getInstance().isInFunctionExecution()) {
@@ -107,6 +107,8 @@ public class MultipleVariableDeclarationChecker implements IErrorChecker, ParseT
 
         if(pseudoValue != null) {
             PseudoErrorListener.reportCustomError(ErrorRepository.MULTIPLE_VARIABLE, "", node.getText(),  node.getSymbol().getLine());
+            return false;
         }
+        return true;
     }
 }

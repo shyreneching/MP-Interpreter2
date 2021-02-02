@@ -1,5 +1,6 @@
 package model.Commands;
 
+import model.ErrorChecking.PseudoErrorListener;
 import model.Execution.ExecutionManager;
 import model.Execution.ExecutionMonitor;
 import model.Item.PseudoArray;
@@ -7,6 +8,8 @@ import model.Item.PseudoValue;
 import model.PseudoCodeParser.*;
 import model.Sematic.IdentifierMapper;
 import model.Sematic.VariableSearcher;
+import model.SymbolTable.Scope.Scope;
+import model.SymbolTable.Scope.ScopeCreator;
 import model.Utils.AssignmentUtils;
 import model.Utils.LocalVarTracker;
 
@@ -32,6 +35,15 @@ public class ForCommand implements IControlledCommand  {
             this.isUpto = true;
         }else{
             this.isUpto = false;
+        }
+
+        PseudoValue pseudoValue = null;
+        if(variableUB.INT() != null){
+            pseudoValue = PseudoValue.createEmptyVariable("int");
+        }
+        Scope scope = ScopeCreator.getInstance().getActiveScope();
+        if(pseudoValue != null){
+            scope.addPseudoValue(variableUB.Identifier().getText(), pseudoValue);
         }
 
         this.forstatement = new ArrayList<ICommand>();
