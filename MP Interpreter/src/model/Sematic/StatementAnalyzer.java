@@ -135,8 +135,12 @@ public class StatementAnalyzer {
 
         }
         if(isSuccess){
+            UndeclaredChecker rightHandID = new UndeclaredChecker(forStatement.forheader().expression(0));
+            rightHandID.verify();
             ExpressionCommand laterBound= new ExpressionCommand(forStatement.forheader().expression(0));
             laterBound.execute();
+            UndeclaredChecker leftHandID = new UndeclaredChecker(forStatement.forheader().forinitializer().customAssignError().expression());
+            leftHandID.verify();
             ExpressionCommand firstBound = new ExpressionCommand(forStatement.forheader().forinitializer().customAssignError().expression());
             firstBound.execute();
             boolean lefthand = false;
