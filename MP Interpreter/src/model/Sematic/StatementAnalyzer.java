@@ -105,60 +105,56 @@ public class StatementAnalyzer {
     }
 
     private void handleForStatement(ForStatementContext forStatement) {
-
+        boolean isSuccess;
         ForinitializerContext forinitializerCtx = forStatement.forheader().forinitializer();
-        if(forinitializerCtx.INT() == null){ //Shyrene added - checking if upeerbound just assignment
-
-            UndeclaredChecker.verifyVariableOrConst(forStatement.forheader().forinitializer().Identifier());
+        if(forinitializerCtx.INT() == null){ //Shyrene added - checking if lefthand just assignment
+            isSuccess = UndeclaredChecker.verifyVariableOrConst(forStatement.forheader().forinitializer().Identifier());
         } else{
-            MultipleVariableDeclarationChecker.verifyVariableOrConst(forinitializerCtx.Identifier());
+            isSuccess = MultipleVariableDeclarationChecker.verifyVariableOrConst(forinitializerCtx.Identifier());
 
         }
-
-        ExpressionCommand laterBound= new ExpressionCommand(forStatement.forheader().expression(0));
-        laterBound.execute();
-        ExpressionCommand firstBound = new ExpressionCommand(forStatement.forheader().forinitializer().customAssignError().expression());
-        firstBound.execute();
-        boolean lefthand = false;
-        boolean righthand = false;
-        if (!firstBound.isString() && firstBound.getValueResult().stripTrailingZeros().scale() <= 0){
-            lefthand = true;
-        } else {
-            PseudoErrorListener.reportCustomError(ErrorRepository.DEFAULT, "For loop left hand is not 'INT' declaration. ", forStatement.getStart().getLine());
-        }
-
-        if(!laterBound.isString() && laterBound.getValueResult().stripTrailingZeros().scale() <= 0){
-            righthand = true;
-        } else{
-            PseudoErrorListener.reportCustomError(ErrorRepository.DEFAULT, "For loop right hand is not 'INT' declaration. ", forStatement.getStart().getLine());
-        }
-
-        if(lefthand && righthand){
-            ScopeCreator.getInstance().openScope();
-
-            String iteration = "";
-            if(forStatement.forheader().UPTO()!=null){
-                iteration = "up to";
-            }else{
-                iteration = "down to";
+        if(isSuccess){
+            ExpressionCommand laterBound= new ExpressionCommand(forStatement.forheader().expression(0));
+            laterBound.execute();
+            ExpressionCommand firstBound = new ExpressionCommand(forStatement.forheader().forinitializer().customAssignError().expression());
+            firstBound.execute();
+            boolean lefthand = false;
+            boolean righthand = false;
+            if (!firstBound.isString() && firstBound.getValueResult().stripTrailingZeros().scale() <= 0){
+                lefthand = true;
+            } else {
+                PseudoErrorListener.reportCustomError(ErrorRepository.DEFAULT, "For loop left hand is not 'INT' declaration. ", forStatement.getStart().getLine());
             }
 
-            ForCommand forCommand = new ForCommand(forStatement.forheader().forinitializer(), forStatement.forheader().expression(0), iteration);
-            StatementControlOverseer.getInstance().openControlledCommand(forCommand);
+            if(!laterBound.isString() && laterBound.getValueResult().stripTrailingZeros().scale() <= 0){
+                righthand = true;
+            } else{
+                PseudoErrorListener.reportCustomError(ErrorRepository.DEFAULT, "For loop right hand is not 'INT' declaration. ", forStatement.getStart().getLine());
+            }
 
-            BlockContext blkCtx = forStatement.block();
-            BlockAnalyzer blockAnalyzer = new BlockAnalyzer();
-            blockAnalyzer.analyze(blkCtx);
+            if(lefthand && righthand){
+                ScopeCreator.getInstance().openScope();
 
-            StatementControlOverseer.getInstance().compileControlledCommand();
+                String iteration = "";
+                if(forStatement.forheader().UPTO()!=null){
+                    iteration = "up to";
+                }else{
+                    iteration = "down to";
+                }
 
-            ScopeCreator.getInstance().closeScope();
-            System.out.println("End of FOR loop");
+                ForCommand forCommand = new ForCommand(forStatement.forheader().forinitializer(), forStatement.forheader().expression(0), iteration);
+                StatementControlOverseer.getInstance().openControlledCommand(forCommand);
+
+                BlockContext blkCtx = forStatement.block();
+                BlockAnalyzer blockAnalyzer = new BlockAnalyzer();
+                blockAnalyzer.analyze(blkCtx);
+
+                StatementControlOverseer.getInstance().compileControlledCommand();
+
+                ScopeCreator.getInstance().closeScope();
+                System.out.println("End of FOR loop");
+            }
         }
-
-
-
-
     }
 
     private void handleScanStatement(ScanInvocationContext scanInvocation) {
