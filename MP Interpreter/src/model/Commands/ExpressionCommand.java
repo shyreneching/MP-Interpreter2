@@ -401,6 +401,7 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
                     isString = true;
                 }
                 else if(!map.containsKey(exprCtx.getText())){
+                    System.out.println("ExpressionCommand - method execution get returnValue: " + pseudoMethod.getReturnValue().getValue());
                     map.put(exprCtx.getText(), "\"" + pseudoMethod.getReturnValue().getValue().toString());
                 }
 //                this.modifiedExp = this.modifiedExp.replace(exprCtx.getText(),

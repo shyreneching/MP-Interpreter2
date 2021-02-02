@@ -36,7 +36,7 @@ public class ReturnCommand implements ICommand {
     public void execute() {
         ExpressionCommand checker = new ExpressionCommand(this.exprContext);
         checker.execute();
-
+        System.out.println("ReturnCommand - method return value: " + this.assignedPseudoMethod.getReturnValue().getValue());
         PseudoValue pseudoValue = this.assignedPseudoMethod.getReturnValue();
 
         if (checker.isNumeric())
