@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 
 public class ExpressionCommand implements ICommand, ParseTreeListener {
 
-    private boolean isNumeric, hasException = false, methodEval = false;
+    private boolean isNumeric, hasException = false, isString = false;
     private PseudoCodeParser.ExpressionContext exprCtx;
     private String modifiedExp, stringResult = "";
     private BigDecimal valueResult;
@@ -72,8 +72,7 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
         ParseTreeWalker treeWalker = new ParseTreeWalker();
         treeWalker.walk(this, this.exprCtx);
 
-        methodEval = false;
-        isNumeric = !this.modifiedExp.contains("\"") && !this.modifiedExp.contains("\'");
+        isNumeric = (!this.modifiedExp.contains("\"") && !this.modifiedExp.contains("\'")) || !isString;
 
         if (!isNumeric) {
 
@@ -192,6 +191,8 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
             }
 
         }
+
+        isString = false;
     }
 
     public Expression change(Expression expr, HashMap<String,String> map){
@@ -263,8 +264,6 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
             if (isFunctionCall(exprCtx) && !isInMethod(exprCtx)) {
                 System.out.println("ExprCmmd : THIS IS A FUNCTION CALLLLL - " + exprCtx.getText());
                 this.evaluateFunctionCall(exprCtx);
-
-                methodEval = true;
             } else if (isArrayElement(exprCtx)) {
                 this.evaluateArray(exprCtx);
             } else if (isVariableOrConst(exprCtx)) {
@@ -391,6 +390,7 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
                 if(!map.containsKey(exprCtx.getText())){
                     map.put(exprCtx.getText(), "\"" + pseudoMethod.getReturnValue().getValue().toString() + "\"");
                 }
+                isString = true;
 //                this.modifiedExp = this.modifiedExp.replace(exprCtx.getText(),
 //                        "\"" + pseudoMethod.getReturnValue().getValue().toString() + "\"");
             } else {
@@ -398,6 +398,7 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
 //                    this.modifiedExp = "\"\"";
                     map.put(exprCtx.getText(), "\"" + "\"\"");
                     PseudoErrorListener.reportCustomError(ErrorRepository.DEFAULT, "Void function has no return value.", exprCtx.getStart().getLine());
+                    isString = true;
                 }
                 else if(!map.containsKey(exprCtx.getText())){
                     map.put(exprCtx.getText(), "\"" + pseudoMethod.getReturnValue().getValue().toString());
@@ -425,6 +426,7 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
                 if(!map.containsKey(exprCtx.getText())){
                     map.put(exprCtx.getText(), "\"" + pseudoValue.getValue().toString() + "\"");
                 }
+                isString = true;
 //                this.modifiedExp = this.modifiedExp.replaceFirst(exprCtx.getText(),
 //                        "\"" + pseudoValue.getValue().toString() + "\"");
             } else {
@@ -483,6 +485,7 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
                     if(!map.containsKey(exprCtx.getText())){
                         map.put(exprCtx.getText(), "\"" + arrayValue.getValue().toString() + "\"");
                     }
+                    isString = true;
                 } else {
                     //this.modifiedExp = this.modifiedExp.replaceFirst(exprCtx.expression(0).getText() + "\\[([a-zA-Z0-9]*)]", arrayPseudoValue.getValue().toString());
 //                    this.modifiedExp = this.modifiedExp.replace(exprCtx.getText(), arrayValue.getValue().toString());
