@@ -91,8 +91,18 @@ public class StatementAnalyzer {
 
     public void handleWhileStatement(WhileStatementContext whileStatement) {
         BlockContext block = whileStatement.block();
-
-        WhileCommand whileCommand = new WhileCommand(whileStatement.Identifier(), whileStatement.expression());
+        WhileCommand whileCommand;
+        if(whileStatement.expression().size() == 1) {
+            if (whileStatement.UPTO() != null)
+                whileCommand = new WhileCommand(whileStatement.Identifier(0), whileStatement.expression(0), "up to");
+            else
+                whileCommand = new WhileCommand(whileStatement.Identifier(0), whileStatement.expression(0), "down to");
+        } else {
+            if (whileStatement.UPTO() != null)
+                whileCommand = new WhileCommand(whileStatement.Identifier(0), whileStatement.expression(0), whileStatement.expression(1), "up to");
+            else
+                whileCommand = new WhileCommand(whileStatement.Identifier(0), whileStatement.expression(0), whileStatement.expression(1), "down to");
+        }
         StatementControlOverseer.getInstance().openControlledCommand(whileCommand);
 
         BlockAnalyzer blockAnalyzer = new BlockAnalyzer();
