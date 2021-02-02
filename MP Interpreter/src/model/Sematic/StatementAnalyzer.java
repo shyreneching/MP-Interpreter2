@@ -163,6 +163,28 @@ public class StatementAnalyzer {
 
     }
     private void handleReturnStatement(ExpressionContext returnExpr) {
+        ReturnCommand returnCommand = new ReturnCommand(returnExpr, ExecutionManager.getInstance().getCurrentFunction());
 
+        StatementControlOverseer statementControl = StatementControlOverseer.getInstance();
+
+        if(statementControl.isInConditionalCommand()) {
+            IConditionalCommand conditionalCommand = (IConditionalCommand) statementControl.getActiveControlledCommand();
+
+            if(statementControl.isInPositiveRule()) {
+                conditionalCommand.addPositiveCommand(returnCommand);
+            }
+            else {
+                String functionName = ExecutionManager.getInstance().getCurrentFunction().getMethodName();
+                conditionalCommand.addNegativeCommand(returnCommand);
+            }
+        }
+
+        else if(statementControl.isInControlledCommand()) {
+            IControlledCommand controlledCommand = (IControlledCommand) statementControl.getActiveControlledCommand();
+            controlledCommand.addCommand(returnCommand);
+        }
+        else {
+            ExecutionManager.getInstance().addCommand(returnCommand);
+        }
     }
 }

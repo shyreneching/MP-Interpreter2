@@ -94,7 +94,8 @@ public class LocalVariableAnalyzer implements ParseTreeListener {
                     if(isFinal){
                         pseudoValue.makeConst();
                     }
-                    AssignmentCommand assignmentCommand = new AssignmentCommand(varCtx.Identifier(), varCtx.variableInitializer().expression());
+                    //Shyrene added - using variable declaration assignment command
+                    AssignmentCommand assignmentCommand = new AssignmentCommand(varCtx.Identifier(), varCtx.variableInitializer().expression(), pseudoValue.getPrimitiveType());
                     CommandExecuter.handleStatementExecution(assignmentCommand);
 
                 } else{

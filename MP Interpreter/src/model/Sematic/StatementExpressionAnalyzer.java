@@ -48,7 +48,7 @@ public class StatementExpressionAnalyzer {
 //        }
 
         AssignmentCommand assignmentCommand;
-        if(assignment.expression(1) != null){
+        if(assignment.expression(1) != null){ // Shyrene added - for array declaration
             assignmentCommand = new AssignmentCommand(assignment.Identifier(), assignment.expression(1), assignment.expression(0));
         } else {
             assignmentCommand = new AssignmentCommand(assignment.Identifier(), assignment.expression(0));

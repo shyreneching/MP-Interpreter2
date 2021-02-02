@@ -34,7 +34,36 @@ public class AssignmentCommand implements ICommand, ParseTreeListener {
         this.rightHandExpr = rightHandExpr;
         leftHandArrayAccessor = false;
 
-//        UndeclaredChecker.verifyVariableOrConst(leftHandExpr);
+        UndeclaredChecker.verifyVariableOrConst(leftHandExpr);
+
+        ConstChecker.verifyVariableOrConst(leftHandExpr);
+
+        UndeclaredChecker undeclaredChecker = new UndeclaredChecker(this.rightHandExpr);
+        undeclaredChecker.verify();
+
+
+        ParseTreeWalker functionWalker = new ParseTreeWalker();
+        functionWalker.walk(this, this.rightHandExpr);
+
+
+        PseudoValue pseudoValue;
+        if(ExecutionManager.getInstance().isInFunctionExecution()) {
+            pseudoValue = VariableSearcher.searchVariableInFunction(ExecutionManager.getInstance().getCurrentFunction(), this.leftHandExpr.getText());
+        }
+        else {
+            pseudoValue = VariableSearcher.searchVariable(this.leftHandExpr.getText());
+        }
+
+        TypeChecker typeChecker = new TypeChecker(pseudoValue, this.rightHandExpr);
+        typeChecker.verify();
+    }
+
+    // Shyrene added - for variable declaration
+    public AssignmentCommand(TerminalNode leftHandExpr,
+                             ExpressionContext rightHandExpr, PseudoValue.PrimitiveType primitiveType) {
+        this.leftHandExpr = leftHandExpr;
+        this.rightHandExpr = rightHandExpr;
+        leftHandArrayAccessor = false;
 
         ConstChecker.verifyVariableOrConst(leftHandExpr);
 
@@ -90,6 +119,8 @@ public class AssignmentCommand implements ICommand, ParseTreeListener {
         TypeChecker typeChecker = new TypeChecker(pseudoValue, this.rightHandExpr);
         typeChecker.verify();
     }
+
+
 
     @Override
     public void execute() {
