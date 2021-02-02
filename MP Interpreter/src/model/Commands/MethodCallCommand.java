@@ -1,6 +1,8 @@
 package model.Commands;
 
+import model.ErrorChecking.ErrorRepository;
 import model.ErrorChecking.ParameterMismatchChecker;
+import model.ErrorChecking.PseudoErrorListener;
 import model.Item.PseudoMethod;
 import model.Item.PseudoValue;
 import model.PseudoCodeParser.*;
@@ -19,10 +21,12 @@ public class MethodCallCommand implements ICommand, ParseTreeListener {
     private PseudoMethod method;
     private ExpressionListContext ctx;
     private String functionName;
+    private int lineNumber;
 
-    public MethodCallCommand(TerminalNode functionName, ExpressionListContext ctx){
+    public MethodCallCommand(TerminalNode functionName, ExpressionListContext ctx, int lineNumber){
         this.functionName = functionName.getText();
         this.ctx = ctx;
+        this.lineNumber = lineNumber;
         this.findMethod();
 
         if(ctx != null) {
@@ -76,8 +80,15 @@ public class MethodCallCommand implements ICommand, ParseTreeListener {
         return this.method.getReturnValue();
     }
 
+//    public void setLineNumber(int lineNumber){
+//        this.lineNumber = lineNumber;
+//    }
+
     private void verifyParameters() {
         if(this.ctx == null || this.ctx.expression() == null ) {
+            if(this.method.getParameterValueSize() > 0){
+                PseudoErrorListener.reportCustomError(ErrorRepository.PARAMETER_COUNT_MISMATCH, "", this.functionName, this.lineNumber);
+            }
             return;
         }
 

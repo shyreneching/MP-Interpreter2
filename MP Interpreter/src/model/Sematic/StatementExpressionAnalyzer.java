@@ -32,7 +32,7 @@ public class StatementExpressionAnalyzer {
             PseudoErrorListener.reportCustomError(ErrorRepository.UNDECLARED_FUNCTION, "", methodInvocation.Identifier().getText(), lineNumber);
         }
 
-        MethodCallCommand methodCallCommand = new MethodCallCommand(methodInvocation.Identifier(), methodInvocation.expressionList(0));
+        MethodCallCommand methodCallCommand = new MethodCallCommand(methodInvocation.Identifier(), methodInvocation.expressionList(0), methodInvocation.getStart().getLine());
         CommandExecuter.handleStatementExecution(methodCallCommand);
     }
 
