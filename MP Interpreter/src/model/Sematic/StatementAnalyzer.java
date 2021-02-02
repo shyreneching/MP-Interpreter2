@@ -1,13 +1,16 @@
 package model.Sematic;
 
 import model.Commands.*;
+import model.ErrorChecking.ErrorRepository;
 import model.ErrorChecking.MultipleVariableDeclarationChecker;
+import model.ErrorChecking.PseudoErrorListener;
 import model.ErrorChecking.UndeclaredChecker;
 import model.Execution.ExecutionManager;
 import model.PseudoCodeParser.*;
 import model.SymbolTable.Scope.ScopeCreator;
 
 import java.util.List;
+import java.util.regex.PatternSyntaxException;
 
 public class StatementAnalyzer {
     public void analyze(StatementContext statementCtx) {
@@ -116,7 +119,21 @@ public class StatementAnalyzer {
         laterBound.execute();
         ExpressionCommand firstBound = new ExpressionCommand(forStatement.forheader().forinitializer().customAssignError().expression());
         firstBound.execute();
-        if (!firstBound.isString() && firstBound.getValueResult().stripTrailingZeros().scale() <= 0 &&!laterBound.isString() && laterBound.getValueResult().stripTrailingZeros().scale() <= 0){
+        boolean lefthand = false;
+        boolean righthand = false;
+        if (!firstBound.isString() && firstBound.getValueResult().stripTrailingZeros().scale() <= 0){
+            lefthand = true;
+        } else {
+            PseudoErrorListener.reportCustomError(ErrorRepository.DEFAULT, "For loop left hand is not 'INT' declaration. ", forStatement.getStart().getLine());
+        }
+
+        if(!laterBound.isString() && laterBound.getValueResult().stripTrailingZeros().scale() <= 0){
+            righthand = true;
+        } else{
+            PseudoErrorListener.reportCustomError(ErrorRepository.DEFAULT, "For loop right hand is not 'INT' declaration. ", forStatement.getStart().getLine());
+        }
+
+        if(lefthand && righthand){
             ScopeCreator.getInstance().openScope();
 
             String iteration = "";
