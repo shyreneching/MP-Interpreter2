@@ -93,25 +93,64 @@ public class StatementAnalyzer {
     }
 
     public void handleWhileStatement(WhileStatementContext whileStatement) {
-        BlockContext block = whileStatement.block();
-        WhileCommand whileCommand;
-        if(whileStatement.expression().size() == 1) {
-            if (whileStatement.UPTO() != null)
-                whileCommand = new WhileCommand(whileStatement.Identifier(0), whileStatement.expression(0), "up to");
-            else
-                whileCommand = new WhileCommand(whileStatement.Identifier(0), whileStatement.expression(0), "down to");
-        } else {
-            if (whileStatement.UPTO() != null)
-                whileCommand = new WhileCommand(whileStatement.Identifier(0), whileStatement.expression(0), whileStatement.expression(1), "up to");
-            else
-                whileCommand = new WhileCommand(whileStatement.Identifier(0), whileStatement.expression(0), whileStatement.expression(1), "down to");
+        boolean isSuccess;
+
+        isSuccess = UndeclaredChecker.verifyVariableOrConst(whileStatement.Identifier(0));
+        String msg = "right hand";
+        boolean lefthand = false;
+        boolean righthand = true;
+
+        if(isSuccess){
+            UndeclaredChecker firstCheck = new UndeclaredChecker(whileStatement.expression(0));
+            firstCheck.verify();
+            ExpressionCommand firstBound = new ExpressionCommand(whileStatement.expression(0));
+            firstBound.execute();
+
+            if(whileStatement.expression(1) != null){
+                msg = "array index";
+                UndeclaredChecker secondCheck = new UndeclaredChecker(whileStatement.expression(1));
+                secondCheck.verify();
+                ExpressionCommand laterBound= new ExpressionCommand(whileStatement.expression(1));
+                laterBound.execute();
+                if(!laterBound.isString() && laterBound.getValueResult().stripTrailingZeros().scale() <= 0){
+                    righthand = true;
+                } else{
+                    righthand = false;
+                    PseudoErrorListener.reportCustomError(ErrorRepository.DEFAULT, "While loop right hand is not 'INT' declaration. ", whileStatement.getStart().getLine());
+                }
+            }
+
+
+            if (!firstBound.isString() && firstBound.getValueResult().stripTrailingZeros().scale() <= 0){
+                lefthand = true;
+            } else {
+                PseudoErrorListener.reportCustomError(ErrorRepository.DEFAULT, "While loop " + msg + " is not 'INT' declaration. ", whileStatement.getStart().getLine());
+            }
+
+            if(lefthand && righthand){
+                BlockContext block = whileStatement.block();
+                WhileCommand whileCommand;
+                if(whileStatement.expression().size() == 1) {
+                    if (whileStatement.UPTO() != null)
+                        whileCommand = new WhileCommand(whileStatement.Identifier(0), whileStatement.expression(0), "up to");
+                    else
+                        whileCommand = new WhileCommand(whileStatement.Identifier(0), whileStatement.expression(0), "down to");
+                } else {
+                    if (whileStatement.UPTO() != null)
+                        whileCommand = new WhileCommand(whileStatement.Identifier(0), whileStatement.expression(0), whileStatement.expression(1), "up to");
+                    else
+                        whileCommand = new WhileCommand(whileStatement.Identifier(0), whileStatement.expression(0), whileStatement.expression(1), "down to");
+                }
+                StatementControlOverseer.getInstance().openControlledCommand(whileCommand);
+
+                BlockAnalyzer blockAnalyzer = new BlockAnalyzer();
+                blockAnalyzer.analyze(block);
+
+                StatementControlOverseer.getInstance().compileControlledCommand();
+            }
         }
-        StatementControlOverseer.getInstance().openControlledCommand(whileCommand);
 
-        BlockAnalyzer blockAnalyzer = new BlockAnalyzer();
-        blockAnalyzer.analyze(block);
 
-        StatementControlOverseer.getInstance().compileControlledCommand();
     }
 
     private void handleForStatement(ForStatementContext forStatement) {

@@ -121,7 +121,11 @@ public class UndeclaredChecker implements IErrorChecker, ParseTreeListener {
             PseudoMethod pseudoMethod = ExecutionManager.getInstance().getCurrentFunction();
             pseudoValue = VariableSearcher.searchVariableInFunction(pseudoMethod, node.getText());
         } else{
-            pseudoValue = VariableSearcher.searchVariableInMain(SymbolTableManager.getInstance().getParentScope(), node.getText());
+            pseudoValue = VariableSearcher.
+                    searchVariableInMain(SymbolTableManager.
+                            getInstance().
+                            getParentScope(),
+                            node.getText());
         }
 
 
