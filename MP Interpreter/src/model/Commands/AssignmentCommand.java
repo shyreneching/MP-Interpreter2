@@ -132,7 +132,7 @@ public class AssignmentCommand implements ICommand, ParseTreeListener {
 
         if(this.isLeftHandArrayAccessor()) {
 
-            if(expressionCommand.isNumeric()) {
+            if(!expressionCommand.isString()) {
                 System.out.println("AssignmentCommand - " + expressionCommand.getValueResult().toEngineeringString());
                 this.handleArrayAssignment(expressionCommand.getValueResult().toEngineeringString());
             }
@@ -142,7 +142,7 @@ public class AssignmentCommand implements ICommand, ParseTreeListener {
         else {
             PseudoValue pseudoValue = VariableSearcher.searchVariable(this.leftHandExpr.getText());
 
-            if (expressionCommand.isNumeric()) {
+            if (!expressionCommand.isString()) {
 
                 if (!pseudoValue.isConst()) {
                     AssignmentUtils.assignAppropriateValue(pseudoValue, expressionCommand.getValueResult());

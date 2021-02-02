@@ -121,7 +121,7 @@ public class MethodCallCommand implements ICommand, ParseTreeListener {
                 ExpressionCommand expressionCommand = new ExpressionCommand(expressionContext);
                 expressionCommand.execute();
 
-                if (expressionCommand.isNumeric()) {
+                if (!expressionCommand.isString()) {
                     this.method.mapParameterByValueAt(expressionCommand.getValueResult().toEngineeringString(), i);
                 }
                 else {
