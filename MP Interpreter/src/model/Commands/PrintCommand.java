@@ -76,8 +76,11 @@ public class PrintCommand implements ICommand, ParseTreeListener {
             ExpressionCommand expressionCommand = new ExpressionCommand(expressionContext);
             expressionCommand.execute();
 
-            if (expressionCommand.isNumeric())
+            if (expressionCommand.isNumeric()){
+                System.out.println("PrintCommand - numeric result for expr command ");
                 printstatement += expressionCommand.getValueResult().toEngineeringString();
+            }
+
             else
                 printstatement += expressionCommand.getStringResult();
 

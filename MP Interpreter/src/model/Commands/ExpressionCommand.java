@@ -170,6 +170,7 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
                 this.valueResult = evalEx.eval(false);
                 this.stringResult = this.valueResult.toEngineeringString();
             } catch (Expression.ExpressionException ex) {
+                System.out.println("ExpressionCommand - ExpressionException");
                 this.valueResult = new BigDecimal(0);
                 this.stringResult = "";
                 this.hasException = true;
@@ -336,7 +337,12 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
 //                this.modifiedExp = this.modifiedExp.replace(exprCtx.getText(),
 //                        "\"" + pseudoMethod.getReturnValue().getValue().toString() + "\"");
             } else {
-                if(!map.containsKey(exprCtx.getText())){
+                if (pseudoMethod.getReturnValue() == null){
+                    this.modifiedExp = " ";
+                    map.put(exprCtx.getText(), "\"" + " ");
+                    PseudoErrorListener.reportCustomError(ErrorRepository.DEFAULT, "Void function has no return value.", exprCtx.getStart().getLine());
+                }
+                else if(!map.containsKey(exprCtx.getText())){
                     map.put(exprCtx.getText(), "\"" + pseudoMethod.getReturnValue().getValue().toString());
                 }
 //                this.modifiedExp = this.modifiedExp.replace(exprCtx.getText(),

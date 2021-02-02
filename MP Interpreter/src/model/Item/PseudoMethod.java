@@ -120,16 +120,16 @@ public class PseudoMethod implements IControlledCommand {
             return;
         }
 
-        /*PseudoArray pseudoArray = (PseudoArray) pseudoValue.getValue();
+        PseudoArray pseudoArray = (PseudoArray) pseudoValue.getValue();
 
         PseudoArray newArray = new PseudoArray(pseudoArray.getPrimitiveType(), identifier);
-        PseudoValue newValue = new PseudoValue(newArray, PrimitiveType.ARRAY);
+        PseudoValue newValue = new PseudoValue(newArray, "array");
 
         newArray.initializeSize(pseudoArray.getSize());
 
         for(int i = 0; i < newArray.getSize(); i++) {
             newArray.updateValueAt(pseudoArray.getValueAt(i), i);
-        }*/
+        }
 
         this.parameterValues.put(this.getParameterKeyAt(index), pseudoValue);
 
@@ -234,10 +234,10 @@ public class PseudoMethod implements IControlledCommand {
                 if (command instanceof ReturnCommand) {
                     break;
                 } else if (command instanceof IFCommand) {
-//                    if (((IFCommand) command).isReturned()) {
-//                        ((IFCommand) command).resetReturnFlag();
-//                        break;
-//                    }
+                    if (((IFCommand) command).isReturned()) {
+                        ((IFCommand) command).resetReturn();
+                        break;
+                    }
                 }
 
                 if (ExecutionManager.getInstance().isAborted())
