@@ -179,8 +179,8 @@ public class ForCommand implements IControlledCommand  {
         expressionCommand.execute();
 
         if(this.isUpto)
-            return expressionCommand.getValueResult().intValue() <= x;
-        else
             return expressionCommand.getValueResult().intValue() >= x;
+        else
+            return expressionCommand.getValueResult().intValue() <= x;
     }
 }
