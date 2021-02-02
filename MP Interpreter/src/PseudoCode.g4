@@ -152,7 +152,7 @@ forinitializer
     ;
 
 customAssignError
-    :	'=' variableInitializer
+    :	'=' expression
     |   {notifyErrorListeners("did not find assignment operator");}
     ;
 
