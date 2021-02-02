@@ -124,7 +124,7 @@ public class LocalVariableAnalyzer implements ParseTreeListener {
                         // evaluate varCtx.variableInitializer().arrayInitializer().expression();)
 //                    TypeChecker.isNumeric(varCtx.variableInitializer().arrayInitializer().expression().getText());
                         int arraysize;
-                        if(expressionCommand.isNumeric() && !expressionCommand.getValueResult().toString().contains(".") ){
+                        if(!expressionCommand.isString() && !expressionCommand.getValueResult().toString().contains(".") ){
                             arraysize = expressionCommand.getValueResult().intValue();
                             PseudoArray pseudoArray = PseudoArray.createArray(arrayType,varCtx.Identifier().getText());
 //                    if(!(arraysize instanceof Integer)){

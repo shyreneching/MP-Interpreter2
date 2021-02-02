@@ -72,9 +72,11 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
         ParseTreeWalker treeWalker = new ParseTreeWalker();
         treeWalker.walk(this, this.exprCtx);
 
-        isNumeric = (!this.modifiedExp.contains("\"") && !this.modifiedExp.contains("\'")) || !isString;
+//        isNumeric = (!this.modifiedExp.contains("\"") && !this.modifiedExp.contains("\'")) || !isString;
+            if(!isString && (this.modifiedExp.contains("\"") || this.modifiedExp.contains("\'")))
+                isString = true;
 
-        if (!isNumeric) {
+        if (isString) {
 
             if (this.modifiedExp.contains("==") || this.modifiedExp.contains("!=")) {
 
@@ -131,7 +133,7 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
 //                System.out.println("ExpressionCommand - modifiedExp: " + modifiedExp);
 
                 this.valueResult = e.eval();
-                isNumeric = true;
+                isString = false;
             }else if (this.exprCtx.expression().size() != 0 && !isArrayElement(exprCtx) && !isFunctionCall(exprCtx)) {
                 for (PseudoCodeParser.ExpressionContext expCtx :
                         this.exprCtx.expression()) {
@@ -141,7 +143,7 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
                         ExpressionCommand exprCmd = new ExpressionCommand(expCtx);
                         exprCmd.execute();
 
-                        if (exprCmd.isNumeric())
+                        if (!exprCmd.isString())
                             this.stringResult += exprCmd.getValueResult().toEngineeringString();
                         else
                             this.stringResult += exprCmd.getStringResult();
@@ -167,7 +169,7 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
 //            for(String s : map.keySet()){
 //                evalEx.setVariable(s, map.get(s));
 //            }
-//            System.out.println(modifiedExp);
+            System.out.println("MODIFIED EXPR " + evalEx.toString());
 //
 //            evalEx = change(evalEx, map);
 
@@ -192,14 +194,19 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
 
         }
 
-        isString = false;
+//        isString = false;
     }
 
     public Expression change(Expression expr, HashMap<String,String> map){
-        Iterator<Expression.Token> iter = expr.getExpressionTokenizer();
+        Iterator<Expression.Token> iter = expr.getExpressionTokenizer();;
         List<String> copy = new ArrayList<String>();
-        while (iter.hasNext())
-            copy.add(iter.next().toString());
+        while (iter.hasNext()){
+            Expression.Token t = iter.next();
+            if(t == null)
+                break;
+            else
+                copy.add(t.toString());
+        }
 
         for(String s: copy)
             System.out.println(s);
@@ -209,8 +216,13 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
 
             Iterator<Expression.Token> iter2 = temp.getExpressionTokenizer();
             List<String> copy2 = new ArrayList<String>();
-            while (iter2.hasNext())
-                copy2.add(iter2.next().toString());
+            while (iter2.hasNext()){
+                Expression.Token t = iter2.next();
+                if(t == null)
+                    break;
+                else
+                    copy2.add(t.toString());
+            }
 
 
             copy = alter(copy, copy2, map.get(s));
@@ -373,7 +385,7 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
                     expressionCommand.execute();
 
                     if (expressionCommand.getValueResult() != null || !expressionCommand.getStringResult().equals("")) {
-                        if (expressionCommand.isNumeric())
+                        if (!expressionCommand.isString())
                             pseudoMethod.mapParameterByValueAt(expressionCommand.getValueResult().toEngineeringString(), i);
                         else
                             pseudoMethod.mapParameterByValueAt(expressionCommand.getStringResult(), i);
@@ -401,8 +413,12 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
                     isString = true;
                 }
                 else if(!map.containsKey(exprCtx.getText())){
-                    System.out.println("ExpressionCommand - method execution get returnValue: " + pseudoMethod.getReturnValue().getValue());
-                    map.put(exprCtx.getText(), "\"" + pseudoMethod.getReturnValue().getValue().toString());
+
+//                    System.out.println("ExpressionCommand - method execution get returnValue: " + pseudoMethod.getReturnValue().getValue());
+//                    map.put(exprCtx.getText(), "\"" + pseudoMethod.getReturnValue().getValue().toString());
+
+                    map.put(exprCtx.getText(), pseudoMethod.getReturnValue().getValue().toString());
+
                 }
 //                this.modifiedExp = this.modifiedExp.replace(exprCtx.getText(),
 //                        pseudoMethod.getReturnValue().getValue().toString());
@@ -538,8 +554,8 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
         return modifiedExp;
     }
 
-    public boolean isNumeric() {
-        return isNumeric;
+    public boolean isString() {
+        return isString;
     }
 
     public boolean isHasException() {

@@ -39,7 +39,7 @@ public class ReturnCommand implements ICommand {
         System.out.println("ReturnCommand - method return value: " + this.assignedPseudoMethod.getReturnValue().getValue());
         PseudoValue pseudoValue = this.assignedPseudoMethod.getReturnValue();
 
-        if (checker.isNumeric())
+        if (!checker.isString())
             AssignmentUtils.assignAppropriateValue(pseudoValue, checker.getValueResult());
         else
             AssignmentUtils.assignAppropriateValue(pseudoValue, checker.getStringResult());
