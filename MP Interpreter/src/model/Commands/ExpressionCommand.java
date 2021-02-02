@@ -123,7 +123,7 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
                 for(String s : map.keySet()){
                     e.setVariable(s, map.get(s));
                 }
-                System.out.println(modifiedExp);
+                System.out.println("ExpressionCommand - modifiedExp: " + modifiedExp);
 
                 this.valueResult = e.eval();
                 isNumeric = true;
