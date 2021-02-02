@@ -138,8 +138,15 @@ public class StatementAnalyzer {
     }
 
     private void handlePrintStatement(ExpressionContext ctx) {
-        PrintCommand printCommand = new PrintCommand(ctx);
-        CommandExecuter.handleStatementExecution(printCommand);
+
+        ExpressionAnalyzer expressionAnalyzer = new ExpressionAnalyzer();
+        expressionAnalyzer.analyze(ctx);
+        if(!expressionAnalyzer.isHasSemanticError()){
+            PrintCommand printCommand = new PrintCommand(ctx);
+
+            CommandExecuter.handleStatementExecution(printCommand);
+        }
+
 //        StatementControlOverseer statementControl = StatementControlOverseer.getInstance();
 //        //add to conditional controlled command
 //        if(statementControl.isInConditionalCommand()) {

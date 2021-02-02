@@ -397,7 +397,7 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
                 if (pseudoMethod.getReturnValue() == null){
 //                    this.modifiedExp = "\"\"";
                     map.put(exprCtx.getText(), "\"" + "\"\"");
-                    PseudoErrorListener.reportCustomError(ErrorRepository.DEFAULT, "Void function has no return value.", exprCtx.getStart().getLine());
+//                    PseudoErrorListener.reportCustomError(ErrorRepository.DEFAULT, "Void function has no return value.", exprCtx.getStart().getLine());
                     isString = true;
                 }
                 else if(!map.containsKey(exprCtx.getText())){

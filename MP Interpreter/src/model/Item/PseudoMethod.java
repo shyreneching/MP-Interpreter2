@@ -224,6 +224,8 @@ public class PseudoMethod implements IControlledCommand {
 
         LocalVarTracker.getInstance().startNewSession();
 
+        System.out.println("PseudoMethod - executing!");
+
         try {
             for(ICommand command : this.commandSequences) {
                 executionMonitor.tryExecution();

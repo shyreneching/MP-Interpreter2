@@ -46,11 +46,15 @@ public class StatementExpressionAnalyzer {
 //            int lineNumber = firstToken.getLine();
 //            PseudoErrorListener.reportCustomError(ErrorRepository.UNDECLARED_VARIABLE, "", assignment.Identifier().getText(), lineNumber);
 //        }
+        ExpressionAnalyzer expressionAnalyzer = new ExpressionAnalyzer();
+
 
         AssignmentCommand assignmentCommand;
         if(assignment.expression(1) != null){ // Shyrene added - for array declaration
             assignmentCommand = new AssignmentCommand(assignment.Identifier(), assignment.expression(1), assignment.expression(0));
+            expressionAnalyzer.analyze(assignment.expression(1));
         } else {
+            expressionAnalyzer.analyze(assignment.expression(0));
             assignmentCommand = new AssignmentCommand(assignment.Identifier(), assignment.expression(0));
         }
         CommandExecuter.handleStatementExecution(assignmentCommand);
