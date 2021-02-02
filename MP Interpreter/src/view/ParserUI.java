@@ -271,10 +271,13 @@ public class ParserUI extends Application implements NotificationListener {
                 combinedErrorsList.sort(Comparator.comparingInt(ErrorMessage::getLineNumber));
                 //System.out.println(combinedErrorsList.size());
 
-                if (combinedErrorsList.size() > 0){
+                ArrayList<ErrorMessage> finalErrorsList = new ArrayList<ErrorMessage>();
+                finalErrorsList = removeDuplicateErrorMessages(combinedErrorsList);
+
+                if (finalErrorsList.size() > 0){
                     String output = "";
 
-                    for (ErrorMessage error : combinedErrorsList){
+                    for (ErrorMessage error : finalErrorsList){
                         output = output + error.getErrorMessage() + "\n";
                     }
 
@@ -398,4 +401,27 @@ public class ParserUI extends Application implements NotificationListener {
         printToOutput("Hello");
         printToOutput("\n");
     }
+
+    public static ArrayList<ErrorMessage> removeDuplicateErrorMessages (ArrayList<ErrorMessage> errorMessageArrayList){
+        ArrayList<ErrorMessage> removedDuplicatesList = new ArrayList<ErrorMessage>();
+        boolean contains = false;
+
+        for (ErrorMessage error : errorMessageArrayList) {
+
+            // If this element is not present in newList
+            // then add it
+            System.out.println("Error message in errorMessageArrayList: " + error.getErrorMessage() + "\n");
+            contains = removedDuplicatesList.contains(error);
+            System.out.println(contains + "\n");
+
+            if (!removedDuplicatesList.contains(error)) {
+
+                removedDuplicatesList.add(error);
+                System.out.println("Added error to list: " + error.getErrorMessage());
+            }
+        }
+
+        return removedDuplicatesList;
+    }
+
 }

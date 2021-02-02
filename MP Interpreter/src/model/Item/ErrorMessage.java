@@ -17,4 +17,10 @@ public class ErrorMessage {
     public String getErrorMessage() {
         return errorMessage;
     }
+
+    @Override
+    public boolean equals(Object e){
+        ErrorMessage temp = (ErrorMessage) e;
+        return temp.getErrorMessage().equals(this.errorMessage);
+    }
 }
