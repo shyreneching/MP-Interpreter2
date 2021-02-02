@@ -59,11 +59,11 @@ public class ExpressionAnalyzer implements ParseTreeListener {
             this.setHasSemanticError();
             PseudoErrorListener.reportCustomError(ErrorRepository.DEFAULT, "Void function has no return value.", exprCtx.getStart().getLine());
         } else{
-            System.out.println("ExpressionAnalyzer - expr: " + exprCtx.getText());
-            System.out.println("ExpressionAnalyzer - function name: " + exprCtx.Identifier());
+//            System.out.println("ExpressionAnalyzer - expr: " + exprCtx.getText());
+//            System.out.println("ExpressionAnalyzer - function name: " + exprCtx.Identifier());
             if(exprCtx.expressionList() == null && pseudoMethod.getParameterValueSize() > 0) {
-                System.out.println("1ExpressionAnalyzer - paramsN: " + pseudoMethod.getParameterValueSize());
-                System.out.println("1ExpressionAnalyzer - call list: " + exprCtx.expressionList() );
+//                System.out.println("1ExpressionAnalyzer - paramsN: " + pseudoMethod.getParameterValueSize());
+//                System.out.println("1ExpressionAnalyzer - call list: " + exprCtx.expressionList() );
                 PseudoErrorListener.reportCustomError(ErrorRepository.PARAMETER_COUNT_MISMATCH, "", pseudoMethod.getMethodName(),exprCtx.getStart().getLine());
                 this.setHasSemanticError();
             }else{
