@@ -146,7 +146,7 @@ forheader
     ;
 
 forinitializer
-    :	unannType? Identifier customAssignError
+    :	'int'? Identifier customAssignError
     |   Identifier '[' expression ']' customAssignError
     |	Identifier ('[' expression ']')?
     ;

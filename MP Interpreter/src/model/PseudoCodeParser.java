@@ -2107,9 +2107,7 @@ public class PseudoCodeParser extends Parser {
 		public CustomAssignErrorContext customAssignError() {
 			return getRuleContext(CustomAssignErrorContext.class,0);
 		}
-		public UnannTypeContext unannType() {
-			return getRuleContext(UnannTypeContext.class,0);
-		}
+		public TerminalNode INT() { return getToken(PseudoCodeParser.INT, 0); }
 		public TerminalNode LBRACK() { return getToken(PseudoCodeParser.LBRACK, 0); }
 		public ExpressionContext expression() {
 			return getRuleContext(ExpressionContext.class,0);
@@ -2148,10 +2146,10 @@ public class PseudoCodeParser extends Parser {
 				setState(378);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << STRING) | (1L << BOOL) | (1L << FLOAT) | (1L << INT))) != 0)) {
+				if (_la==INT) {
 					{
 					setState(377);
-					unannType();
+					match(INT);
 					}
 				}
 
@@ -4648,7 +4646,7 @@ public class PseudoCodeParser extends Parser {
 		"\u016a\3\2\2\2\u0172\u016b\3\2\2\2\u0173\u0174\3\2\2\2\u0174\u0172\3\2"+
 		"\2\2\u0174\u0175\3\2\2\2\u0175\u0176\3\2\2\2\u0176\u0177\5D#\2\u0177\u0178"+
 		"\b\26\1\2\u0178\u017a\3\2\2\2\u0179\u015e\3\2\2\2\u0179\u0163\3\2\2\2"+
-		"\u0179\u0168\3\2\2\2\u017a+\3\2\2\2\u017b\u017d\5\26\f\2\u017c\u017b\3"+
+		"\u0179\u0168\3\2\2\2\u017a+\3\2\2\2\u017b\u017d\7\23\2\2\u017c\u017b\3"+
 		"\2\2\2\u017c\u017d\3\2\2\2\u017d\u017e\3\2\2\2\u017e\u017f\7;\2\2\u017f"+
 		"\u018e\5.\30\2\u0180\u0181\7;\2\2\u0181\u0182\7!\2\2\u0182\u0183\5D#\2"+
 		"\u0183\u0184\7\"\2\2\u0184\u0185\5.\30\2\u0185\u018e\3\2\2\2\u0186\u018b"+

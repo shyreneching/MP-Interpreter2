@@ -2,8 +2,10 @@ package model.Commands;
 
 import model.Execution.ExecutionManager;
 import model.Execution.ExecutionMonitor;
+import model.Item.PseudoValue;
 import model.PseudoCodeParser.*;
 import model.Sematic.IdentifierMapper;
+import model.Sematic.VariableSearcher;
 import model.Utils.LocalVarTracker;
 
 import java.util.ArrayList;
@@ -42,7 +44,7 @@ public class ForCommand implements IControlledCommand  {
 //
 //        try {
 //            //evaluate the given condition
-//            while(evaluateCondition()) {
+//            while(evaluateCondition(variableUB, exprLB)) {
 //                for(ICommand command : this.commandSequences) {
 //                    executionMonitor.tryExecution();
 //                    command.execute();
@@ -62,7 +64,7 @@ public class ForCommand implements IControlledCommand  {
 //            }
 //
 //        } catch(InterruptedException e) {
-//            System.out.println(TAG + ": " + "Monitor block interrupted! " +e.getMessage());
+//            System.out.println("Block interrupted! " +e.getMessage());
 //        }
     }
 
@@ -76,17 +78,54 @@ public class ForCommand implements IControlledCommand  {
         this.forstatement.add(command);
     }
 
-    public static boolean evaluateCondition(ExpressionContext expressionContext) {
-        if(expressionContext.getText().equals("T")) {
-            return true;
-        }
-        else if(expressionContext.getText().equals("F")) {
-            return false;
-        }
-
-        ExpressionCommand expressionCommand = new ExpressionCommand(expressionContext);
-        expressionCommand.execute();
-
-        return expressionCommand.getValueResult().intValue() == 1;
-    }
+//    public static boolean evaluateCondition(ForinitializerContext variableUB, ExpressionContext expressionContext) {
+//        if(variableUB.expression() == null){
+//            PseudoValue pseudoValue = VariableSearcher.searchVariable(exprCtx.getText());
+////        System.out.println("Entering expression command " + exprCtx.getText());
+////        System.out.println("Pseudo value: " + pseudoValue.getValue());
+//            if (pseudoValue == null || pseudoValue.getPrimitiveType() == PseudoValue.PrimitiveType.ARRAY) {
+//                return false;
+//            }
+//
+//            try {
+//
+//                if (pseudoValue.getPrimitiveType() == PseudoValue.PrimitiveType.STRING) {
+//
+//                } else {
+//                    String s = pseudoValue.getValue().toString();
+//                    if(s.equals("true") && pseudoValue.getPrimitiveType() == PseudoValue.PrimitiveType.BOOLEAN)
+//                        s = "T";
+//                    else if(s.equals("false") && pseudoValue.getPrimitiveType() == PseudoValue.PrimitiveType.BOOLEAN)
+//                        s = "F";
+//                    if(!map.containsKey(exprCtx.getText())){
+//                        map.put(exprCtx.getText(), s);
+//                    }
+////                this.modifiedExp = this.modifiedExp.replaceFirst(exprCtx.getText(),
+////                        pseudoValue.getValue().toString());
+//                }
+////            System.out.println("modified exp: " + modifiedExp);
+//
+//            } catch (NullPointerException e) {
+//                if (pseudoValue.getPrimitiveType() == PseudoValue.PrimitiveType.INT) {
+//                    if(!map.containsKey(exprCtx.getText())){
+//                        map.put(exprCtx.getText(), "0");
+//                    }
+////                this.modifiedExp = this.modifiedExp.replaceFirst(exprCtx.getText(),
+////                        "0");
+//                }else {
+//                    if(!map.containsKey(exprCtx.getText())){
+//                        map.put(exprCtx.getText(), "null");
+//                    }
+////                this.modifiedExp = this.modifiedExp.replaceFirst(exprCtx.getText(),
+////                        "null");
+//                }
+//
+//            }
+//        }
+//
+//        ExpressionCommand expressionCommand = new ExpressionCommand(expressionContext);
+//        expressionCommand.execute();
+//
+//        return expressionCommand.getValueResult().intValue() == 1;
+//    }
 }
