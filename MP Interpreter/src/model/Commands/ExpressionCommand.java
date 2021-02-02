@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 
 public class ExpressionCommand implements ICommand, ParseTreeListener {
 
-    private boolean isNumeric, hasException = false;
+    private boolean isNumeric, hasException = false, methodEval = false;
     private PseudoCodeParser.ExpressionContext exprCtx;
     private String modifiedExp, stringResult = "";
     private BigDecimal valueResult;
@@ -54,21 +54,24 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
             modifiedExp = modifiedExp.substring(0,modifiedExp.length()-1);
         }
 
-        for (PseudoCodeParser.ExpressionContext eCtx : this.exprCtx.expression()) {
-            if (isFunctionCall(eCtx)) {
-                ExpressionCommand expressionCommand = new ExpressionCommand(eCtx);
-                expressionCommand.execute();
-
-                if(!map.containsKey(eCtx.getText())){
-                    map.put(eCtx.getText(), expressionCommand.getModifiedExp());
-                }
-//                this.modifiedExp = this.modifiedExp.replace(eCtx.getText(), expressionCommand.getModifiedExp());
-            }
-        }
+//        for (PseudoCodeParser.ExpressionContext eCtx : this.exprCtx.expression()) {
+//            if (isFunctionCall(eCtx)) {
+//                ExpressionCommand expressionCommand = new ExpressionCommand(eCtx);
+//                expressionCommand.execute();
+//
+//                if(!map.containsKey(eCtx.getText())){
+//                    map.put(eCtx.getText(), expressionCommand.getModifiedExp());
+//                }
+////                this.modifiedExp = this.modifiedExp.replace(eCtx.getText(), expressionCommand.getModifiedExp());
+//
+//                methodEval = false;
+//            }
+//        }
 
         ParseTreeWalker treeWalker = new ParseTreeWalker();
         treeWalker.walk(this, this.exprCtx);
 
+        methodEval = false;
         isNumeric = !this.modifiedExp.contains("\"") && !this.modifiedExp.contains("\'");
 
         if (!isNumeric) {
@@ -199,9 +202,11 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
         if (parserRuleContext instanceof PseudoCodeParser.ExpressionContext) {
             PseudoCodeParser.ExpressionContext exprCtx = (PseudoCodeParser.ExpressionContext) parserRuleContext;
 
-            if (isFunctionCall(exprCtx)) {
+            if (isFunctionCall(exprCtx) && !isInMethod(exprCtx)) {
                 System.out.println("ExprCmmd : THIS IS A FUNCTION CALLLLL - " + exprCtx.getText());
                 this.evaluateFunctionCall(exprCtx);
+
+                methodEval = true;
             } else if (isArrayElement(exprCtx)) {
                 this.evaluateArray(exprCtx);
             } else if (isVariableOrConst(exprCtx)) {
@@ -209,6 +214,16 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
             }
         }
 
+    }
+
+    public boolean isInMethod(PseudoCodeParser.ExpressionContext exprCtx){
+        if(exprCtx.getText().equals(this.exprCtx.getText()) || (exprCtx.getParent().getText().equals(this.exprCtx.getText()) &&
+                !(exprCtx.getParent() instanceof PseudoCodeParser.ExpressionListContext)))
+            return false;
+        else if (exprCtx.getParent() instanceof PseudoCodeParser.ExpressionListContext)
+            return true;
+        else
+            return isInMethod((PseudoCodeParser.ExpressionContext) exprCtx.getParent());
     }
 
     @Override
