@@ -105,9 +105,13 @@ public class ForCommand implements IControlledCommand  {
 
     public void updateCommand(ForinitializerContext variableUB){
         int x;
+        if(this.isUpto)
+            x = 1;
+        else
+            x = -1;
         if(variableUB.expression() == null){
             PseudoValue pseudoValue = VariableSearcher.searchVariable(variableUB.Identifier().getText());
-            x = (int) pseudoValue.getValue() + 1;
+            x = (int) pseudoValue.getValue() + x;
             AssignmentUtils.assignAppropriateValue(pseudoValue, new BigDecimal(x));
         } else {
             PseudoValue value = ExpressionCommand.searchValue(variableUB.Identifier().getText());
@@ -119,7 +123,7 @@ public class ForCommand implements IControlledCommand  {
             ExecutionManager.getInstance().setCurrentCheckedLineNumber(variableUB.getStart().getLine());
             PseudoValue arrayValue = pseudoArray.getValueAt(exprCmd.getValueResult().intValue());
 
-            x = (int) arrayValue.getValue() + 1;
+            x = (int) arrayValue.getValue() + x;
 
             ExecutionManager.getInstance().setCurrentCheckedLineNumber(variableUB.expression().getStart().getLine());
 
@@ -130,7 +134,7 @@ public class ForCommand implements IControlledCommand  {
         }
     }
 
-    public static boolean evaluateCondition(ForinitializerContext variableUB, ExpressionContext expressionContext) {
+    public boolean evaluateCondition(ForinitializerContext variableUB, ExpressionContext expressionContext) {
         int x;
         if(variableUB.expression() == null){
             PseudoValue pseudoValue = VariableSearcher.searchVariable(variableUB.Identifier().getText());
@@ -174,6 +178,9 @@ public class ForCommand implements IControlledCommand  {
         ExpressionCommand expressionCommand = new ExpressionCommand(expressionContext);
         expressionCommand.execute();
 
-        return expressionCommand.getValueResult().intValue() == x;
+        if(this.isUpto)
+            return expressionCommand.getValueResult().intValue() <= x;
+        else
+            return expressionCommand.getValueResult().intValue() >= x;
     }
 }
