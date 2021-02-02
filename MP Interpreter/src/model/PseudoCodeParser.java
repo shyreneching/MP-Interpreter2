@@ -2210,8 +2210,8 @@ public class PseudoCodeParser extends Parser {
 
 	public static class CustomAssignErrorContext extends ParserRuleContext {
 		public TerminalNode ASSIGN() { return getToken(PseudoCodeParser.ASSIGN, 0); }
-		public VariableInitializerContext variableInitializer() {
-			return getRuleContext(VariableInitializerContext.class,0);
+		public ExpressionContext expression() {
+			return getRuleContext(ExpressionContext.class,0);
 		}
 		public CustomAssignErrorContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -2245,7 +2245,7 @@ public class PseudoCodeParser extends Parser {
 				setState(397);
 				match(ASSIGN);
 				setState(398);
-				variableInitializer();
+				expression(0);
 				}
 				break;
 			case UPTO:
@@ -4653,16 +4653,16 @@ public class PseudoCodeParser extends Parser {
 		"\7;\2\2\u0187\u0188\7!\2\2\u0188\u0189\5D#\2\u0189\u018a\7\"\2\2\u018a"+
 		"\u018c\3\2\2\2\u018b\u0187\3\2\2\2\u018b\u018c\3\2\2\2\u018c\u018e\3\2"+
 		"\2\2\u018d\u017c\3\2\2\2\u018d\u0180\3\2\2\2\u018d\u0186\3\2\2\2\u018e"+
-		"-\3\2\2\2\u018f\u0190\7%\2\2\u0190\u0193\5\20\t\2\u0191\u0193\b\30\1\2"+
-		"\u0192\u018f\3\2\2\2\u0192\u0191\3\2\2\2\u0193/\3\2\2\2\u0194\u0195\7"+
-		"\16\2\2\u0195\u0196\5\36\20\2\u0196\u0197\7\26\2\2\u0197\u019c\7;\2\2"+
-		"\u0198\u0199\7!\2\2\u0199\u019a\5D#\2\u019a\u019b\7\"\2\2\u019b\u019d"+
-		"\3\2\2\2\u019c\u0198\3\2\2\2\u019c\u019d\3\2\2\2\u019d\u019e\3\2\2\2\u019e"+
-		"\u019f\7\27\2\2\u019f\u01a0\5D#\2\u01a0\u01c8\3\2\2\2\u01a1\u01a2\7\16"+
-		"\2\2\u01a2\u01a3\5\36\20\2\u01a3\u01a4\7\26\2\2\u01a4\u01a9\7;\2\2\u01a5"+
-		"\u01a6\7!\2\2\u01a6\u01a7\5D#\2\u01a7\u01a8\7\"\2\2\u01a8\u01aa\3\2\2"+
-		"\2\u01a9\u01a5\3\2\2\2\u01a9\u01aa\3\2\2\2\u01aa\u01ab\3\2\2\2\u01ab\u01ac"+
-		"\7\30\2\2\u01ac\u01ad\5D#\2\u01ad\u01c8\3\2\2\2\u01ae\u01af\7\16\2\2\u01af"+
+		"-\3\2\2\2\u018f\u0190\7%\2\2\u0190\u0193\5D#\2\u0191\u0193\b\30\1\2\u0192"+
+		"\u018f\3\2\2\2\u0192\u0191\3\2\2\2\u0193/\3\2\2\2\u0194\u0195\7\16\2\2"+
+		"\u0195\u0196\5\36\20\2\u0196\u0197\7\26\2\2\u0197\u019c\7;\2\2\u0198\u0199"+
+		"\7!\2\2\u0199\u019a\5D#\2\u019a\u019b\7\"\2\2\u019b\u019d\3\2\2\2\u019c"+
+		"\u0198\3\2\2\2\u019c\u019d\3\2\2\2\u019d\u019e\3\2\2\2\u019e\u019f\7\27"+
+		"\2\2\u019f\u01a0\5D#\2\u01a0\u01c8\3\2\2\2\u01a1\u01a2\7\16\2\2\u01a2"+
+		"\u01a3\5\36\20\2\u01a3\u01a4\7\26\2\2\u01a4\u01a9\7;\2\2\u01a5\u01a6\7"+
+		"!\2\2\u01a6\u01a7\5D#\2\u01a7\u01a8\7\"\2\2\u01a8\u01aa\3\2\2\2\u01a9"+
+		"\u01a5\3\2\2\2\u01a9\u01aa\3\2\2\2\u01aa\u01ab\3\2\2\2\u01ab\u01ac\7\30"+
+		"\2\2\u01ac\u01ad\5D#\2\u01ad\u01c8\3\2\2\2\u01ae\u01af\7\16\2\2\u01af"+
 		"\u01b0\5\36\20\2\u01b0\u01b1\7\26\2\2\u01b1\u01b6\7;\2\2\u01b2\u01b3\7"+
 		"!\2\2\u01b3\u01b4\5D#\2\u01b4\u01b5\7\"\2\2\u01b5\u01b7\3\2\2\2\u01b6"+
 		"\u01b2\3\2\2\2\u01b6\u01b7\3\2\2\2\u01b7\u01c0\3\2\2\2\u01b8\u01c1\7\34"+
