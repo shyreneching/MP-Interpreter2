@@ -20,6 +20,7 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -199,6 +200,7 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
             PseudoCodeParser.ExpressionContext exprCtx = (PseudoCodeParser.ExpressionContext) parserRuleContext;
 
             if (isFunctionCall(exprCtx)) {
+                System.out.println("ExprCmmd : THIS IS A FUNCTION CALLLLL - " + exprCtx.getText());
                 this.evaluateFunctionCall(exprCtx);
             } else if (isArrayElement(exprCtx)) {
                 this.evaluateArray(exprCtx);
@@ -267,10 +269,11 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
 
     private void evaluateFunctionCall(PseudoCodeParser.ExpressionContext exprCtx) {
 
+            PseudoCodeParser.ExpressionContext eCtx = exprCtx;
+//        for (PseudoCodeParser.ExpressionContext eCtx : exprCtx.expression()) {
 
-        for (PseudoCodeParser.ExpressionContext eCtx : exprCtx.expression()) {
-
-            String functionName = eCtx.getText();
+            String functionName = eCtx.Identifier().getText();
+            System.out.println("ExprCmmd : MY FUNCTION NAME IS " + functionName);
 
             PseudoMethod pseudoMethod = SymbolTableManager.getInstance().getMethod(functionName);
 
@@ -283,7 +286,8 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
             if (eCtx.expressionList() != null) {
                 exprCtxList = eCtx.expressionList().expression();
             } else {
-                exprCtxList = exprCtx.expressionList().expression();
+//                exprCtxList = exprCtx.expressionList().expression();
+                exprCtxList = new ArrayList<>();
             }
 
             for (int i = 0; i < exprCtxList.size(); i++) {
@@ -326,7 +330,7 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
 
             //System.out.println(TAG + ": " + "After modified EXP function call: " + this.modifiedExp);
 
-        }
+//        }
     }
 
     private void evaluateVariable(PseudoCodeParser.ExpressionContext exprCtx) {
