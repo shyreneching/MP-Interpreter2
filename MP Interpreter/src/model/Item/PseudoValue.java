@@ -22,6 +22,9 @@ public class PseudoValue {
 
     public PseudoValue(Object value, String primitiveType){
         PrimitiveType pt = convert(primitiveType);
+        System.out.println("PseudoValue - primitiveType: " +primitiveType);
+        System.out.println("PseudoValue - pt: " +pt);
+        System.out.println("PseudoValue - value: " +value);
 
         if(checkType(value, pt) || value == null){
             this.value = value;
@@ -51,8 +54,8 @@ public class PseudoValue {
                 return PrimitiveType.DOUBLE;
             case "string":
                 return PrimitiveType.STRING;
-//            case "array":
-//                return PrimitiveType.ARRAY;
+            case "array":
+                return PrimitiveType.ARRAY;
             default:
                 return PrimitiveType.NOT_YET_IDENTIFIED;
         }
@@ -97,8 +100,8 @@ public class PseudoValue {
                 return value instanceof Double;
             case STRING:
                 return value instanceof String;
-//            case ARRAY:
-//                return value instanceof Object;
+            case ARRAY:
+                return value instanceof Object;
             default:
                 return false;
         }

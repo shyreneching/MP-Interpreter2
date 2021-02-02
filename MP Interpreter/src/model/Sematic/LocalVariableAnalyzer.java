@@ -22,9 +22,10 @@ import java.math.BigDecimal;
 public class LocalVariableAnalyzer implements ParseTreeListener {
     private boolean isFinal = false;
     private String type;
+    private LocalVariableDeclarationContext localVariableDeclaration;
 
     public void analyze(LocalVariableDeclarationContext localVariableDeclaration) {
-
+        this.localVariableDeclaration = localVariableDeclaration;
         if(localVariableDeclaration.variableModifier() != null){
             this.isFinal = true;
         }
@@ -95,7 +96,11 @@ public class LocalVariableAnalyzer implements ParseTreeListener {
                 } else{
                     Token firstToken = varCtx.getStart();
                     int lineNumber = firstToken.getLine();
-                    if(!type.equals(varCtx.variableInitializer().arrayInitializer().unannType().getText())){
+                    String arrayType = this.localVariableDeclaration.result().unannType().getText();
+                    System.out.println("LocalVariableAnalyzer - arrayType: "+ arrayType);
+                    System.out.println("LocalVariableAnalyzer - ititialize type: "+ varCtx.variableInitializer().arrayInitializer().unannType().getText());
+
+                    if(!arrayType.equals(varCtx.variableInitializer().arrayInitializer().unannType().getText())){
 
                         PseudoErrorListener.reportCustomError(ErrorRepository.TYPE_MISMATCH, "", lineNumber);
                     }
@@ -106,7 +111,7 @@ public class LocalVariableAnalyzer implements ParseTreeListener {
                     int arraysize;
                     if(expressionCommand.isNumeric() && !expressionCommand.getValueResult().toString().contains(".") ){
                         arraysize = expressionCommand.getValueResult().intValue();
-                        PseudoArray pseudoArray = PseudoArray.createArray(type,varCtx.Identifier().getText());
+                        PseudoArray pseudoArray = PseudoArray.createArray(arrayType,varCtx.Identifier().getText());
 //                    if(!(arraysize instanceof Integer)){
 //                        PseudoErrorListener.reportCustomError(ErrorRepository.DEFAULT, "Invalid array inatialization.", lineNumber);
 //                    }
