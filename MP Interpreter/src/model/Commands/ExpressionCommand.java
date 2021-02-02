@@ -22,6 +22,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -93,6 +94,7 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
                     equalityFunction = "not(" + equalityFunction + ")";
 
                 Expression e = new Expression(equalityFunction);
+                e = change(e, map);
 
                 e.addLazyFunction(e.new LazyFunction("STREQ", 2) {
 
@@ -124,10 +126,10 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
 
                 e.setVariable("T", "true");
                 e.setVariable("F", "false");
-                for(String s : map.keySet()){
-                    e.setVariable(s, map.get(s));
-                }
-                System.out.println("ExpressionCommand - modifiedExp: " + modifiedExp);
+//                for(String s : map.keySet()){
+//                    e.setVariable(s, map.get(s));
+//                }
+//                System.out.println("ExpressionCommand - modifiedExp: " + modifiedExp);
 
                 this.valueResult = e.eval();
                 isNumeric = true;
@@ -160,12 +162,16 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
             }
 
             Expression evalEx = new Expression(this.modifiedExp);
+            evalEx = change(evalEx, map);
             evalEx.setVariable("T", "true");
             evalEx.setVariable("F", "false");
-            for(String s : map.keySet()){
-                evalEx.setVariable(s, map.get(s));
-            }
-            System.out.println(modifiedExp);
+//            for(String s : map.keySet()){
+//                evalEx.setVariable(s, map.get(s));
+//            }
+//            System.out.println(modifiedExp);
+//
+//            evalEx = change(evalEx, map);
+
             try {
                 this.valueResult = evalEx.eval(false);
                 this.stringResult = this.valueResult.toEngineeringString();
@@ -186,6 +192,57 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
             }
 
         }
+    }
+
+    public Expression change(Expression expr, HashMap<String,String> map){
+        Iterator<Expression.Token> iter = expr.getExpressionTokenizer();
+        List<String> copy = new ArrayList<String>();
+        while (iter.hasNext())
+            copy.add(iter.next().toString());
+
+        for(String s: copy)
+            System.out.println(s);
+
+        for(String s : map.keySet()){
+            Expression temp = new Expression(s);
+
+            Iterator<Expression.Token> iter2 = temp.getExpressionTokenizer();
+            List<String> copy2 = new ArrayList<String>();
+            while (iter2.hasNext())
+                copy2.add(iter2.next().toString());
+
+
+            copy = alter(copy, copy2, map.get(s));
+        }
+
+        String str = "";
+        for(String s : copy)
+            str = str + s;
+
+        return new Expression(str);
+    }
+
+    public List<String> alter(List<String> orig, List<String> cmp, String chnge){
+        List<String> arr = new ArrayList<>();
+        for(int i = 0; i < orig.size(); i++){
+            if(orig.get(i).equals(cmp.get(0)) && i + cmp.size() - 1 < orig.size()){
+                boolean check = true;
+                for(int j = 1; j < cmp.size(); j++){
+                    if(!orig.get(i + j).equals(cmp.get(j)))
+                        check = false;
+                }
+                if(check){
+                    arr.add(chnge);
+                    i += cmp.size() - 1;
+                } else{
+                    arr.add(orig.get(i));
+                }
+            } else {
+                arr.add(orig.get(i));
+            }
+        }
+
+        return arr;
     }
 
     @Override
