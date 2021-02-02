@@ -22,7 +22,8 @@ public class MultipleVariableDeclarationChecker implements IErrorChecker, ParseT
 
     public MultipleVariableDeclarationChecker(TerminalNode varDecIdCtx, VariableDeclaratorContext varDecctx) {
         this.varDecIdCtx = varDecIdCtx;
-
+        System.out.println("MultipleVariableDeclaration - varDecIdCtx " + varDecIdCtx);
+        System.out.println("MultipleVariableDeclaration - varDecctx " + varDecctx.getText());
         Token firstToken = varDecctx.getStart();
         this.lineNumber = firstToken.getLine();
     }
@@ -47,10 +48,11 @@ public class MultipleVariableDeclarationChecker implements IErrorChecker, ParseT
 
     @Override
     public void enterEveryRule(ParserRuleContext ctx) {
-        if(ctx instanceof TerminalNode) {
-            TerminalNode varDecCtx = (TerminalNode) ctx;
-            this.verifyVariableOrConst(varDecCtx.getText());
-        }
+//        if(ctx instanceof TerminalNode) {
+//            System.out.println("MultVarDec - enter tree");
+//            TerminalNode varDecCtx = (TerminalNode) ctx;
+//            this.verifyVariableOrConst(varDecCtx.getText());
+//        }
     }
 
     @Override
@@ -59,32 +61,52 @@ public class MultipleVariableDeclarationChecker implements IErrorChecker, ParseT
 
     }
 
-    private void verifyVariableOrConst(String identifierString) {
-        PseudoValue pseudoValue = null;
-
+//    private void verifyVariableOrConst(String identifierString) {
+//        PseudoValue pseudoValue = null;
+//
+////        if(ExecutionManager.getInstance().isInFunctionExecution()) {
+////            PseudoMethod pseudoMethod = ExecutionManager.getInstance().getCurrentFunction();
+////            pseudoValue = VariableSearcher.searchVariableInFunction(pseudoMethod, identifierString);
+////        }
+//
 //        if(ExecutionManager.getInstance().isInFunctionExecution()) {
+//            System.out.println("MultVarDec - searching variable in func");
 //            PseudoMethod pseudoMethod = ExecutionManager.getInstance().getCurrentFunction();
 //            pseudoValue = VariableSearcher.searchVariableInFunction(pseudoMethod, identifierString);
+//        } else{
+//            System.out.println("MultVarDec - searching variable in main");
+//            pseudoValue = VariableSearcher.searchVariableInMain(SymbolTableManager.getInstance().getParentScope(), identifierString);
 //        }
+//
+//
+//        if(pseudoValue == null) {
+//            pseudoValue = ScopeCreator.searchVariableInLocalIterative(identifierString, ScopeCreator.getInstance().getActiveScope());
+//        }
+//
+////        if(pseudoValue == null) {
+////            ClassScope classScope = SymbolTableManager.getInstance().getClassScope(ParserHandler.getInstance().getCurrentClassName());
+////            pseudoValue = VariableSearcher.searchVariableInClass(classScope, identifierString);
+////        }
+//
+//
+//        if(pseudoValue != null) {
+//            PseudoErrorListener.reportCustomError(ErrorRepository.MULTIPLE_VARIABLE, "", identifierString, this.lineNumber);
+//        }
+//    }
+
+    public static void verifyVariableOrConst(TerminalNode node) {
+        PseudoValue pseudoValue = null;
 
         if(ExecutionManager.getInstance().isInFunctionExecution()) {
             PseudoMethod pseudoMethod = ExecutionManager.getInstance().getCurrentFunction();
-            pseudoValue = VariableSearcher.searchVariableInFunction(pseudoMethod, identifierString);
+            pseudoValue = VariableSearcher.searchVariableInFunction(pseudoMethod, node.getText());
+        } else{
+            pseudoValue = VariableSearcher.searchVariableInMain(SymbolTableManager.getInstance().getParentScope(), node.getText());
         }
-
-
-        if(pseudoValue == null) {
-            pseudoValue = ScopeCreator.searchVariableInLocalIterative(identifierString, ScopeCreator.getInstance().getActiveScope());
-        }
-
-//        if(pseudoValue == null) {
-//            ClassScope classScope = SymbolTableManager.getInstance().getClassScope(ParserHandler.getInstance().getCurrentClassName());
-//            pseudoValue = VariableSearcher.searchVariableInClass(classScope, identifierString);
-//        }
 
 
         if(pseudoValue != null) {
-            PseudoErrorListener.reportCustomError(ErrorRepository.MULTIPLE_VARIABLE, "", identifierString, this.lineNumber);
+            PseudoErrorListener.reportCustomError(ErrorRepository.MULTIPLE_VARIABLE, "", node.getText(),  node.getSymbol().getLine());
         }
     }
 }

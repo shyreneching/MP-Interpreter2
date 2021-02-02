@@ -22,9 +22,9 @@ public class PseudoValue {
 
     public PseudoValue(Object value, String primitiveType){
         PrimitiveType pt = convert(primitiveType);
-        System.out.println("PseudoValue - primitiveType: " +primitiveType);
-        System.out.println("PseudoValue - pt: " +pt);
-        System.out.println("PseudoValue - value: " +value);
+//        System.out.println("PseudoValue - primitiveType: " +primitiveType);
+//        System.out.println("PseudoValue - pt: " +pt);
+//        System.out.println("PseudoValue - value: " +value);
 
         if(checkType(value, pt) || value == null){
             this.value = value;

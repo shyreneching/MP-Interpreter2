@@ -3,6 +3,7 @@ package model.Sematic;
 import model.Commands.AssignmentCommand;
 import model.Commands.ExpressionCommand;
 import model.ErrorChecking.ErrorRepository;
+import model.ErrorChecking.MultipleVariableDeclarationChecker;
 import model.ErrorChecking.PseudoErrorListener;
 import model.ErrorChecking.TypeChecker;
 import model.Item.PseudoArray;
@@ -54,6 +55,9 @@ public class LocalVariableAnalyzer implements ParseTreeListener {
 
         if (ctx instanceof VariableDeclaratorContext) {
             VariableDeclaratorContext varCtx = (VariableDeclaratorContext) ctx;
+            MultipleVariableDeclarationChecker.verifyVariableOrConst(varCtx.Identifier());
+//            MultipleVariableDeclarationChecker multVarChecker = new MultipleVariableDeclarationChecker(varCtx.Identifier(),varCtx);
+//            multVarChecker.verify();
             PseudoValue pseudoValue = null;
             if(varCtx.variableInitializer() != null){
                 if(!this.type.equals("array")){
@@ -61,7 +65,7 @@ public class LocalVariableAnalyzer implements ParseTreeListener {
 //                    System.out.println("type: "+ type);
 
 //                    pseudoValue = PseudoValue.createEmptyVariable(type);
-                    System.out.println("Local Variable Analyzer - expr: " +varCtx.variableInitializer().expression().getText());
+                    System.out.println("LocalVariableAnalyzer - expr: " +varCtx.variableInitializer().expression().getText());
                     ExpressionCommand expressionCommand = new ExpressionCommand(varCtx.variableInitializer().expression());
                     expressionCommand.execute();
                     Object value = null;

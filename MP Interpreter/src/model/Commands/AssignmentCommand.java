@@ -101,8 +101,10 @@ public class AssignmentCommand implements ICommand, ParseTreeListener {
 
         if(this.isLeftHandArrayAccessor()) {
 
-            if(expressionCommand.isNumeric())
+            if(expressionCommand.isNumeric()) {
+                System.out.println("AssignmentCommand - " + expressionCommand.getValueResult().toEngineeringString());
                 this.handleArrayAssignment(expressionCommand.getValueResult().toEngineeringString());
+            }
             else
                 this.handleArrayAssignment(expressionCommand.getStringResult());
         }
