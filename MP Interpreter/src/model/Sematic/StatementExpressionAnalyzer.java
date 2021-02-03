@@ -1,9 +1,11 @@
 package model.Sematic;
 
 import model.Commands.AssignmentCommand;
+import model.Commands.ExpressionCommand;
 import model.Commands.MethodCallCommand;
 import model.ErrorChecking.ErrorRepository;
 import model.ErrorChecking.PseudoErrorListener;
+import model.Item.PseudoArray;
 import model.Item.PseudoMethod;
 import model.Item.PseudoValue;
 import model.PseudoCodeParser.*;
@@ -49,10 +51,20 @@ public class StatementExpressionAnalyzer {
         ExpressionAnalyzer expressionAnalyzer = new ExpressionAnalyzer();
 
 
-        AssignmentCommand assignmentCommand;
+        AssignmentCommand assignmentCommand = null;
         if(assignment.expression(1) != null){ // Shyrene added - for array declaration
-            assignmentCommand = new AssignmentCommand(assignment.Identifier(), assignment.expression(1), assignment.expression(0));
-            expressionAnalyzer.analyze(assignment.expression(1));
+            ExpressionCommand expressionCommand = new ExpressionCommand(assignment.expression(0));
+            expressionCommand.execute();
+            if(!expressionCommand.isString() && expressionCommand.getValueResult().stripTrailingZeros().scale() <= 0 ){
+                PseudoValue pseudoValue = VariableSearcher.searchVariable(assignment.Identifier().getText());
+                PseudoArray pseudoArray = (PseudoArray) pseudoValue.getValue();
+                if(expressionCommand.getValueResult().intValue() < pseudoArray.getSize()){
+                    assignmentCommand = new AssignmentCommand(assignment.Identifier(), assignment.expression(0), assignment.expression(1));
+                    expressionAnalyzer.analyze(assignment.expression(1));
+                }
+
+            }
+
         } else {
             expressionAnalyzer.analyze(assignment.expression(0));
             assignmentCommand = new AssignmentCommand(assignment.Identifier(), assignment.expression(0));
