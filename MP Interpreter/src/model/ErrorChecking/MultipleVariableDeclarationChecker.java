@@ -96,13 +96,13 @@ public class MultipleVariableDeclarationChecker implements IErrorChecker, ParseT
     public static boolean verifyVariableOrConst(TerminalNode node) {
         PseudoValue pseudoValue = null;
 
-//        if(ExecutionManager.getInstance().isInFunctionExecution()) {
-//            PseudoMethod pseudoMethod = ExecutionManager.getInstance().getCurrentFunction();
-//            pseudoValue = VariableSearcher.searchVariableInFunction(pseudoMethod, node.getText());
-//        } else{
-//            pseudoValue = VariableSearcher.searchVariableInMain(SymbolTableManager.getInstance().getParentScope(), node.getText());
-            pseudoValue = VariableSearcher.searchVariableInMain(ScopeCreator.getInstance().getActiveScope(), node.getText());
-//        }
+        if(ExecutionManager.getInstance().isInFunctionExecution()) {
+            PseudoMethod pseudoMethod = ExecutionManager.getInstance().getCurrentFunction();
+            pseudoValue = VariableSearcher.searchVariableCorrectly(pseudoMethod, node.getText());
+        } else{
+            pseudoValue = VariableSearcher.searchVariableCorrectly(SymbolTableManager.getInstance().getParentScope(), node.getText());
+//            pseudoValue = VariableSearcher.searchVariableInMain(ScopeCreator.getInstance().getActiveScope(), node.getText());
+        }
 
 
         if(pseudoValue != null) {

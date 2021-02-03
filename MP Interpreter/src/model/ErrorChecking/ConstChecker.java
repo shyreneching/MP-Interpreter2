@@ -68,15 +68,15 @@ public class ConstChecker implements IErrorChecker, ParseTreeListener {
         if(ExecutionManager.getInstance().isInFunctionExecution()) {
             PseudoMethod pseudoMethod = ExecutionManager.getInstance().getCurrentFunction();
             if(varExprCtx.LBRACK() == null){
-                pseudoValue = VariableSearcher.searchVariableInFunction(pseudoMethod, varExprCtx.primary().Identifier().getText());
+                pseudoValue = VariableSearcher.searchVariableCorrectly(pseudoMethod, varExprCtx.primary().Identifier().getText());
             } else {
-                pseudoValue = VariableSearcher.searchVariableInFunction(pseudoMethod, varExprCtx.Identifier().getText());
+                pseudoValue = VariableSearcher.searchVariableCorrectly(pseudoMethod, varExprCtx.Identifier().getText());
             }
         }else{
             if(varExprCtx.LBRACK() == null){
-                pseudoValue = VariableSearcher.searchVariableInMain(SymbolTableManager.getInstance().getParentScope(), varExprCtx.primary().Identifier().getText());
+                pseudoValue = VariableSearcher.searchVariableCorrectly(SymbolTableManager.getInstance().getParentScope(), varExprCtx.primary().Identifier().getText());
             } else {
-                pseudoValue = VariableSearcher.searchVariableInMain(SymbolTableManager.getInstance().getParentScope(), varExprCtx.Identifier().getText());
+                pseudoValue = VariableSearcher.searchVariableCorrectly(SymbolTableManager.getInstance().getParentScope(), varExprCtx.Identifier().getText());
             }
         }
 
@@ -91,9 +91,9 @@ public class ConstChecker implements IErrorChecker, ParseTreeListener {
 
         if(ExecutionManager.getInstance().isInFunctionExecution()) {
             PseudoMethod pseudoMethod = ExecutionManager.getInstance().getCurrentFunction();
-            pseudoValue = VariableSearcher.searchVariableInFunction(pseudoMethod, node.getText());
+            pseudoValue = VariableSearcher.searchVariableCorrectly(pseudoMethod, node.getText());
         }else{
-            pseudoValue = VariableSearcher.searchVariableInMain(SymbolTableManager.getInstance().getParentScope(), node.getText());
+            pseudoValue = VariableSearcher.searchVariableCorrectly(SymbolTableManager.getInstance().getParentScope(), node.getText());
         }
 
 

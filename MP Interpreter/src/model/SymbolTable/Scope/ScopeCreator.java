@@ -92,4 +92,26 @@ public class ScopeCreator {
         System.out.println("ScopeCreator - " + identifier + " not found in any scope!");
         return null;
     }
+
+    public static PseudoValue searchVariableCorrectly(String identifier, Scope scope) {
+
+        Scope curr = getInstance().activeScope;
+        Stack<Scope> stack = new Stack<Scope>();
+
+        while (!curr.equals(scope)){
+            stack.push(curr);
+            curr = (Scope) curr.getParent();
+        }
+        stack.push(curr);
+
+        while(!stack.isEmpty()) {
+            Scope scope1 = stack.pop();
+
+            if(scope1.containsVariable(identifier)) {
+                return scope1.searchVariableIncludingLocal(identifier);
+            }
+
+        }
+        return null;
+    }
 }

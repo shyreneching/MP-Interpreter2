@@ -103,18 +103,18 @@ public class UndeclaredChecker implements IErrorChecker, ParseTreeListener {
             PseudoMethod pseudoMethod = ExecutionManager.getInstance().getCurrentFunction();
 //            PseudoMethod pseudoMethod = MethodTracker.getInstance().getLatestFunction();
             if(varExprCtx.LBRACK() == null){
-                pseudoValue = VariableSearcher.searchVariableInFunction(pseudoMethod, varExprCtx.primary().Identifier().getText());
+                pseudoValue = VariableSearcher.searchVariableCorrectly(pseudoMethod, varExprCtx.primary().Identifier().getText());
             } else {
-                pseudoValue = VariableSearcher.searchVariableInFunction(pseudoMethod, varExprCtx.Identifier().getText());
+                pseudoValue = VariableSearcher.searchVariableCorrectly(pseudoMethod, varExprCtx.Identifier().getText());
             }
 
         } else{
 
 //            System.out.println("Undeclared Checker - Searching in Main");
             if(varExprCtx.LBRACK() == null){
-                pseudoValue = VariableSearcher.searchVariableInMain(SymbolTableManager.getInstance().getParentScope(), varExprCtx.primary().Identifier().getText());
+                pseudoValue = VariableSearcher.searchVariableCorrectly(SymbolTableManager.getInstance().getParentScope(), varExprCtx.primary().Identifier().getText());
             } else {
-                pseudoValue = VariableSearcher.searchVariableInMain(SymbolTableManager.getInstance().getParentScope(), varExprCtx.Identifier().getText());
+                pseudoValue = VariableSearcher.searchVariableCorrectly(SymbolTableManager.getInstance().getParentScope(), varExprCtx.Identifier().getText());
             }
 
         }
@@ -129,9 +129,9 @@ public class UndeclaredChecker implements IErrorChecker, ParseTreeListener {
 
         if(ExecutionManager.getInstance().isInFunctionExecution()) {
             PseudoMethod pseudoMethod = ExecutionManager.getInstance().getCurrentFunction();
-            pseudoValue = VariableSearcher.searchVariableInFunction(pseudoMethod, node.getText());
+            pseudoValue = VariableSearcher.searchVariableCorrectly(pseudoMethod, node.getText());
         } else{
-            pseudoValue = VariableSearcher. searchVariableInMain(SymbolTableManager.getInstance().getParentScope(),node.getText());
+            pseudoValue = VariableSearcher. searchVariableCorrectly(SymbolTableManager.getInstance().getParentScope(),node.getText());
         }
 
 
@@ -147,7 +147,7 @@ public class UndeclaredChecker implements IErrorChecker, ParseTreeListener {
      */
     public static void verifyVarOrConstForScan(String identifier, StatementContext statementCtx) {
         PseudoMethod pseudoMethod = ExecutionManager.getInstance().getCurrentFunction();
-        PseudoValue pseudoValue = VariableSearcher.searchVariableInFunction(pseudoMethod, identifier);
+        PseudoValue pseudoValue = VariableSearcher.searchVariableCorrectly(pseudoMethod, identifier);
 
         Token firstToken = statementCtx.getStart();
 
