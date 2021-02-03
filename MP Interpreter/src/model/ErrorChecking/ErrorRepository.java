@@ -15,7 +15,6 @@ public class ErrorRepository {
     public final static int RUNTIME_ARRAY_OUT_OF_BOUNDS = 7000;
 //    public final static int RUNTIME_NEGATIVE_ARRAY_SIZE = 7001;
 //    public final static int RUNTIME_ARITHMETIC_EXCEPTION = 7002;
-    public final static int MISSING_THIS_KEYWORD = 8000;
     public final static int INVALID_INDEX_ASSIGN = 9001;
     public final static int NO_RETURN_STATEMENT = 9002;
     public final static int NOT_A_STATEMENT = 9004;
@@ -44,11 +43,10 @@ public class ErrorRepository {
 //        this.errorMessageDictionary.put(RUNTIME_ARRAY_OUT_OF_BOUNDS, "Array out of bounds at line %d. Aborting operation.");
 //        this.errorMessageDictionary.put(RUNTIME_ARITHMETIC_EXCEPTION, "Arithmetic exception at line %d. Aborting operation. ");
 //        this.errorMessageDictionary.put(RUNTIME_NEGATIVE_ARRAY_SIZE, "Negative array size at line %d. Aborting operation.");
-        this.errorMessageDictionary.put(MISSING_THIS_KEYWORD, "Missing 'this' keyword for method call '%s' line %d.");
         this.errorMessageDictionary.put(RETURN_IN_VOID, "You can't return a value in a void function at line %d.");
         this.errorMessageDictionary.put(INVALID_INDEX_ASSIGN, "Invalid index in array assignment at line %d.");
         this.errorMessageDictionary.put(NO_RETURN_STATEMENT, "No return statement in function '%s' looking for return type '%s' at line %d.");
-        this.errorMessageDictionary.put(NOT_A_STATEMENT, "%s is not a statement at line %d.");
+        this.errorMessageDictionary.put(NOT_A_STATEMENT, "'%s' is not a valid statement at line %d.");
         this.errorMessageDictionary.put(DEFAULT, "  at line %d");
     }
 

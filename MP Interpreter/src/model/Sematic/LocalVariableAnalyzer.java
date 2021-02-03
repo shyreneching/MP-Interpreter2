@@ -73,34 +73,41 @@ public class LocalVariableAnalyzer implements ParseTreeListener {
                         ExpressionCommand expressionCommand = new ExpressionCommand(varCtx.variableInitializer().expression());
                         expressionCommand.execute();
                         Object value = null;
-
-                        if(this.type.equals("bool")){
+                        boolean sucess = true;
+                        if(this.type.equals("bool")&& !expressionCommand.isString()){
                             if(expressionCommand.getValueResult().compareTo(new BigDecimal("0")) == 0){
                                 value = false;
-                            } else {
+                            } else if(expressionCommand.getValueResult().compareTo(new BigDecimal("1")) == 0){
                                 value = true;
                             }
                             pseudoValue = new PseudoValue(value, type);
-                        } else if(this.type.equals("int")){
+                        } else if(this.type.equals("int") && !expressionCommand.isString() && !expressionCommand.getValueResult().toString().contains(".")){
                             value = expressionCommand.getValueResult().intValue();
                             pseudoValue = new PseudoValue(value, type);
-                        } else if(this.type.equals("float")){
+                        } else if(this.type.equals("float") && !expressionCommand.isString() && expressionCommand.getValueResult().toString().contains(".")){
                             value = expressionCommand.getValueResult().floatValue();
                             pseudoValue = new PseudoValue(value, type);
-                        } else if(this.type.equals("String")){
+                        } else if(this.type.equals("String") && expressionCommand.isString()){
                             value = expressionCommand.getStringResult();
                             pseudoValue = new PseudoValue(value, type);
+                        } else {
+                            sucess = false;
+                            PseudoErrorListener.reportCustomError(ErrorRepository.TYPE_MISMATCH, "Expected value '" + type.toUpperCase() + "'. ", varCtx.getStart().getLine());
                         }
 
                         System.out.println("LocalVariableAnalyzer - Value: "+ value);
                         TypeChecker typeChecker = new TypeChecker(pseudoValue,varCtx.variableInitializer().expression());
                         typeChecker.verify();
-                        if(isFinal){
+                        if(isFinal && pseudoValue != null){
                             pseudoValue.makeConst();
                         }
-                        //Shyrene added - using variable declaration assignment command
-                        AssignmentCommand assignmentCommand = new AssignmentCommand(varCtx.Identifier(), varCtx.variableInitializer().expression(), pseudoValue.getPrimitiveType());
-                        CommandExecuter.handleStatementExecution(assignmentCommand);
+
+                        if(sucess){
+                            //Shyrene added - using variable declaration assignment command
+                            AssignmentCommand assignmentCommand = new AssignmentCommand(varCtx.Identifier(), varCtx.variableInitializer().expression(), pseudoValue.getPrimitiveType());
+                            CommandExecuter.handleStatementExecution(assignmentCommand);
+                        }
+
                     }
 
 
