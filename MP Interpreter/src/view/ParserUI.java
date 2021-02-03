@@ -418,6 +418,7 @@ public class ParserUI extends Application implements NotificationListener {
                     }
 
                 } else {
+                    System.out.println("Hellllllo!");
                     try {
                         NotificationsCenter.getInstance().postNotification(Notifications.ON_SCAN_DIALOG_DISMISSED); //report back results to scan command
                     }catch (ConcurrentModificationException cmeX){
