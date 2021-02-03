@@ -1,4 +1,4 @@
-// Generated from C:/Users/ShyreneChing/Desktop/DLSU/AY 2020-2021 Term 1/CMPILER/MP/MC02/MP-Interpreter2/MP Interpreter/src\PseudoCode.g4 by ANTLR 4.9
+// Generated from C:/Users/erwin/Desktop/CMPILER/MP-Interpreter2/MP Interpreter/src\PseudoCode.g4 by ANTLR 4.9
 package model;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
@@ -3920,13 +3920,13 @@ public class PseudoCodeParser extends Parser {
 		public ExpressionListContext expressionList() {
 			return getRuleContext(ExpressionListContext.class,0);
 		}
-		public TerminalNode BANG() { return getToken(PseudoCodeParser.BANG, 0); }
 		public List<UnaryExpressionContext> unaryExpression() {
 			return getRuleContexts(UnaryExpressionContext.class);
 		}
 		public UnaryExpressionContext unaryExpression(int i) {
 			return getRuleContext(UnaryExpressionContext.class,i);
 		}
+		public TerminalNode BANG() { return getToken(PseudoCodeParser.BANG, 0); }
 		public List<TerminalNode> MUL() { return getTokens(PseudoCodeParser.MUL); }
 		public TerminalNode MUL(int i) {
 			return getToken(PseudoCodeParser.MUL, i);
@@ -4038,7 +4038,7 @@ public class PseudoCodeParser extends Parser {
 				match(BANG);
 				}
 				setState(741);
-				expression(16);
+				unaryExpression();
 				}
 				break;
 			case 5:
@@ -4838,12 +4838,12 @@ public class PseudoCodeParser extends Parser {
 		"\u02de\5D#\2\u02de\u02df\7\"\2\2\u02df\u030b\3\2\2\2\u02e0\u02e1\7=\2"+
 		"\2\u02e1\u02e3\7\35\2\2\u02e2\u02e4\5:\36\2\u02e3\u02e2\3\2\2\2\u02e3"+
 		"\u02e4\3\2\2\2\u02e4\u02e5\3\2\2\2\u02e5\u030b\7\36\2\2\u02e6\u02e7\7"+
-		")\2\2\u02e7\u030b\5D#\22\u02e8\u02e9\5H%\2\u02e9\u02ea\7\35\2\2\u02ea"+
-		"\u02eb\7\36\2\2\u02eb\u02ec\b#\1\2\u02ec\u030b\3\2\2\2\u02ed\u02ee\5H"+
-		"%\2\u02ee\u02ef\7\36\2\2\u02ef\u02f0\b#\1\2\u02f0\u030b\3\2\2\2\u02f1"+
-		"\u02f2\5H%\2\u02f2\u02f3\7\35\2\2\u02f3\u02f4\b#\1\2\u02f4\u030b\3\2\2"+
-		"\2\u02f5\u02f6\7\35\2\2\u02f6\u02f7\7\36\2\2\u02f7\u02f8\5H%\2\u02f8\u02f9"+
-		"\b#\1\2\u02f9\u030b\3\2\2\2\u02fa\u02fb\7\36\2\2\u02fb\u02fc\5H%\2\u02fc"+
+		")\2\2\u02e7\u030b\5F$\2\u02e8\u02e9\5H%\2\u02e9\u02ea\7\35\2\2\u02ea\u02eb"+
+		"\7\36\2\2\u02eb\u02ec\b#\1\2\u02ec\u030b\3\2\2\2\u02ed\u02ee\5H%\2\u02ee"+
+		"\u02ef\7\36\2\2\u02ef\u02f0\b#\1\2\u02f0\u030b\3\2\2\2\u02f1\u02f2\5H"+
+		"%\2\u02f2\u02f3\7\35\2\2\u02f3\u02f4\b#\1\2\u02f4\u030b\3\2\2\2\u02f5"+
+		"\u02f6\7\35\2\2\u02f6\u02f7\7\36\2\2\u02f7\u02f8\5H%\2\u02f8\u02f9\b#"+
+		"\1\2\u02f9\u030b\3\2\2\2\u02fa\u02fb\7\36\2\2\u02fb\u02fc\5H%\2\u02fc"+
 		"\u02fd\b#\1\2\u02fd\u030b\3\2\2\2\u02fe\u02ff\7\35\2\2\u02ff\u0300\5H"+
 		"%\2\u0300\u0301\b#\1\2\u0301\u030b\3\2\2\2\u0302\u0304\5F$\2\u0303\u0305"+
 		"\5F$\2\u0304\u0303\3\2\2\2\u0305\u0306\3\2\2\2\u0306\u0304\3\2\2\2\u0306"+

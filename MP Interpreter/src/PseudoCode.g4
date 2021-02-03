@@ -231,7 +231,7 @@ expression
 //    |   '(' result ')' expression
 //    |   expression ('++' | '--')
 //    |   ('+'|'-'|'++'|'--') expression
-    |   ('!') expression
+    |   ('!') unaryExpression
     |   expression ('*'|'/'|'%') expression
     |   expression ('+'|'-') expression
 //    |   expression ('<' '<' | '>' '>' '>' | '>' '>') expression
