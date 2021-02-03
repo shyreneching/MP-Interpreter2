@@ -234,14 +234,16 @@ public class StatementAnalyzer {
     }
 
     private void handlePrintStatement(ExpressionContext ctx) {
+        if(ctx != null){
+            ExpressionAnalyzer expressionAnalyzer = new ExpressionAnalyzer();
+            expressionAnalyzer.analyze(ctx);
+            if(!expressionAnalyzer.isHasSemanticError()){
+                PrintCommand printCommand = new PrintCommand(ctx);
 
-        ExpressionAnalyzer expressionAnalyzer = new ExpressionAnalyzer();
-        expressionAnalyzer.analyze(ctx);
-        if(!expressionAnalyzer.isHasSemanticError()){
-            PrintCommand printCommand = new PrintCommand(ctx);
-
-            CommandExecuter.handleStatementExecution(printCommand);
+                CommandExecuter.handleStatementExecution(printCommand);
+            }
         }
+
 
 //        StatementControlOverseer statementControl = StatementControlOverseer.getInstance();
 //        //add to conditional controlled command
