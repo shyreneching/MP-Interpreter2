@@ -29,7 +29,7 @@ public class ArrayInitializationCommand implements ICommand {
 
     @Override
     public void execute() {
-        ExpressionContext exprCtx = this.exprCtx.expression(0);
+        ExpressionContext exprCtx = this.exprCtx;
 
         if(exprCtx != null) {
             ExpressionCommand evaluationCommand = new ExpressionCommand(exprCtx);
