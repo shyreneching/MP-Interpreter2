@@ -631,6 +631,7 @@ ADD : '+' ;
 SUB : '-' ;
 MUL : '*' ;
 DIV : '/' ;
+BSLASH : '\\';
 BITAND : '&' ;
 BITOR : '|' ;
 CARET : '^' ;
