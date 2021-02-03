@@ -78,26 +78,23 @@ public class StatementAnalyzer {
     // NOT COMPLETE YET
     public void handleIfStatement(IfThenStatementContext ifthenCtx){
 
-        List<BlockContext> blockstatments = ifthenCtx.block();
-        List<ConditionalExpressionContext> conditionalStatments = ifthenCtx.conditionalExpression();
+        IFCommand ifCommand = new IFCommand(ifthenCtx.conditionalExpression().expression());
+        StatementControlOverseer.getInstance().openConditionalCommand(ifCommand);
 
-        int i;
-        for(i = 0; i < conditionalStatments.size(); i++){
-            IFCommand ifCommand = new IFCommand(ifthenCtx.conditionalExpression(i).expression());
-            StatementControlOverseer.getInstance().openConditionalCommand(ifCommand);
+        BlockContext block = ifthenCtx.block(0);
 
-            BlockContext block = ifthenCtx.block(i);
+        BlockAnalyzer blockAnalyzer = new BlockAnalyzer();
+        blockAnalyzer.analyze(block);
 
-            BlockAnalyzer blockAnalyzer = new BlockAnalyzer();
-            blockAnalyzer.analyze(block);
+        StatementControlOverseer.getInstance().reportExitPositiveRule();
 
-            StatementControlOverseer.getInstance().reportExitPositiveRule();
+        if(ifthenCtx.ifThenStatement() != null){
+            handleIfStatement(ifthenCtx.ifThenStatement());
         }
-        if (ifthenCtx.block(i) != null) {
-            BlockContext block = ifthenCtx.block(i);
 
-            BlockAnalyzer blockAnalyzer = new BlockAnalyzer();
-            blockAnalyzer.analyze(block);
+        if (ifthenCtx.block(1) != null) {
+            BlockContext blockctx = ifthenCtx.block(1);
+            blockAnalyzer.analyze(blockctx);
         }
         StatementControlOverseer.getInstance().compileControlledCommand();
 
