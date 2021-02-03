@@ -49,11 +49,11 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
 //        } else if(modifiedExp.equals("F")){
 //            modifiedExp = "false";
 //        }
-
-        if(exprCtx.primary() != null && isFloat(exprCtx)){
-//            System.out.println(TypeChecker.isDecimal(modifiedExp.substring(0,modifiedExp.length()-1)));
-            modifiedExp = modifiedExp.substring(0,modifiedExp.length()-1);
-        }
+//            modifiedExp = modifiedExp.replaceAll("(?<=(\\d|\\.))f", "");
+//        if(exprCtx.primary() != null && isFloat(exprCtx)){
+////            System.out.println(TypeChecker.isDecimal(modifiedExp.substring(0,modifiedExp.length()-1)));
+//            modifiedExp = modifiedExp.substring(0,modifiedExp.length()-1);
+//        }
 
 //        for (PseudoCodeParser.ExpressionContext eCtx : this.exprCtx.expression()) {
 //            if (isFunctionCall(eCtx)) {
@@ -163,6 +163,8 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
             }
 
         } else {
+
+            modifiedExp = modifiedExp.replaceAll("(?<=(\\d|\\.))f", "");
 
             if (this.modifiedExp.contains("!")) {
                 this.modifiedExp = this.modifiedExp.replaceAll("!", "not");
@@ -315,7 +317,7 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
     }
 
     public static boolean isFloat(PseudoCodeParser.ExpressionContext exprCtx) {
-        Pattern functionPattern = Pattern.compile("(([0-9]+).([0-9]*) | .([0-9]+))f");
+        Pattern functionPattern = Pattern.compile("((\\d+\\.\\d*)|(\\.\\d+))f");
 
         if (functionPattern.matcher(exprCtx.getText()).matches()) {
             return true;
