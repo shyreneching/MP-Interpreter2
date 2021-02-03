@@ -37,7 +37,7 @@ public class PseudoCodeCustomListener extends PseudoCodeBaseListener {
 
             ScopeCreator.getInstance().closeScope();
             ExecutionManager.getInstance().closeFunctionExecution();
-//            MethodTracker.getInstance().reportEnterFunction(SymbolTableManager.getInstance().getMethod(ctx.methodDeclarator().Identifier().getText()));
+            MethodTracker.getInstance().reportExitFunction();
         }
     }
 

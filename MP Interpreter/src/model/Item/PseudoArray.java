@@ -4,7 +4,7 @@ import model.Execution.ExecutionManager;
 
 public class PseudoArray {
 
-    private PseudoValue[] array;
+    private PseudoValue[] array = new PseudoValue[0];
     private PseudoValue.PrimitiveType arrayPrimitiveType;
     private String arrayIdentifier;
     private boolean finalFlag = false;
@@ -42,7 +42,12 @@ public class PseudoArray {
     }
 
     public int getSize() {
-        return this.array.length;
+        try{
+            return this.array.length;
+        } catch (Exception e){
+            return 0;
+        }
+
     }
 
     public void updateValueAt(PseudoValue pseudoValue, int index) {

@@ -21,6 +21,7 @@ public class ExpressionAnalyzer implements ParseTreeListener {
 
     public void analyze(ExpressionContext exprCtx){
         this.exprCtx = exprCtx;
+        this.hasSemanticError  = false;
         ParseTreeWalker walker = new ParseTreeWalker();
         walker.walk(this, exprCtx);
     }

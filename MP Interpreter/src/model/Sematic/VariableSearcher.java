@@ -35,7 +35,12 @@ public class VariableSearcher {
             pseudoValue = pseudoMethod.getParameter(identifierString);
         }
         else {
+//            System.out.println("VariableSearcher - identifierString: " + identifierString);
+//            System.out.println("VariableSearcher - pseudoMethod: " + pseudoMethod.getMethodName());
             pseudoValue = ScopeCreator.searchVariableInLocalIterative(identifierString, pseudoMethod.getParentScope());
+//            if(pseudoValue == null){
+//                Scope scope = (Scope) ScopeCreator.getInstance().getActiveScope().getParent();
+//            }
         }
 
         return pseudoValue;

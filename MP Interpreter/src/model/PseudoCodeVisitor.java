@@ -125,6 +125,12 @@ public interface PseudoCodeVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitStatement(PseudoCodeParser.StatementContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link PseudoCodeParser#errorInvocation}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitErrorInvocation(PseudoCodeParser.ErrorInvocationContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link PseudoCodeParser#forStatement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

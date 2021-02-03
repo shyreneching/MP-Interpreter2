@@ -136,7 +136,11 @@ statement
 //    |   PRINT '(' expression ')' ';'
     |   scanInvocation ';'
     |   scanInvocation {notifyErrorListeners("lacking ';' at the end of line");}
-    |   Identifier ('+'|'-'|'*'|'/'|'%') ('+'|'-'|'*'|'/'|'%')+ ';' {notifyErrorListeners("redundant arithmetic operator symbol found");}
+    |   errorInvocation ';'
+    ;
+
+errorInvocation
+    :  Identifier ('+'|'-'|'*'|'/'|'%') ('+'|'-'|'*'|'/'|'%')+  {notifyErrorListeners("redundant arithmetic operator symbol found");}
     ;
 
 forStatement

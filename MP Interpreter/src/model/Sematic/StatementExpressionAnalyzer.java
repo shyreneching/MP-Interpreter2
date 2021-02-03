@@ -58,7 +58,7 @@ public class StatementExpressionAnalyzer {
             if(!expressionCommand.isString() && expressionCommand.getValueResult().stripTrailingZeros().scale() <= 0 ){
                 PseudoValue pseudoValue = VariableSearcher.searchVariable(assignment.Identifier().getText());
                 if(pseudoValue != null){
-                    if(pseudoValue.getValue() != null && !(pseudoValue.getValue() instanceof PseudoArray) && ((PseudoArray) pseudoValue.getValue()).getSize() <0){
+                    if(pseudoValue.getValue() != null && pseudoValue.getValue() instanceof PseudoArray && ((PseudoArray)pseudoValue.getValue()).getSize() > 0){
                         PseudoArray pseudoArray = ((PseudoArray) pseudoValue.getValue());
                         if(expressionCommand.getValueResult().intValue() < pseudoArray.getSize()){
                             assignmentCommand = new AssignmentCommand(assignment.Identifier(), assignment.expression(0), assignment.expression(1));
@@ -70,6 +70,7 @@ public class StatementExpressionAnalyzer {
                     }
 
                 } else {
+                    System.out.println("StatementExpressionAnalyzer - pseudoValue: " + pseudoValue);
                     PseudoErrorListener.reportCustomError(ErrorRepository.UNDECLARED_VARIABLE, "",assignment.Identifier().getText() , assignment.getStart().getLine());
                 }
 

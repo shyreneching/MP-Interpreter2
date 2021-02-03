@@ -1,5 +1,6 @@
 package model.ErrorChecking;
 
+import model.Commands.ExpressionCommand;
 import model.Execution.ExecutionManager;
 import model.Execution.MethodTracker;
 import model.Item.PseudoMethod;
@@ -65,6 +66,10 @@ public class UndeclaredChecker implements IErrorChecker, ParseTreeListener {
                 System.out.println("VARIABLE ENTER " + ctx.getText());
                 if(!prevFunctionName.equals(exprCtx.getText()))
                     this.verifyVariableOrConst(exprCtx);
+            } else if (ExpressionCommand.isArrayElement(exprCtx)){
+                System.out.println("VARIABLE ENTER ARRAY" + ctx.getText());
+                if(!prevFunctionName.equals(exprCtx.getText()))
+                    this.verifyVariableOrConst(exprCtx);
             }
         }
     }
@@ -100,13 +105,21 @@ public class UndeclaredChecker implements IErrorChecker, ParseTreeListener {
         if(ExecutionManager.getInstance().isInFunctionExecution()) {
             PseudoMethod pseudoMethod = ExecutionManager.getInstance().getCurrentFunction();
 //            PseudoMethod pseudoMethod = MethodTracker.getInstance().getLatestFunction();
+            if(varExprCtx.LBRACK() == null){
+                pseudoValue = VariableSearcher.searchVariableInFunction(pseudoMethod, varExprCtx.primary().Identifier().getText());
+            } else {
+                pseudoValue = VariableSearcher.searchVariableInFunction(pseudoMethod, varExprCtx.Identifier().getText());
+            }
 
-            pseudoValue = VariableSearcher.searchVariableInFunction(pseudoMethod, varExprCtx.primary().Identifier().getText());
         } else{
 
 //            System.out.println("Undeclared Checker - Searching in Main");
+            if(varExprCtx.LBRACK() == null){
+                pseudoValue = VariableSearcher.searchVariableInMain(SymbolTableManager.getInstance().getParentScope(), varExprCtx.primary().Identifier().getText());
+            } else {
+                pseudoValue = VariableSearcher.searchVariableInMain(SymbolTableManager.getInstance().getParentScope(), varExprCtx.Identifier().getText());
+            }
 
-            pseudoValue = VariableSearcher.searchVariableInMain(SymbolTableManager.getInstance().getParentScope(), varExprCtx.primary().Identifier().getText());
         }
 //        System.out.println("Undeclared Checker - pseudoValue " + pseudoValue.getValue());
         if(pseudoValue == null) {

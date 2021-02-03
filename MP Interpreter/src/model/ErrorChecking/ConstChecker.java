@@ -1,5 +1,6 @@
 package model.ErrorChecking;
 
+import model.Commands.ExpressionCommand;
 import model.Execution.ExecutionManager;
 import model.Item.PseudoMethod;
 import model.Item.PseudoValue;
@@ -49,6 +50,8 @@ public class ConstChecker implements IErrorChecker, ParseTreeListener {
             ExpressionContext exprCtx = (ExpressionContext) ctx;
             if(Checker.isVariableOrConst(exprCtx)) {
                 this.verifyVariableOrConst(exprCtx);
+            } else  if (ExpressionCommand.isArrayElement(exprCtx)) {
+                this.verifyVariableOrConst(exprCtx);
             }
         }
     }
@@ -64,9 +67,17 @@ public class ConstChecker implements IErrorChecker, ParseTreeListener {
 
         if(ExecutionManager.getInstance().isInFunctionExecution()) {
             PseudoMethod pseudoMethod = ExecutionManager.getInstance().getCurrentFunction();
-            pseudoValue = VariableSearcher.searchVariableInFunction(pseudoMethod, varExprCtx.primary().Identifier().getText());
+            if(varExprCtx.LBRACK() == null){
+                pseudoValue = VariableSearcher.searchVariableInFunction(pseudoMethod, varExprCtx.primary().Identifier().getText());
+            } else {
+                pseudoValue = VariableSearcher.searchVariableInFunction(pseudoMethod, varExprCtx.Identifier().getText());
+            }
         }else{
-            pseudoValue = VariableSearcher.searchVariableInMain(SymbolTableManager.getInstance().getParentScope(), varExprCtx.primary().Identifier().getText());
+            if(varExprCtx.LBRACK() == null){
+                pseudoValue = VariableSearcher.searchVariableInMain(SymbolTableManager.getInstance().getParentScope(), varExprCtx.primary().Identifier().getText());
+            } else {
+                pseudoValue = VariableSearcher.searchVariableInMain(SymbolTableManager.getInstance().getParentScope(), varExprCtx.Identifier().getText());
+            }
         }
 
 

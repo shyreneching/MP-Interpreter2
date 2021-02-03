@@ -244,6 +244,18 @@ public class PseudoCodeBaseListener implements PseudoCodeListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterErrorInvocation(PseudoCodeParser.ErrorInvocationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitErrorInvocation(PseudoCodeParser.ErrorInvocationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterForStatement(PseudoCodeParser.ForStatementContext ctx) { }
 	/**
 	 * {@inheritDoc}

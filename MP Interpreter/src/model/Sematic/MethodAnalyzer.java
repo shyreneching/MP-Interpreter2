@@ -65,7 +65,7 @@ public class MethodAnalyzer implements ParseTreeListener {
             this.pseudoMethod = pseudoMethod;
             SymbolTableManager.getInstance().addPseudoMethod(mthdName, pseudoMethod);
             addParameter(mthd);
-
+            ScopeCreator.getInstance().closeScope();
 //        SymbolTableManager.getInstance().setParentScope(scope);
         }
 
@@ -73,8 +73,10 @@ public class MethodAnalyzer implements ParseTreeListener {
 
     public void setPseudoMethod(MethodDeclarationContext mthd){
         if(mthd.methodDeclarator().Identifier() != null){
+
             this.mthd = mthd;
             this.pseudoMethod = SymbolTableManager.getInstance().getMethod(mthd.methodDeclarator().Identifier().getText());
+            MethodTracker.getInstance().reportEnterFunction(pseudoMethod);
             Scope scope = ScopeCreator.getInstance().openScope();
             pseudoMethod.setParentScope(scope);
 

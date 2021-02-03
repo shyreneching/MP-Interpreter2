@@ -190,7 +190,7 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
                 this.valueResult = evalEx.eval(false);
                 this.stringResult = this.valueResult.toEngineeringString();
             } catch (Expression.ExpressionException ex) {
-                System.out.println("ExpressionCommand - ExpressionException");
+//                System.out.println("ExpressionCommand - ExpressionException");
                 this.valueResult = new BigDecimal(0);
                 this.stringResult = "";
                 this.hasException = true;
