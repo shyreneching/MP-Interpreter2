@@ -71,22 +71,22 @@ public class TypeChecker implements IErrorChecker, ParseTreeListener {
 
                 if (this.pseudoValue.getPrimitiveType() == PrimitiveType.BOOLEAN) {
                     if (pseudoMethod.getReturnType() != PseudoMethod.MethodType.BOOL_TYPE) {
-                        String additionalMessage = "Expected boolean.";
+                        String additionalMessage = "Expected value 'BOOL'.";
                         PseudoErrorListener.reportCustomError(ErrorRepository.TYPE_MISMATCH, additionalMessage, this.lineNumber);
                     }
                 } else if (this.pseudoValue.getPrimitiveType() == PrimitiveType.INT) {
                     if (pseudoMethod.getReturnType() != PseudoMethod.MethodType.INT_TYPE) {
-                        String additionalMessage = "Expected int.";
+                        String additionalMessage = "Expected value 'INT'.";
                         PseudoErrorListener.reportCustomError(ErrorRepository.TYPE_MISMATCH, additionalMessage, this.lineNumber);
                     }
                 } else if (this.pseudoValue.getPrimitiveType() == PrimitiveType.FLOAT) {
                     if (pseudoMethod.getReturnType() != PseudoMethod.MethodType.FLOAT_TYPE) {
-                        String additionalMessage = "Expected floating point or double.";
+                        String additionalMessage = "Expected value 'FLOAT'.";
                         PseudoErrorListener.reportCustomError(ErrorRepository.TYPE_MISMATCH, additionalMessage, this.lineNumber);
                     }
                 } else if (this.pseudoValue.getPrimitiveType() == PrimitiveType.STRING) {
                     if (pseudoMethod.getReturnType() != PseudoMethod.MethodType.STRING_TYPE) {
-                        String additionalMessage = "Expected string.";
+                        String additionalMessage = "Expected value 'STRING'.";
                         PseudoErrorListener.reportCustomError(ErrorRepository.TYPE_MISMATCH, additionalMessage, this.lineNumber);
                     }
                 }
