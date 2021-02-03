@@ -209,6 +209,12 @@ public interface PseudoCodeVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitAssignment(PseudoCodeParser.AssignmentContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link PseudoCodeParser#invalidAssignment}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitInvalidAssignment(PseudoCodeParser.InvalidAssignmentContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link PseudoCodeParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

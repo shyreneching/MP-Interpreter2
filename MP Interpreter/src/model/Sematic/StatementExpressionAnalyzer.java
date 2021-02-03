@@ -52,7 +52,7 @@ public class StatementExpressionAnalyzer {
 
 
         AssignmentCommand assignmentCommand = null;
-        if(assignment.expression(1) != null){ // Shyrene added - for array declaration
+        if(assignment.LBRACK()!= null){ // Shyrene added - for array declaration
             ExpressionCommand expressionCommand = new ExpressionCommand(assignment.expression(0));
             expressionCommand.execute();
             if(!expressionCommand.isString() && expressionCommand.getValueResult().stripTrailingZeros().scale() <= 0 ){

@@ -33,6 +33,9 @@ variableDeclaratorList
 
 variableDeclarator
     :	Identifier ('=' variableInitializer)?
+//    |   Identifier (invalidAssignment variableInitializer)? {notifyErrorListeners("invalid operation found");}
+    |   Identifier '=' variableInitializer ('=' variableInitializer)+  {notifyErrorListeners("multiple assignment operators found");}
+    |   Identifier invalidAssignment variableInitializer (invalidAssignment variableInitializer)*  {notifyErrorListeners("invalid operation found, multiple assignment operators found");}
     |   unannType ('=' variableInitializer)? {notifyErrorListeners("declaring keyword as variable name");}
     ;
 
@@ -133,7 +136,7 @@ statement
 //    |   PRINT '(' expression ')' ';'
     |   scanInvocation ';'
     |   scanInvocation {notifyErrorListeners("lacking ';' at the end of line");}
-    |   Identifier ('+'|'-'|'*'|'/'|'%') ('+'|'-'|'*'|'/'|'%')+ {notifyErrorListeners("redundant arithmetic operator symbol found");}
+    |   Identifier ('+'|'-'|'*'|'/'|'%') ('+'|'-'|'*'|'/'|'%')+ ';' {notifyErrorListeners("redundant arithmetic operator symbol found");}
     ;
 
 forStatement
@@ -215,6 +218,14 @@ conditionalExpression
 assignment
     :   Identifier '=' expression
     |   Identifier '[' expression ']' '=' expression
+//    |   Identifier invalidAssignment expression {notifyErrorListeners("invalid operation found");}
+    |   Identifier '=' expression ('=' expression)+ {notifyErrorListeners("multiple assignment operators found");}
+    |   Identifier invalidAssignment expression (invalidAssignment expression)* {notifyErrorListeners("invalid operation found, multiple assignment operators found");}
+    ;
+
+invalidAssignment
+    :   ('+'|'-'|'*'|'/'|'%')+ '='('+'|'-'|'*'|'/'|'%')*
+    |   ('+'|'-'|'*'|'/'|'%')* '='('+'|'-'|'*'|'/'|'%')+
     ;
 
 expression

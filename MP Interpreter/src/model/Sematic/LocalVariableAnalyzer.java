@@ -67,11 +67,11 @@ public class LocalVariableAnalyzer implements ParseTreeListener {
 
 //                    pseudoValue = PseudoValue.createEmptyVariable(type);
                     ExpressionAnalyzer expressionAnalyzer = new ExpressionAnalyzer();
-                    expressionAnalyzer.analyze(varCtx.variableInitializer().expression());
+                    expressionAnalyzer.analyze(varCtx.variableInitializer(0).expression());
 
                     if(!expressionAnalyzer.isHasSemanticError()){
-                        System.out.println("LocalVariableAnalyzer - expr: " +varCtx.variableInitializer().expression().getText());
-                        ExpressionCommand expressionCommand = new ExpressionCommand(varCtx.variableInitializer().expression());
+                        System.out.println("LocalVariableAnalyzer - expr: " +varCtx.variableInitializer(0).expression().getText());
+                        ExpressionCommand expressionCommand = new ExpressionCommand(varCtx.variableInitializer(0).expression());
                         expressionCommand.execute();
                         Object value = null;
                         boolean sucess = true;
@@ -113,7 +113,7 @@ public class LocalVariableAnalyzer implements ParseTreeListener {
                         }
 
                         System.out.println("LocalVariableAnalyzer - Value: "+ value);
-                        TypeChecker typeChecker = new TypeChecker(pseudoValue,varCtx.variableInitializer().expression());
+                        TypeChecker typeChecker = new TypeChecker(pseudoValue,varCtx.variableInitializer(0).expression());
                         typeChecker.verify();
                         if(isFinal && pseudoValue != null){
                             pseudoValue.makeConst();
@@ -121,7 +121,7 @@ public class LocalVariableAnalyzer implements ParseTreeListener {
 
                         if(sucess){
                             //Shyrene added - using variable declaration assignment command
-                            AssignmentCommand assignmentCommand = new AssignmentCommand(varCtx.Identifier(), varCtx.variableInitializer().expression(), pseudoValue.getPrimitiveType());
+                            AssignmentCommand assignmentCommand = new AssignmentCommand(varCtx.Identifier(), varCtx.variableInitializer(0).expression(), pseudoValue.getPrimitiveType());
                             CommandExecuter.handleStatementExecution(assignmentCommand);
                         }
 
@@ -135,15 +135,15 @@ public class LocalVariableAnalyzer implements ParseTreeListener {
 //                    System.out.println("LocalVariableAnalyzer - arrayType: "+ arrayType);
 //                    System.out.println("LocalVariableAnalyzer - ititialize type: "+ varCtx.variableInitializer().arrayInitializer().unannType().getText());
 
-                    if(!arrayType.equals(varCtx.variableInitializer().arrayInitializer().unannType().getText())){
+                    if(!arrayType.equals(varCtx.variableInitializer(0).arrayInitializer().unannType().getText())){
                         PseudoErrorListener.reportCustomError(ErrorRepository.TYPE_MISMATCH, "", lineNumber);
                     }
 
                     ExpressionAnalyzer expressionAnalyzer = new ExpressionAnalyzer();
-                    expressionAnalyzer.analyze(varCtx.variableInitializer().arrayInitializer().expression());
+                    expressionAnalyzer.analyze(varCtx.variableInitializer(0).arrayInitializer().expression());
 
                     if(!expressionAnalyzer.isHasSemanticError()){
-                        ExpressionCommand expressionCommand = new ExpressionCommand(varCtx.variableInitializer().arrayInitializer().expression());
+                        ExpressionCommand expressionCommand = new ExpressionCommand(varCtx.variableInitializer(0).arrayInitializer().expression());
                         expressionCommand.execute();
                         // evaluate varCtx.variableInitializer().arrayInitializer().expression();)
 //                    TypeChecker.isNumeric(varCtx.variableInitializer().arrayInitializer().expression().getText());
@@ -154,7 +154,7 @@ public class LocalVariableAnalyzer implements ParseTreeListener {
                             System.out.println("Jfdklsgsegh we rgehg weriouwehg");
                             PseudoArray pseudoArray = PseudoArray.createArray(arrayType,varCtx.Identifier().getText());
                             pseudoValue = new PseudoValue(pseudoArray, "array");
-                            ArrayInitializationCommand arrayInitializeCommand = new ArrayInitializationCommand(pseudoArray, varCtx.variableInitializer().arrayInitializer().expression());
+                            ArrayInitializationCommand arrayInitializeCommand = new ArrayInitializationCommand(pseudoArray, varCtx.variableInitializer(0).arrayInitializer().expression());
                             CommandExecuter.handleStatementExecution(arrayInitializeCommand);
                         } else if(!expressionCommand.isString() && expressionCommand.getValueResult().stripTrailingZeros().scale() <= 0  && !expressionCommand.getValueResult().toString().contains(".")){
 

@@ -338,6 +338,16 @@ public interface PseudoCodeListener extends ParseTreeListener {
 	 */
 	void exitAssignment(PseudoCodeParser.AssignmentContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link PseudoCodeParser#invalidAssignment}.
+	 * @param ctx the parse tree
+	 */
+	void enterInvalidAssignment(PseudoCodeParser.InvalidAssignmentContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link PseudoCodeParser#invalidAssignment}.
+	 * @param ctx the parse tree
+	 */
+	void exitInvalidAssignment(PseudoCodeParser.InvalidAssignmentContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link PseudoCodeParser#expression}.
 	 * @param ctx the parse tree
 	 */

@@ -55,6 +55,10 @@ public class ExpressionAnalyzer implements ParseTreeListener {
     private void semcCheck(ExpressionContext exprCtx) {
 
         PseudoMethod pseudoMethod = SymbolTableManager.getInstance().getMethod(exprCtx.Identifier().getText());
+        if(pseudoMethod == null){
+            PseudoErrorListener.reportCustomError(ErrorRepository.UNDECLARED_FUNCTION, "", exprCtx.Identifier().getText(), exprCtx.getStart().getLine());
+            return;
+        }
         if(pseudoMethod.getReturnType().equals(PseudoMethod.MethodType.VOID_TYPE)){
             this.setHasSemanticError();
             PseudoErrorListener.reportCustomError(ErrorRepository.DEFAULT, "Void function has no return value.", exprCtx.getStart().getLine());

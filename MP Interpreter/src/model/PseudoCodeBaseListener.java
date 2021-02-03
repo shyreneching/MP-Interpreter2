@@ -412,6 +412,18 @@ public class PseudoCodeBaseListener implements PseudoCodeListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterInvalidAssignment(PseudoCodeParser.InvalidAssignmentContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitInvalidAssignment(PseudoCodeParser.InvalidAssignmentContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterExpression(PseudoCodeParser.ExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
