@@ -20,10 +20,7 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class ExpressionCommand implements ICommand, ParseTreeListener {
@@ -225,7 +222,10 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
         for(String s: copy)
             System.out.println(s);
 
-        for(String s : map.keySet()){
+        List<String> list = new ArrayList<String>(map.keySet());
+        Collections.sort(list, new MyComparator());
+
+        for(String s : list){
             Expression temp = new Expression(s);
 
             Iterator<Expression.Token> iter2 = temp.getExpressionTokenizer();
@@ -595,5 +595,22 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
 
     public boolean isBool() {
         return isBool;
+    }
+}
+
+class MyComparator implements java.util.Comparator<String> {
+
+    private int referenceLength;
+
+    public MyComparator() {
+        super();
+//        this.referenceLength = reference.length();
+    }
+
+    public int compare(String s1, String s2) {
+        int dist1 = Math.abs(s1.length());
+        int dist2 = Math.abs(s2.length());
+
+        return dist2 - dist1;
     }
 }
