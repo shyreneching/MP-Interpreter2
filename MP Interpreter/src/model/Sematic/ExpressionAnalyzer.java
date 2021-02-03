@@ -61,11 +61,14 @@ public class ExpressionAnalyzer implements ParseTreeListener {
         } else{
 //            System.out.println("ExpressionAnalyzer - expr: " + exprCtx.getText());
 //            System.out.println("ExpressionAnalyzer - function name: " + exprCtx.Identifier());
-            if(exprCtx.expressionList() == null && pseudoMethod.getParameterValueSize() > 0) {
+            if((exprCtx.expressionList() == null || exprCtx.expressionList().expression() == null)) {
 //                System.out.println("1ExpressionAnalyzer - paramsN: " + pseudoMethod.getParameterValueSize());
 //                System.out.println("1ExpressionAnalyzer - call list: " + exprCtx.expressionList() );
-                PseudoErrorListener.reportCustomError(ErrorRepository.PARAMETER_COUNT_MISMATCH, "", pseudoMethod.getMethodName(),exprCtx.getStart().getLine());
-                this.setHasSemanticError();
+                if(pseudoMethod.getParameterValueSize() > 0){
+                    PseudoErrorListener.reportCustomError(ErrorRepository.PARAMETER_COUNT_MISMATCH, "", pseudoMethod.getMethodName(),exprCtx.getStart().getLine());
+                    this.setHasSemanticError();
+                }
+                return;
             }else{
                 List<ExpressionContext> exprCtxList = exprCtx.expressionList().expression();
 

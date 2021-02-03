@@ -169,6 +169,7 @@ public class StatementAnalyzer {
         ForinitializerContext forinitializerCtx = forStatement.forheader().forinitializer();
         if(forinitializerCtx.INT() == null){ //Shyrene added - checking if lefthand just assignment
             isSuccess = UndeclaredChecker.verifyVariableOrConst(forStatement.forheader().forinitializer().Identifier());
+
         } else{
             isSuccess = MultipleVariableDeclarationChecker.verifyVariableOrConst(forinitializerCtx.Identifier());
 

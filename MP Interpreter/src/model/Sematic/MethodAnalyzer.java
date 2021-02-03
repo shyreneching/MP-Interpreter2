@@ -118,27 +118,30 @@ public class MethodAnalyzer implements ParseTreeListener {
             blockAnalyzer.analyze(blockCtx);
             evaluated = true;
         } else if(ctx instanceof StatementContext && ((StatementContext) ctx).RETURN() != null){
-            if(pseudoMethod.getReturnType().equals(PseudoMethod.MethodType.VOID_TYPE)){
+            if(pseudoMethod.getReturnType().equals(PseudoMethod.MethodType.VOID_TYPE) && ((StatementContext) ctx).expression()!= null){
                 Token firstToken = ctx.getStart();
                 int lineNumber = firstToken.getLine();
                 PseudoErrorListener.reportCustomError(ErrorRepository.RETURN_IN_VOID, "", lineNumber);
             }
-//            if(hasReturn){
-//                Token firstToken = ctx.getStart();
-//                int lineNumber = firstToken.getLine();
-//
-//                PseudoErrorListener.reportCustomError(ErrorRepository.DEFAULT, "Double return statement ", lineNumber);
-//            }
-            hasReturn = true && !isInMethod(ctx);
-            pseudoMethod.setValidReturns(hasReturn);
+
+            hasReturn = !isInMethod(ctx);
+            if(hasReturn && pseudoMethod.hasValidReturns()){
+                Token firstToken = ctx.getStart();
+                int lineNumber = firstToken.getLine();
+
+                PseudoErrorListener.reportCustomError(ErrorRepository.DEFAULT, "Double return statement. ", lineNumber);
+            }
+            System.out.println("Method Analyzer - hasReturn:" + hasReturn);
+            pseudoMethod.setValidReturns(hasReturn || pseudoMethod.hasValidReturns());
         }
     }
 
     public boolean isInMethod(ParserRuleContext exprCtx){
-        if(exprCtx.getParent().getParent().equals(mthd))
-            return false;
-        else if (exprCtx.getParent() instanceof BlockContext)
+        System.out.println("Method Analyzer - expression:" + exprCtx.getParent().getText());
+        if (exprCtx.getParent() instanceof BlockContext || exprCtx.getParent() instanceof BlockStatementContext)
             return isInMethod(exprCtx.getParent());
+        else if(exprCtx.getParent().getText().equals(mthd.getText()))
+            return false;
         else
             return true;
     }
@@ -151,7 +154,7 @@ public class MethodAnalyzer implements ParseTreeListener {
     public void addParameter(MethodDeclarationContext method) {
         FormalParametersContext parameterlist =  method.methodDeclarator().formalParameters();
 
-        if (parameterlist != null){
+        if (parameterlist != null && parameterlist.formalParameter() != null){
             for(FormalParameterContext paramsCtx: parameterlist.formalParameter()){
                 System.out.println("Should be adding parameter");
                 if (paramsCtx.Identifier() != null) {
