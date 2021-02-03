@@ -25,6 +25,7 @@ public class MethodAnalyzer implements ParseTreeListener {
     private boolean hasReturn = false;
     private boolean evaluated = false;
 
+    private boolean ifReturn = false;
 
     public void analyze(MethodDeclarationContext mthd) {
 
@@ -129,19 +130,33 @@ public class MethodAnalyzer implements ParseTreeListener {
 
                 PseudoErrorListener.reportCustomError(ErrorHandler.DEFAULT, "Double return statement. ", lineNumber);
             }
-            System.out.println("Method Analyzer - hasReturn:" + hasReturn);
-            pseudoMethod.setValidReturns(hasReturn || pseudoMethod.hasValidReturns());
+            isIfReturn(ctx);
+            System.out.println("Method Analyzer - ifReturn:" + ifReturn);
+            pseudoMethod.setValidReturns(hasReturn || pseudoMethod.hasValidReturns() || !ifReturn);
         }
     }
 
     public boolean isInMethod(ParserRuleContext exprCtx){
-        System.out.println("Method Analyzer - expression:" + exprCtx.getParent().getText());
+//        System.out.println("Method Analyzer - expression:" + exprCtx.getParent().getText());
         if (exprCtx.getParent() instanceof BlockContext || exprCtx.getParent() instanceof BlockStatementContext)
             return isInMethod(exprCtx.getParent());
         else if(exprCtx.getParent().getText().equals(mthd.getText()))
             return false;
         else
             return true;
+    }
+
+    public void isIfReturn(ParserRuleContext exprCtx){
+        if (exprCtx.getParent().getParent().getParent() instanceof IfThenStatementContext) {
+            IfThenStatementContext parent = (IfThenStatementContext) exprCtx.getParent().getParent().getParent();
+            if(parent.block(parent.block().size() - 1).blockStatement(0).statement().getText().equals(exprCtx.getParent().getText())){
+//                System.out.println("THIS SHOULE BE AN ELSEEEEEEEEEEE!!!!!!!!");
+                this.ifReturn = false;
+            } else {
+                this.ifReturn = true;
+            }
+            this.ifReturn = !ifReturn;
+        }
     }
 
     @Override
