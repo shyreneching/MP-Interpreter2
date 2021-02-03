@@ -74,4 +74,8 @@ public class SymbolTableManager implements IScope {
         return ScopeCreator.searchVariableInLocalIterative(identifier, this.parentScope);
     }
 
+    public PseudoValue searchVariableCorrectly(String identifier) {
+        return ScopeCreator.searchVariableCorrectly(identifier, this.parentScope);
+    }
+
 }

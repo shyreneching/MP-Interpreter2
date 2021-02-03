@@ -54,7 +54,7 @@ public class StatementExpressionAnalyzer {
             ExpressionCommand expressionCommand = new ExpressionCommand(assignment.expression(0));
             expressionCommand.execute();
             if(!expressionCommand.isString() && expressionCommand.getValueResult().stripTrailingZeros().scale() <= 0 ){
-                PseudoValue pseudoValue = VariableSearcher.searchVariable(assignment.Identifier().getText());
+                PseudoValue pseudoValue = VariableSearcher.searchVariableCorrectly(assignment.Identifier().getText());
                 if(pseudoValue != null){
                     if(pseudoValue.getValue() != null && pseudoValue.getValue() instanceof PseudoArray && ((PseudoArray)pseudoValue.getValue()).getSize() > 0){
                         PseudoArray pseudoArray = ((PseudoArray) pseudoValue.getValue());

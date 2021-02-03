@@ -64,4 +64,41 @@ public class VariableSearcher {
 //    public static PseudoValue searchVariableInClass(ClassScope classScope, String identifierString) {
 //        return classScope.searchVariable(identifierString);
 //    }
+
+    public static PseudoValue searchVariableCorrectly(Scope scope, String identifierString) {
+        PseudoValue pseudoValue = null;
+
+        pseudoValue = ScopeCreator.searchVariableCorrectly(identifierString, scope);
+
+        return pseudoValue;
+    }
+
+    public static PseudoValue searchVariableCorrectly(PseudoMethod pseudoMethod, String identifierString) {
+        PseudoValue pseudoValue = null;
+        if(pseudoMethod.hasParameter(identifierString)) {
+            pseudoValue = pseudoMethod.getParameter(identifierString);
+        }
+        else {
+            pseudoValue = ScopeCreator.searchVariableCorrectly(identifierString, pseudoMethod.getParentScope());
+        }
+
+        return pseudoValue;
+    }
+
+    public static PseudoValue searchVariableCorrectly(String identifierString) {
+        PseudoValue pseudoValue = null;
+
+        if(MethodTracker.getInstance().isInsideFunction()) {
+            pseudoValue = searchVariableCorrectly(MethodTracker.getInstance().getLatestFunction(), identifierString);
+        } else{
+            pseudoValue = VariableSearcher.searchVariableCorrectly(SymbolTableManager.getInstance().getParentScope(), identifierString);
+        }
+
+//        if(pseudoValue == null) {
+//            ClassScope classScope = SymbolTableManager.getInstance().getClassScope(ParserHandler.getInstance().getCurrentClassName());
+//            pseudoValue = searchVariableInClassIncludingLocal(classScope, identifierString);
+//        }
+
+        return pseudoValue;
+    }
 }
