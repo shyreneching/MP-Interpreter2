@@ -120,7 +120,7 @@ public class StatementAnalyzer {
                 secondCheck.verify();
                 ExpressionCommand laterBound= new ExpressionCommand(whileStatement.expression(1));
                 laterBound.execute();
-                if(!laterBound.isString() && laterBound.getValueResult().stripTrailingZeros().scale() <= 0){
+                if(!laterBound.isString() && laterBound.getValueResult().stripTrailingZeros().scale() <= 0 || laterBound.getValueResult().toString().equals("0")){
                     righthand = true;
                 } else{
                     righthand = false;
@@ -129,7 +129,7 @@ public class StatementAnalyzer {
             }
 
 
-            if (!firstBound.isString() && firstBound.getValueResult().stripTrailingZeros().scale() <= 0){
+            if (!firstBound.isString() && firstBound.getValueResult().stripTrailingZeros().scale() <= 0 || firstBound.getValueResult().toString().equals("0")){
                 lefthand = true;
             } else {
                 PseudoErrorListener.reportCustomError(ErrorRepository.DEFAULT, "While loop " + msg + " is not 'INT' declaration. ", whileStatement.getStart().getLine());
@@ -182,13 +182,13 @@ public class StatementAnalyzer {
             firstBound.execute();
             boolean lefthand = false;
             boolean righthand = false;
-            if (!firstBound.isString() && firstBound.getValueResult().stripTrailingZeros().scale() <= 0){
+            if (!firstBound.isString() && firstBound.getValueResult().stripTrailingZeros().scale() <= 0 || firstBound.getValueResult().toString().equals("0")){
                 lefthand = true;
             } else {
                 PseudoErrorListener.reportCustomError(ErrorRepository.DEFAULT, "For loop left hand is not 'INT' declaration. ", forStatement.getStart().getLine());
             }
 
-            if(!laterBound.isString() && laterBound.getValueResult().stripTrailingZeros().scale() <= 0){
+            if(!laterBound.isString() && laterBound.getValueResult().stripTrailingZeros().scale() <= 0 || laterBound.getValueResult().toString().equals("0")){
                 righthand = true;
             } else{
                 PseudoErrorListener.reportCustomError(ErrorRepository.DEFAULT, "For loop right hand is not 'INT' declaration. ", forStatement.getStart().getLine());
