@@ -1,6 +1,6 @@
 package model.Commands;
 
-import model.ErrorChecking.ErrorRepository;
+import model.ErrorChecking.ErrorHandler;
 import model.ErrorChecking.ParameterMismatchChecker;
 import model.ErrorChecking.PseudoErrorListener;
 import model.Item.PseudoMethod;
@@ -87,7 +87,7 @@ public class MethodCallCommand implements ICommand, ParseTreeListener {
     private void verifyParameters() {
         if(this.ctx == null || this.ctx.expression() == null ) {
             if(this.method.getParameterValueSize() > 0){
-                PseudoErrorListener.reportCustomError(ErrorRepository.PARAMETER_COUNT_MISMATCH, "", this.functionName, this.lineNumber);
+                PseudoErrorListener.reportCustomError(ErrorHandler.PARAMETER_COUNT_MISMATCH, "", this.functionName, this.lineNumber);
             }
             return;
         }

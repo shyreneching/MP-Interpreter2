@@ -3,7 +3,7 @@ package model.Sematic;
 import model.Commands.ArrayInitializationCommand;
 import model.Commands.AssignmentCommand;
 import model.Commands.ExpressionCommand;
-import model.ErrorChecking.ErrorRepository;
+import model.ErrorChecking.ErrorHandler;
 import model.ErrorChecking.MultipleVariableDeclarationChecker;
 import model.ErrorChecking.PseudoErrorListener;
 import model.ErrorChecking.TypeChecker;
@@ -60,7 +60,7 @@ public class LocalVariableAnalyzer implements ParseTreeListener {
 //            MultipleVariableDeclarationChecker multVarChecker = new MultipleVariableDeclarationChecker(varCtx.Identifier(),varCtx);
 //            multVarChecker.verify();
             PseudoValue pseudoValue = null;
-            if(varCtx.variableInitializer() != null){
+            if(varCtx.variableInitializer(0) != null){
                 if(!this.type.equals("array")){
 //                    System.out.println("HELOOOOOOOOOOOOOOOO");
 //                    System.out.println("type: "+ type);
@@ -114,7 +114,7 @@ public class LocalVariableAnalyzer implements ParseTreeListener {
                         } else {
                             pseudoValue = PseudoValue.createEmptyVariable(type);
                             sucess = false;
-                            PseudoErrorListener.reportCustomError(ErrorRepository.TYPE_MISMATCH, "Expected value '" + type.toUpperCase() + "'. ", varCtx.getStart().getLine());
+                            PseudoErrorListener.reportCustomError(ErrorHandler.TYPE_MISMATCH, "Expected value '" + type.toUpperCase() + "'. ", varCtx.getStart().getLine());
                         }
 
                         System.out.println("LocalVariableAnalyzer - Value: "+ value);
@@ -141,7 +141,7 @@ public class LocalVariableAnalyzer implements ParseTreeListener {
 //                    System.out.println("LocalVariableAnalyzer - ititialize type: "+ varCtx.variableInitializer().arrayInitializer().unannType().getText());
 
                     if(!arrayType.equals(varCtx.variableInitializer(0).arrayInitializer().unannType().getText())){
-                        PseudoErrorListener.reportCustomError(ErrorRepository.TYPE_MISMATCH, "", lineNumber);
+                        PseudoErrorListener.reportCustomError(ErrorHandler.TYPE_MISMATCH, "", lineNumber);
                     }
 
                     ExpressionAnalyzer expressionAnalyzer = new ExpressionAnalyzer();
@@ -173,7 +173,7 @@ public class LocalVariableAnalyzer implements ParseTreeListener {
                             }
                             pseudoValue = new PseudoValue(pseudoArray, "array");
                         } else{
-                            PseudoErrorListener.reportCustomError(ErrorRepository.DEFAULT, "Invalid initialization of array size. ", varCtx.getStart().getLine());
+                            PseudoErrorListener.reportCustomError(ErrorHandler.DEFAULT, "Invalid initialization of array size. ", varCtx.getStart().getLine());
                         }
 
 //                        Scope scope = ScopeCreator.getInstance().getActiveScope();

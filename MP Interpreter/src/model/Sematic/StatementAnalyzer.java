@@ -1,16 +1,13 @@
 package model.Sematic;
 
 import model.Commands.*;
-import model.ErrorChecking.ErrorRepository;
+import model.ErrorChecking.ErrorHandler;
 import model.ErrorChecking.MultipleVariableDeclarationChecker;
 import model.ErrorChecking.PseudoErrorListener;
 import model.ErrorChecking.UndeclaredChecker;
 import model.Execution.ExecutionManager;
 import model.PseudoCodeParser.*;
 import model.SymbolTable.Scope.ScopeCreator;
-
-import java.util.List;
-import java.util.regex.PatternSyntaxException;
 
 public class StatementAnalyzer {
     public void analyze(StatementContext statementCtx) {
@@ -124,7 +121,7 @@ public class StatementAnalyzer {
                     righthand = true;
                 } else{
                     righthand = false;
-                    PseudoErrorListener.reportCustomError(ErrorRepository.DEFAULT, "While loop right hand is not 'INT' declaration. ", whileStatement.getStart().getLine());
+                    PseudoErrorListener.reportCustomError(ErrorHandler.DEFAULT, "While loop right hand is not 'INT' declaration. ", whileStatement.getStart().getLine());
                 }
             }
 
@@ -132,7 +129,7 @@ public class StatementAnalyzer {
             if (!firstBound.isString() && firstBound.getValueResult().stripTrailingZeros().scale() <= 0 || firstBound.getValueResult().toString().equals("0")){
                 lefthand = true;
             } else {
-                PseudoErrorListener.reportCustomError(ErrorRepository.DEFAULT, "While loop " + msg + " is not 'INT' declaration. ", whileStatement.getStart().getLine());
+                PseudoErrorListener.reportCustomError(ErrorHandler.DEFAULT, "While loop " + msg + " is not 'INT' declaration. ", whileStatement.getStart().getLine());
             }
 
             if(lefthand && righthand){
@@ -162,6 +159,9 @@ public class StatementAnalyzer {
     }
 
     private void handleForStatement(ForStatementContext forStatement) {
+        ScopeCreator.getInstance().openScope();
+
+
         boolean isSuccess;
         ForinitializerContext forinitializerCtx = forStatement.forheader().forinitializer();
         if(forinitializerCtx.INT() == null){ //Shyrene added - checking if lefthand just assignment
@@ -171,6 +171,7 @@ public class StatementAnalyzer {
             isSuccess = MultipleVariableDeclarationChecker.verifyVariableOrConst(forinitializerCtx.Identifier());
 
         }
+
         if(isSuccess){
             UndeclaredChecker rightHandID = new UndeclaredChecker(forStatement.forheader().expression(0));
             rightHandID.verify();
@@ -185,17 +186,17 @@ public class StatementAnalyzer {
             if (!firstBound.isString() && firstBound.getValueResult().stripTrailingZeros().scale() <= 0 || firstBound.getValueResult().toString().equals("0")){
                 lefthand = true;
             } else {
-                PseudoErrorListener.reportCustomError(ErrorRepository.DEFAULT, "For loop left hand is not 'INT' declaration. ", forStatement.getStart().getLine());
+                PseudoErrorListener.reportCustomError(ErrorHandler.DEFAULT, "For loop left hand is not 'INT' declaration. ", forStatement.getStart().getLine());
             }
 
             if(!laterBound.isString() && laterBound.getValueResult().stripTrailingZeros().scale() <= 0 || laterBound.getValueResult().toString().equals("0")){
                 righthand = true;
             } else{
-                PseudoErrorListener.reportCustomError(ErrorRepository.DEFAULT, "For loop right hand is not 'INT' declaration. ", forStatement.getStart().getLine());
+                PseudoErrorListener.reportCustomError(ErrorHandler.DEFAULT, "For loop right hand is not 'INT' declaration. ", forStatement.getStart().getLine());
             }
 
             if(lefthand && righthand){
-                ScopeCreator.getInstance().openScope();
+
 
                 String iteration = "";
                 if(forStatement.forheader().UPTO()!=null){
@@ -212,11 +213,9 @@ public class StatementAnalyzer {
                 blockAnalyzer.analyze(blkCtx);
 
                 StatementControlOverseer.getInstance().compileControlledCommand();
-
-                ScopeCreator.getInstance().closeScope();
-                System.out.println("End of FOR loop");
             }
         }
+        ScopeCreator.getInstance().closeScope();
     }
 
     private void handleScanStatement(ScanInvocationContext scanInvocation) {

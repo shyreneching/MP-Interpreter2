@@ -14,8 +14,6 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
-import java.util.regex.Pattern;
-
 public class TypeChecker implements IErrorChecker, ParseTreeListener {
 
     private PseudoValue pseudoValue;
@@ -72,22 +70,22 @@ public class TypeChecker implements IErrorChecker, ParseTreeListener {
                 if (this.pseudoValue.getPrimitiveType() == PrimitiveType.BOOLEAN) {
                     if (pseudoMethod.getReturnType() != PseudoMethod.MethodType.BOOL_TYPE) {
                         String additionalMessage = "Expected value 'BOOL'.";
-                        PseudoErrorListener.reportCustomError(ErrorRepository.TYPE_MISMATCH, additionalMessage, this.lineNumber);
+                        PseudoErrorListener.reportCustomError(ErrorHandler.TYPE_MISMATCH, additionalMessage, this.lineNumber);
                     }
                 } else if (this.pseudoValue.getPrimitiveType() == PrimitiveType.INT) {
                     if (pseudoMethod.getReturnType() != PseudoMethod.MethodType.INT_TYPE) {
                         String additionalMessage = "Expected value 'INT'.";
-                        PseudoErrorListener.reportCustomError(ErrorRepository.TYPE_MISMATCH, additionalMessage, this.lineNumber);
+                        PseudoErrorListener.reportCustomError(ErrorHandler.TYPE_MISMATCH, additionalMessage, this.lineNumber);
                     }
                 } else if (this.pseudoValue.getPrimitiveType() == PrimitiveType.FLOAT) {
                     if (pseudoMethod.getReturnType() != PseudoMethod.MethodType.FLOAT_TYPE) {
                         String additionalMessage = "Expected value 'FLOAT'.";
-                        PseudoErrorListener.reportCustomError(ErrorRepository.TYPE_MISMATCH, additionalMessage, this.lineNumber);
+                        PseudoErrorListener.reportCustomError(ErrorHandler.TYPE_MISMATCH, additionalMessage, this.lineNumber);
                     }
                 } else if (this.pseudoValue.getPrimitiveType() == PrimitiveType.STRING) {
                     if (pseudoMethod.getReturnType() != PseudoMethod.MethodType.STRING_TYPE) {
                         String additionalMessage = "Expected value 'STRING'.";
-                        PseudoErrorListener.reportCustomError(ErrorRepository.TYPE_MISMATCH, additionalMessage, this.lineNumber);
+                        PseudoErrorListener.reportCustomError(ErrorHandler.TYPE_MISMATCH, additionalMessage, this.lineNumber);
                     }
                 }
 
@@ -98,25 +96,25 @@ public class TypeChecker implements IErrorChecker, ParseTreeListener {
                 if(this.pseudoValue.getPrimitiveType() == PrimitiveType.BOOL) {
                     if(!evaluationCommand.getModifiedExp().equals("true") && !evaluationCommand.getStringResult().equals("false")) {
                         String additionalMessage = "Expected boolean.";
-                        BuildChecker.reportCustomError(ErrorRepository.TYPE_MISMATCH,  additionalMessage, this.lineNumber);
+                        BuildChecker.reportCustomError(ErrorHandler.TYPE_MISMATCH,  additionalMessage, this.lineNumber);
                     }
                 }
                 else if(this.pseudoValue.getPrimitiveType() == PrimitiveType.INT) {
                     if(!this.isInteger(evaluationCommand.getModifiedExp())) {
                         String additionalMessage = "Expected int.";
-                        BuildChecker.reportCustomError(ErrorRepository.TYPE_MISMATCH,  additionalMessage, this.lineNumber);
+                        BuildChecker.reportCustomError(ErrorHandler.TYPE_MISMATCH,  additionalMessage, this.lineNumber);
                     }
                 }
                 else if(this.pseudoValue.getPrimitiveType() == PrimitiveType.DECIMAL) {
                     if(!this.isDecimal(evaluationCommand.getModifiedExp())) {
                         String additionalMessage = "Expected floating point or double.";
-                        BuildChecker.reportCustomError(ErrorRepository.TYPE_MISMATCH,  additionalMessage, this.lineNumber);
+                        BuildChecker.reportCustomError(ErrorHandler.TYPE_MISMATCH,  additionalMessage, this.lineNumber);
                     }
                 }
                 else if(this.pseudoValue.getPrimitiveType() == PrimitiveType.STRING) {
                     if(evaluationCommand.isNumericResult()){
                         String additionalMessage = "Expected string.";
-                        BuildChecker.reportCustomError(ErrorRepository.TYPE_MISMATCH,  additionalMessage, this.lineNumber);
+                        BuildChecker.reportCustomError(ErrorHandler.TYPE_MISMATCH,  additionalMessage, this.lineNumber);
                     }
                 }
             }*/
@@ -131,25 +129,25 @@ public class TypeChecker implements IErrorChecker, ParseTreeListener {
             if (this.pseudoValue.getPrimitiveType() == PrimitiveType.BOOLEAN) {
                 if (literalCtx.BooleanLiteral() == null) {
                     String additionalMessage = "Expected boolean.";
-                    PseudoErrorListener.reportCustomError(ErrorRepository.TYPE_MISMATCH, additionalMessage, this.lineNumber);
+                    PseudoErrorListener.reportCustomError(ErrorHandler.TYPE_MISMATCH, additionalMessage, this.lineNumber);
                 }
             } else if (this.pseudoValue.getPrimitiveType() == PrimitiveType.INT) {
                 if (literalCtx.IntegerLiteral() == null) {
                     String additionalMessage = "Expected int.";
-                    PseudoErrorListener.reportCustomError(ErrorRepository.TYPE_MISMATCH, additionalMessage, this.lineNumber);
+                    PseudoErrorListener.reportCustomError(ErrorHandler.TYPE_MISMATCH, additionalMessage, this.lineNumber);
                 }
             } else if (this.pseudoValue.getPrimitiveType() == PrimitiveType.FLOAT) {
                 if (literalCtx.FloatingPointLiteral() == null) {
                     String additionalMessage = "Expected floating point or double.";
-                    PseudoErrorListener.reportCustomError(ErrorRepository.TYPE_MISMATCH, additionalMessage, this.lineNumber);
+                    PseudoErrorListener.reportCustomError(ErrorHandler.TYPE_MISMATCH, additionalMessage, this.lineNumber);
                 }
             } else if (this.pseudoValue.getPrimitiveType() == PrimitiveType.STRING) {
                 if (expressionString.charAt(0) != '\"' && expressionString.charAt(expressionString.length() - 1) != '\"') {
                     String additionalMessage = "Expected string.";
-                    PseudoErrorListener.reportCustomError(ErrorRepository.TYPE_MISMATCH, additionalMessage, this.lineNumber);
+                    PseudoErrorListener.reportCustomError(ErrorHandler.TYPE_MISMATCH, additionalMessage, this.lineNumber);
                 } else if (literalCtx.StringLiteral() == null) {
                     String additionalMessage = "Expected string.";
-                    PseudoErrorListener.reportCustomError(ErrorRepository.TYPE_MISMATCH, additionalMessage, this.lineNumber);
+                    PseudoErrorListener.reportCustomError(ErrorHandler.TYPE_MISMATCH, additionalMessage, this.lineNumber);
                 }
             }
         }

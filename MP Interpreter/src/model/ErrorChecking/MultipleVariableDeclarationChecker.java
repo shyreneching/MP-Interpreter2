@@ -3,7 +3,6 @@ package model.ErrorChecking;
 import model.Execution.ExecutionManager;
 import model.Item.PseudoMethod;
 import model.Item.PseudoValue;
-import model.PseudoCodeListener;
 import model.PseudoCodeParser.*;
 import model.Sematic.VariableSearcher;
 import model.SymbolTable.Scope.ScopeCreator;
@@ -90,23 +89,24 @@ public class MultipleVariableDeclarationChecker implements IErrorChecker, ParseT
 //
 //
 //        if(pseudoValue != null) {
-//            PseudoErrorListener.reportCustomError(ErrorRepository.MULTIPLE_VARIABLE, "", identifierString, this.lineNumber);
+//            PseudoErrorListener.reportCustomError(ErrorHandler.MULTIPLE_VARIABLE, "", identifierString, this.lineNumber);
 //        }
 //    }
 
     public static boolean verifyVariableOrConst(TerminalNode node) {
         PseudoValue pseudoValue = null;
 
-        if(ExecutionManager.getInstance().isInFunctionExecution()) {
-            PseudoMethod pseudoMethod = ExecutionManager.getInstance().getCurrentFunction();
-            pseudoValue = VariableSearcher.searchVariableInFunction(pseudoMethod, node.getText());
-        } else{
-            pseudoValue = VariableSearcher.searchVariableInMain(SymbolTableManager.getInstance().getParentScope(), node.getText());
-        }
+//        if(ExecutionManager.getInstance().isInFunctionExecution()) {
+//            PseudoMethod pseudoMethod = ExecutionManager.getInstance().getCurrentFunction();
+//            pseudoValue = VariableSearcher.searchVariableInFunction(pseudoMethod, node.getText());
+//        } else{
+//            pseudoValue = VariableSearcher.searchVariableInMain(SymbolTableManager.getInstance().getParentScope(), node.getText());
+            pseudoValue = VariableSearcher.searchVariableInMain(ScopeCreator.getInstance().getActiveScope(), node.getText());
+//        }
 
 
         if(pseudoValue != null) {
-            PseudoErrorListener.reportCustomError(ErrorRepository.MULTIPLE_VARIABLE, "", node.getText(),  node.getSymbol().getLine());
+            PseudoErrorListener.reportCustomError(ErrorHandler.MULTIPLE_VARIABLE, "", node.getText(),  node.getSymbol().getLine());
             return false;
         }
         return true;

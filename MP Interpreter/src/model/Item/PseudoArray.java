@@ -52,7 +52,7 @@ public class PseudoArray {
 
     public void updateValueAt(PseudoValue pseudoValue, int index) {
         if(index >= this.array.length || index <= -1) {
-            //System.out.println("ERROR: " + String.format(ErrorRepository.getErrorMessage(ErrorRepository.RUNTIME_ARRAY_OUT_OF_BOUNDS), this.arrayIdentifier));
+            //System.out.println("ERROR: " + String.format(ErrorHandler.getErrorMessage(ErrorHandler.RUNTIME_ARRAY_OUT_OF_BOUNDS), this.arrayIdentifier));
 //            ExecutionManager.getInstance().setCurrentCatchType(IAttemptCommand.CatchTypeEnum.ARRAY_OUT_OF_BOUNDS);
 
             return;
@@ -62,7 +62,7 @@ public class PseudoArray {
 
     public PseudoValue getValueAt(int index) {
         if(index >= this.array.length || index <= -1) {
-//            System.out.println("ERROR: " + String.format(ErrorRepository.getErrorMessage(ErrorRepository.RUNTIME_ARRAY_OUT_OF_BOUNDS), this.arrayIdentifier));
+//            System.out.println("ERROR: " + String.format(ErrorHandler.getErrorMessage(ErrorHandler.RUNTIME_ARRAY_OUT_OF_BOUNDS), this.arrayIdentifier));
 //            ExecutionManager.getInstance().setCurrentCatchType(IAttemptCommand.CatchTypeEnum.ARRAY_OUT_OF_BOUNDS);
 
             return null;

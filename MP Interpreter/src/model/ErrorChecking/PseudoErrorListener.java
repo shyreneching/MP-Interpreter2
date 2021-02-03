@@ -1,14 +1,11 @@
 package model.ErrorChecking;
 
-import model.ErrorListener;
 import model.Item.ErrorMessage;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.atn.ATNConfigSet;
 import org.antlr.v4.runtime.dfa.DFA;
 
-import javax.swing.text.View;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.BitSet;
 
 public class PseudoErrorListener implements ANTLRErrorListener {
@@ -29,11 +26,11 @@ public class PseudoErrorListener implements ANTLRErrorListener {
 
     public static void initialize() {
         sharedInstance = new PseudoErrorListener();
-        ErrorRepository.initialize();
+        ErrorHandler.initialize();
     }
 
     public static void reportCustomError(int errorcode, String additionalMessage, Object... parameters) {
-        String errorMessage = String.format("Semantic Error: " + ErrorRepository.getErrorMessage(errorcode) + " " + additionalMessage, parameters);
+        String errorMessage = String.format("Semantic Error: " + ErrorHandler.getErrorMessage(errorcode) + " " + additionalMessage, parameters);
 
         //View.printInConsole("ERROR: " + errorMessage + "\n");
 
@@ -69,7 +66,7 @@ public class PseudoErrorListener implements ANTLRErrorListener {
     }
 
     public static void reportCustomError(int errorcode, String additionalMessage) {
-        String errorMessage = String.format("Semantic Error: " + ErrorRepository.getErrorMessage(errorcode) + " " + additionalMessage);
+        String errorMessage = String.format("Semantic Error: " + ErrorHandler.getErrorMessage(errorcode) + " " + additionalMessage);
 
         errorMsg = errorMsg + "\n"  + errorMessage;
         sharedInstance.successful = false;

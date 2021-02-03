@@ -1,9 +1,5 @@
 package model.Sematic;
 
-import model.ErrorChecking.ErrorRepository;
-import model.ErrorChecking.PseudoErrorListener;
-import model.PseudoCodeParser;
-
 import java.util.List;
 import model.PseudoCodeParser.*;
 import model.SymbolTable.Scope.ScopeCreator;
@@ -31,7 +27,7 @@ public class BlockAnalyzer {
                 localVarAnalyzer.analyze(localVarDecStatementCtx);
             }
 //            else if(blockStatementCtx.statement() == null && blockStatementCtx.localVariableDeclarationStatement() == null){
-//                PseudoErrorListener.reportCustomError(ErrorRepository.NOT_A_STATEMENT, "", blockStatementCtx.getText(), blockStatementCtx.getStart().getLine());
+//                PseudoErrorListener.reportCustomError(ErrorHandler.NOT_A_STATEMENT, "", blockStatementCtx.getText(), blockStatementCtx.getStart().getLine());
 //            }
         }
       ScopeCreator.getInstance().closeScope();

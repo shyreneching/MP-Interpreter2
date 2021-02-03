@@ -26,7 +26,7 @@ public class ReturnCommand implements ICommand {
                 Token firstToken = this.exprContext.getStart();
                 int lineNumber = firstToken.getLine();
 
-                PseudoErrorListener.reportCustomError(ErrorRepository.RETURN_IN_VOID, "", lineNumber);
+                PseudoErrorListener.reportCustomError(ErrorHandler.RETURN_IN_VOID, "", lineNumber);
             }
 
             TypeChecker typeChecker = new TypeChecker(pseudoValue, this.exprContext);

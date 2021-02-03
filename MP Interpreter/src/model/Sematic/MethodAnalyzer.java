@@ -1,13 +1,11 @@
 package model.Sematic;
 
-import model.ErrorChecking.ErrorRepository;
+import model.ErrorChecking.ErrorHandler;
 import model.ErrorChecking.MultipleMethodDeclarationChecker;
 import model.ErrorChecking.PseudoErrorListener;
 import model.Execution.ExecutionManager;
 import model.Execution.MethodTracker;
 import model.Item.PseudoMethod;
-import model.Item.PseudoValue;
-import model.PseudoCodeParser;
 import model.PseudoCodeParser.*;
 import model.SymbolTable.Scope.Scope;
 import model.SymbolTable.Scope.ScopeCreator;
@@ -18,8 +16,6 @@ import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.antlr.v4.runtime.tree.TerminalNode;
-
-import java.util.LinkedHashMap;
 
 public class MethodAnalyzer implements ParseTreeListener {
 
@@ -123,7 +119,7 @@ public class MethodAnalyzer implements ParseTreeListener {
             if(pseudoMethod.getReturnType().equals(PseudoMethod.MethodType.VOID_TYPE) && ((StatementContext) ctx).expression()!= null){
                 Token firstToken = ctx.getStart();
                 int lineNumber = firstToken.getLine();
-                PseudoErrorListener.reportCustomError(ErrorRepository.RETURN_IN_VOID, "", lineNumber);
+                PseudoErrorListener.reportCustomError(ErrorHandler.RETURN_IN_VOID, "", lineNumber);
             }
 
             hasReturn = !isInMethod(ctx);
@@ -131,7 +127,7 @@ public class MethodAnalyzer implements ParseTreeListener {
                 Token firstToken = ctx.getStart();
                 int lineNumber = firstToken.getLine();
 
-                PseudoErrorListener.reportCustomError(ErrorRepository.DEFAULT, "Double return statement. ", lineNumber);
+                PseudoErrorListener.reportCustomError(ErrorHandler.DEFAULT, "Double return statement. ", lineNumber);
             }
             System.out.println("Method Analyzer - hasReturn:" + hasReturn);
             pseudoMethod.setValidReturns(hasReturn || pseudoMethod.hasValidReturns());

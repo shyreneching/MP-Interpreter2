@@ -1,6 +1,6 @@
 package model.Commands;
 
-import model.ErrorChecking.ErrorRepository;
+import model.ErrorChecking.ErrorHandler;
 import model.ErrorChecking.PseudoErrorListener;
 import model.Execution.ExecutionManager;
 import model.Item.PseudoArray;
@@ -21,7 +21,7 @@ public class ArrayInitializationCommand implements ICommand {
                 Token firstToken = this.exprCtx.getStart();
                 int lineNumber = firstToken.getLine();
 
-                PseudoErrorListener.reportCustomError(ErrorRepository.INVALID_INDEX_ASSIGN, "", lineNumber);
+                PseudoErrorListener.reportCustomError(ErrorHandler.INVALID_INDEX_ASSIGN, "", lineNumber);
             }
         }
     }

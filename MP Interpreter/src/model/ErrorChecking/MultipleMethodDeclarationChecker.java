@@ -2,8 +2,6 @@ package model.ErrorChecking;
 
 import model.Item.PseudoMethod;
 import model.PseudoCodeParser.*;
-import model.SymbolTable.Scope.Scope;
-import model.SymbolTable.Scope.ScopeCreator;
 import model.SymbolTable.SymbolTableManager;
 import org.antlr.v4.runtime.Token;
 
@@ -32,7 +30,7 @@ public class MultipleMethodDeclarationChecker implements IErrorChecker {
         PseudoMethod parserMethod = SymbolTableManager.getInstance().getMethod(identifierString);
 
         if(parserMethod != null) {
-            PseudoErrorListener.reportCustomError(ErrorRepository.MULTIPLE_FUNCTION, "", identifierString, this.lineNumber);
+            PseudoErrorListener.reportCustomError(ErrorHandler.MULTIPLE_FUNCTION, "", identifierString, this.lineNumber);
         }
     }
 }

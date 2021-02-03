@@ -1,6 +1,6 @@
 package model;
 
-import model.ErrorChecking.ErrorRepository;
+import model.ErrorChecking.ErrorHandler;
 import model.ErrorChecking.PseudoErrorListener;
 import model.Execution.ExecutionManager;
 import model.Execution.MethodTracker;
@@ -32,7 +32,7 @@ public class PseudoCodeCustomListener extends PseudoCodeBaseListener {
             if(!pseudoMethod.hasValidReturns() && !pseudoMethod.getReturnType().equals(PseudoMethod.MethodType.VOID_TYPE)){
                 Token firstToken = ctx.getStart();
                 int lineNumber = firstToken.getLine();
-                PseudoErrorListener.reportCustomError(ErrorRepository.NO_RETURN_STATEMENT, "", ctx.methodDeclarator().Identifier().getText(), pseudoMethod.getReturnValue().getPrimitiveType(), lineNumber);
+                PseudoErrorListener.reportCustomError(ErrorHandler.NO_RETURN_STATEMENT, "", ctx.methodDeclarator().Identifier().getText(), pseudoMethod.getReturnValue().getPrimitiveType(), lineNumber);
             }
 
             ScopeCreator.getInstance().closeScope();

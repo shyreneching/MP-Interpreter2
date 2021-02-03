@@ -1,9 +1,8 @@
 package model.Commands;
 
 import com.udojava.evalex.Expression;
-import model.ErrorChecking.ErrorRepository;
+import model.ErrorChecking.ErrorHandler;
 import model.ErrorChecking.PseudoErrorListener;
-import model.ErrorChecking.TypeChecker;
 import model.Execution.ExecutionManager;
 import model.Execution.MethodTracker;
 import model.Item.PseudoArray;
@@ -198,7 +197,7 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
                 //StatementControlOverseer.getInstance().setCurrentCatchClause(IAttemptCommand.CatchTypeEnum.ARITHMETIC_EXCEPTION);
 
                 ExecutionManager.getInstance().setCurrentCheckedLineNumber(this.exprCtx.getStart().getLine());
-                PseudoErrorListener.reportCustomError(ErrorRepository.DEFAULT, "", exprCtx.getStart().getLine());
+                PseudoErrorListener.reportCustomError(ErrorHandler.DEFAULT, "", exprCtx.getStart().getLine());
 
                 this.valueResult = new BigDecimal(0);
                 this.stringResult = "";
@@ -437,7 +436,7 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
                 if (pseudoMethod.getReturnValue() == null){
 //                    this.modifiedExp = "\"\"";
                     map.put(exprCtx.getText(), "\"" + "\"\"");
-//                    PseudoErrorListener.reportCustomError(ErrorRepository.DEFAULT, "Void function has no return value.", exprCtx.getStart().getLine());
+//                    PseudoErrorListener.reportCustomError(ErrorHandler.DEFAULT, "Void function has no return value.", exprCtx.getStart().getLine());
                     isString = true;
                 }
                 else if(!map.containsKey(exprCtx.getText())){

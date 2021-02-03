@@ -1,6 +1,6 @@
 package model.Sematic;
 
-import model.ErrorChecking.ErrorRepository;
+import model.ErrorChecking.ErrorHandler;
 import model.ErrorChecking.PseudoErrorListener;
 import model.Item.PseudoArray;
 import model.Item.PseudoMethod;
@@ -8,7 +8,6 @@ import model.Item.PseudoValue;
 import model.PseudoCodeParser.*;
 import model.SymbolTable.Scope.Scope;
 import model.SymbolTable.Scope.ScopeCreator;
-import model.SymbolTable.SymbolTableManager;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
@@ -49,7 +48,7 @@ public class ParameterAnalyzer implements ParseTreeListener {
 //            System.out.println("pseudo method parameter added: " + type);
 
             if (pseudoMethod.hasParameter(parameterCtx.Identifier().getText())) {
-                PseudoErrorListener.reportCustomError(ErrorRepository.DEFAULT, "parameter already exist", ctx.getStart().getLine());
+                PseudoErrorListener.reportCustomError(ErrorHandler.DEFAULT, "parameter already exist", ctx.getStart().getLine());
             } else {
                 PseudoValue pseudoValue = null;
 

@@ -2,7 +2,7 @@ package model.ErrorChecking;
 
 import java.util.HashMap;
 
-public class ErrorRepository {
+public class ErrorHandler {
 
     public final static int INCONSISTENT_CLASS_NAME = 1000;
     public final static int TYPE_MISMATCH = 2000;
@@ -22,17 +22,17 @@ public class ErrorRepository {
     public final static int DEFAULT = 9005;
 
 
-    private static ErrorRepository sharedInstance = null;
+    private static ErrorHandler sharedInstance = null;
 
     private HashMap<Integer, String> errorMessageDictionary;
 
-    private ErrorRepository() {
+    private ErrorHandler() {
         this.errorMessageDictionary = new HashMap<>();
         this.populateErrorMessages();
     }
 
     private void populateErrorMessages() {
-        this.errorMessageDictionary.put(ErrorRepository.INCONSISTENT_CLASS_NAME, "Inconsistent class name. ");
+        this.errorMessageDictionary.put(ErrorHandler.INCONSISTENT_CLASS_NAME, "Inconsistent class name. ");
         this.errorMessageDictionary.put(TYPE_MISMATCH, "Type mismatch at line %d. ");
         this.errorMessageDictionary.put(UNDECLARED_VARIABLE, "Undeclared variable '%s' at line %d. ");
         this.errorMessageDictionary.put(UNDECLARED_FUNCTION, "Undeclared function '%s' at line %d. ");
@@ -55,7 +55,7 @@ public class ErrorRepository {
     }
 
     public static void initialize() {
-        sharedInstance = new ErrorRepository();
+        sharedInstance = new ErrorHandler();
     }
 
     public static void reset() {

@@ -41,10 +41,10 @@ public class ParameterMismatchChecker implements IErrorChecker {
         }
 
         if(this.exprCtxList == null && this.pseudoMethod.getParameterValueSize() != 0) {
-            PseudoErrorListener.reportCustomError(ErrorRepository.PARAMETER_COUNT_MISMATCH, "", this.pseudoMethod.getMethodName(), this.lineNumber);
+            PseudoErrorListener.reportCustomError(ErrorHandler.PARAMETER_COUNT_MISMATCH, "", this.pseudoMethod.getMethodName(), this.lineNumber);
         }
         else if(this.exprCtxList != null && this.exprCtxList.size() != this.pseudoMethod.getParameterValueSize()) {
-            PseudoErrorListener.reportCustomError(ErrorRepository.PARAMETER_COUNT_MISMATCH, "", this.pseudoMethod.getMethodName(), this.lineNumber);
+            PseudoErrorListener.reportCustomError(ErrorHandler.PARAMETER_COUNT_MISMATCH, "", this.pseudoMethod.getMethodName(), this.lineNumber);
         }
     }
 }

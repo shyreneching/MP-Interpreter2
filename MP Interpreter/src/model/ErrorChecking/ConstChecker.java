@@ -82,7 +82,7 @@ public class ConstChecker implements IErrorChecker, ParseTreeListener {
 
 
         if(pseudoValue != null && pseudoValue.isConst()) {
-            PseudoErrorListener.reportCustomError(ErrorRepository.CONST_REASSIGNMENT, "", varExprCtx.getText(), this.lineNumber);
+            PseudoErrorListener.reportCustomError(ErrorHandler.CONST_REASSIGNMENT, "", varExprCtx.getText(), this.lineNumber);
         }
     }
 
@@ -98,7 +98,7 @@ public class ConstChecker implements IErrorChecker, ParseTreeListener {
 
 
         if(pseudoValue != null && pseudoValue.isConst()) {
-            PseudoErrorListener.reportCustomError(ErrorRepository.CONST_REASSIGNMENT, "", node.getText(), node.getSymbol().getLine());
+            PseudoErrorListener.reportCustomError(ErrorHandler.CONST_REASSIGNMENT, "", node.getText(), node.getSymbol().getLine());
         }
     }
 }

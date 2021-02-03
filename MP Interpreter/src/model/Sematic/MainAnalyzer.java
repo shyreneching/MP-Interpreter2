@@ -1,11 +1,7 @@
 package model.Sematic;
 
-import model.Commands.MethodCallCommand;
-import model.ErrorChecking.ErrorRepository;
+import model.ErrorChecking.ErrorHandler;
 import model.ErrorChecking.PseudoErrorListener;
-import model.Execution.ExecutionManager;
-import model.Execution.MethodTracker;
-import model.Item.PseudoMethod;
 import model.PseudoCodeParser.*;
 import model.SymbolTable.Scope.Scope;
 import model.SymbolTable.Scope.ScopeCreator;
@@ -68,7 +64,7 @@ public class MainAnalyzer implements ParseTreeListener {
 
             evaluated = true;
         } else if(parserRuleContext instanceof StatementContext && ((StatementContext) parserRuleContext).RETURN() != null){
-            PseudoErrorListener.reportCustomError(ErrorRepository.DEFAULT, "Can not have return in main. ", parserRuleContext.getStart().getLine());
+            PseudoErrorListener.reportCustomError(ErrorHandler.DEFAULT, "Can not have return in main. ", parserRuleContext.getStart().getLine());
 
         }
     }

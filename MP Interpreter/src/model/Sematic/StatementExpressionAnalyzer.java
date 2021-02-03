@@ -3,14 +3,12 @@ package model.Sematic;
 import model.Commands.AssignmentCommand;
 import model.Commands.ExpressionCommand;
 import model.Commands.MethodCallCommand;
-import model.ErrorChecking.ErrorRepository;
+import model.ErrorChecking.ErrorHandler;
 import model.ErrorChecking.PseudoErrorListener;
 import model.Item.PseudoArray;
 import model.Item.PseudoMethod;
 import model.Item.PseudoValue;
 import model.PseudoCodeParser.*;
-import model.SymbolTable.Scope.Scope;
-import model.SymbolTable.Scope.ScopeCreator;
 import model.SymbolTable.SymbolTableManager;
 import org.antlr.v4.runtime.Token;
 
@@ -31,7 +29,7 @@ public class StatementExpressionAnalyzer {
         if(pseudoMethod == null){
             Token firstToken = methodInvocation.getStart();
             int lineNumber = firstToken.getLine();
-            PseudoErrorListener.reportCustomError(ErrorRepository.UNDECLARED_FUNCTION, "", methodInvocation.Identifier().getText(), lineNumber);
+            PseudoErrorListener.reportCustomError(ErrorHandler.UNDECLARED_FUNCTION, "", methodInvocation.Identifier().getText(), lineNumber);
         }
 
         MethodCallCommand methodCallCommand = new MethodCallCommand(methodInvocation.Identifier(), methodInvocation.expressionList(0), methodInvocation.getStart().getLine());
@@ -46,7 +44,7 @@ public class StatementExpressionAnalyzer {
 //        if(pseudoValue == null){
 //            Token firstToken = assignment.getStart();
 //            int lineNumber = firstToken.getLine();
-//            PseudoErrorListener.reportCustomError(ErrorRepository.UNDECLARED_VARIABLE, "", assignment.Identifier().getText(), lineNumber);
+//            PseudoErrorListener.reportCustomError(ErrorHandler.UNDECLARED_VARIABLE, "", assignment.Identifier().getText(), lineNumber);
 //        }
         ExpressionAnalyzer expressionAnalyzer = new ExpressionAnalyzer();
 
@@ -71,7 +69,7 @@ public class StatementExpressionAnalyzer {
 
                 } else {
                     System.out.println("StatementExpressionAnalyzer - pseudoValue: " + pseudoValue);
-                    PseudoErrorListener.reportCustomError(ErrorRepository.UNDECLARED_VARIABLE, "",assignment.Identifier().getText() , assignment.getStart().getLine());
+                    PseudoErrorListener.reportCustomError(ErrorHandler.UNDECLARED_VARIABLE, "",assignment.Identifier().getText() , assignment.getStart().getLine());
                 }
 
 

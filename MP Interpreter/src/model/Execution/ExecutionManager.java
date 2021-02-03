@@ -1,12 +1,10 @@
 package model.Execution;
 
 import model.Commands.ICommand;
-import model.ErrorChecking.ErrorRepository;
 import model.Execution.Adders.IExecutionAdder;
 import model.Execution.Adders.MainExecutionAdder;
 import model.Execution.Adders.MethodExecutionAdder;
 import model.Item.PseudoMethod;
-import model.PseudoCodeListener;
 import model.notifications.NotificationListener;
 import model.notifications.Notifications;
 import model.notifications.NotificationsCenter;
@@ -85,11 +83,11 @@ public class ExecutionManager implements NotificationListener {
 //            this.aborted = true;
 //
 //            if (catchType == IAttemptCommand.CatchTypeEnum.ARRAY_OUT_OF_BOUNDS) {
-//                PseudoCodeListener.reportCustomError(ErrorRepository.RUNTIME_ARRAY_OUT_OF_BOUNDS, "", this.currentCheckedLineNumber);
+//                PseudoCodeListener.reportCustomError(ErrorHandler.RUNTIME_ARRAY_OUT_OF_BOUNDS, "", this.currentCheckedLineNumber);
 //            } else if (catchType == IAttemptCommand.CatchTypeEnum.NEGATIVE_ARRAY_SIZE) {
-//                PseudoCodeListener.reportCustomError(ErrorRepository.RUNTIME_NEGATIVE_ARRAY_SIZE, "", this.currentCheckedLineNumber);
+//                PseudoCodeListener.reportCustomError(ErrorHandler.RUNTIME_NEGATIVE_ARRAY_SIZE, "", this.currentCheckedLineNumber);
 //            } else if (catchType == IAttemptCommand.CatchTypeEnum.ARITHMETIC_EXCEPTION) {
-//                PseudoCodeListener.reportCustomError(ErrorRepository.RUNTIME_ARITHMETIC_EXCEPTION, "", this.currentCheckedLineNumber);
+//                PseudoCodeListener.reportCustomError(ErrorHandler.RUNTIME_ARITHMETIC_EXCEPTION, "", this.currentCheckedLineNumber);
 //            }
 //
 //            this.clearAllActions();

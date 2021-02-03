@@ -1,7 +1,7 @@
 package model.Sematic;
 
 import model.ErrorChecking.Checker;
-import model.ErrorChecking.ErrorRepository;
+import model.ErrorChecking.ErrorHandler;
 import model.ErrorChecking.PseudoErrorListener;
 import model.Item.PseudoMethod;
 import model.PseudoCodeParser.*;
@@ -57,12 +57,12 @@ public class ExpressionAnalyzer implements ParseTreeListener {
 
         PseudoMethod pseudoMethod = SymbolTableManager.getInstance().getMethod(exprCtx.Identifier().getText());
         if(pseudoMethod == null){
-            PseudoErrorListener.reportCustomError(ErrorRepository.UNDECLARED_FUNCTION, "", exprCtx.Identifier().getText(), exprCtx.getStart().getLine());
+            PseudoErrorListener.reportCustomError(ErrorHandler.UNDECLARED_FUNCTION, "", exprCtx.Identifier().getText(), exprCtx.getStart().getLine());
             return;
         }
         if(pseudoMethod.getReturnType().equals(PseudoMethod.MethodType.VOID_TYPE)){
             this.setHasSemanticError();
-            PseudoErrorListener.reportCustomError(ErrorRepository.DEFAULT, "Void function has no return value.", exprCtx.getStart().getLine());
+            PseudoErrorListener.reportCustomError(ErrorHandler.DEFAULT, "Void function has no return value.", exprCtx.getStart().getLine());
         } else{
 //            System.out.println("ExpressionAnalyzer - expr: " + exprCtx.getText());
 //            System.out.println("ExpressionAnalyzer - function name: " + exprCtx.Identifier());
@@ -70,7 +70,7 @@ public class ExpressionAnalyzer implements ParseTreeListener {
 //                System.out.println("1ExpressionAnalyzer - paramsN: " + pseudoMethod.getParameterValueSize());
 //                System.out.println("1ExpressionAnalyzer - call list: " + exprCtx.expressionList() );
                 if(pseudoMethod.getParameterValueSize() > 0){
-                    PseudoErrorListener.reportCustomError(ErrorRepository.PARAMETER_COUNT_MISMATCH, "", pseudoMethod.getMethodName(),exprCtx.getStart().getLine());
+                    PseudoErrorListener.reportCustomError(ErrorHandler.PARAMETER_COUNT_MISMATCH, "", pseudoMethod.getMethodName(),exprCtx.getStart().getLine());
                     this.setHasSemanticError();
                 }
                 return;

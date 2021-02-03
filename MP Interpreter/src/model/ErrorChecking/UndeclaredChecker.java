@@ -2,7 +2,6 @@ package model.ErrorChecking;
 
 import model.Commands.ExpressionCommand;
 import model.Execution.ExecutionManager;
-import model.Execution.MethodTracker;
 import model.Item.PseudoMethod;
 import model.Item.PseudoValue;
 import model.PseudoCodeParser.*;
@@ -14,8 +13,6 @@ import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.antlr.v4.runtime.tree.TerminalNode;
-
-import java.util.regex.Pattern;
 
 public class UndeclaredChecker implements IErrorChecker, ParseTreeListener {
 
@@ -91,7 +88,7 @@ public class UndeclaredChecker implements IErrorChecker, ParseTreeListener {
         PseudoMethod pseudoMethod = SymbolTableManager.getInstance().getMethod(functionName);
 
         if(pseudoMethod == null) {
-            PseudoErrorListener.reportCustomError(ErrorRepository.UNDECLARED_FUNCTION, "", functionName, this.lineNumber);
+            PseudoErrorListener.reportCustomError(ErrorHandler.UNDECLARED_FUNCTION, "", functionName, this.lineNumber);
         }
         else {
             //Console.log(LogType.DEBUG, "Function found: " +functionName);
@@ -123,7 +120,7 @@ public class UndeclaredChecker implements IErrorChecker, ParseTreeListener {
         }
 //        System.out.println("Undeclared Checker - pseudoValue " + pseudoValue.getValue());
         if(pseudoValue == null) {
-            PseudoErrorListener.reportCustomError(ErrorRepository.UNDECLARED_VARIABLE, "", varExprCtx.getText(), this.lineNumber);
+            PseudoErrorListener.reportCustomError(ErrorHandler.UNDECLARED_VARIABLE, "", varExprCtx.getText(), this.lineNumber);
         }
     }
 
@@ -134,16 +131,12 @@ public class UndeclaredChecker implements IErrorChecker, ParseTreeListener {
             PseudoMethod pseudoMethod = ExecutionManager.getInstance().getCurrentFunction();
             pseudoValue = VariableSearcher.searchVariableInFunction(pseudoMethod, node.getText());
         } else{
-            pseudoValue = VariableSearcher.
-                    searchVariableInMain(SymbolTableManager.
-                            getInstance().
-                            getParentScope(),
-                            node.getText());
+            pseudoValue = VariableSearcher. searchVariableInMain(SymbolTableManager.getInstance().getParentScope(),node.getText());
         }
 
 
         if(pseudoValue == null) {
-            PseudoErrorListener.reportCustomError(ErrorRepository.UNDECLARED_VARIABLE, "", node.getText(), node.getSymbol().getLine());
+            PseudoErrorListener.reportCustomError(ErrorHandler.UNDECLARED_VARIABLE, "", node.getText(), node.getSymbol().getLine());
             return false;
         }
         return true;
@@ -159,7 +152,7 @@ public class UndeclaredChecker implements IErrorChecker, ParseTreeListener {
         Token firstToken = statementCtx.getStart();
 
         if(pseudoValue == null) {
-            PseudoErrorListener.reportCustomError(ErrorRepository.UNDECLARED_VARIABLE, "", identifier, firstToken.getLine());
+            PseudoErrorListener.reportCustomError(ErrorHandler.UNDECLARED_VARIABLE, "", identifier, firstToken.getLine());
         }
     }
 
