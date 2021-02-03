@@ -14,37 +14,49 @@ import static model.Commands.ExpressionCommand.searchValue;
 
 public class ScanCommand implements ICommand, NotificationListener {
 
-    private ExpressionContext scanMessage;
+    private String scanMessage;
     private ExpressionContext identifierArray;
     private TerminalNode identifier;
 
     public ScanCommand(ExpressionContext scanMessage, TerminalNode identifier) {
-        this.scanMessage = scanMessage;
+        ExpressionCommand expressionCommand = new ExpressionCommand(scanMessage);
+        expressionCommand.execute();
+        if(expressionCommand.isString())
+            this.scanMessage = expressionCommand.getStringResult();
+        else
+            this.scanMessage = expressionCommand.getValueResult().toEngineeringString();
+//        this.scanMessage = scanMessage;
         this.identifier = identifier;
 
     }
 
     public ScanCommand(ExpressionContext scanMessage, ExpressionContext identifierArray, TerminalNode identifier) {
-        this.scanMessage = scanMessage;
+        ExpressionCommand expressionCommand = new ExpressionCommand(scanMessage);
+        expressionCommand.execute();
+        if(expressionCommand.isString())
+            this.scanMessage = expressionCommand.getStringResult();
+        else
+            this.scanMessage = expressionCommand.getValueResult().toEngineeringString();
+//        this.scanMessage = scanMessage;
         this.identifierArray = identifierArray;
         this.identifier = identifier;
     }
 
     @Override
     public void execute() {
-        ExpressionCommand expressionCommand = new ExpressionCommand(this.scanMessage);
-        expressionCommand.execute();
-        String expCommandString;
-        System.out.println(scanMessage.getText());
-        if(expressionCommand.isString())
-            expCommandString = expressionCommand.getStringResult();
-        else
-            expCommandString = expressionCommand.getValueResult().toEngineeringString();
+//        ExpressionCommand expressionCommand = new ExpressionCommand(this.scanMessage);
+//        expressionCommand.execute();
+//        String expCommandString;
+//        System.out.println(scanMessage.getText());
+//        if(expressionCommand.isString())
+//            expCommandString = expressionCommand.getStringResult();
+//        else
+//            expCommandString = expressionCommand.getValueResult().toEngineeringString();
 
         NotificationsCenter.getInstance().addObserver(Notifications.ON_SCAN_DIALOG_DISMISSED, this); //add an observer to listen to when the dialog has been dismissed
 
         Parameters params = new Parameters();
-        params.putExtra("MESSAGE_DISPLAY_KEY", expCommandString);
+        params.putExtra("MESSAGE_DISPLAY_KEY", this.scanMessage);
         System.out.println("Blocking execution!");
         ExecutionManager.getInstance().blockExecution();
 
@@ -66,8 +78,11 @@ public class ScanCommand implements ICommand, NotificationListener {
             } catch (NumberFormatException ex) {
                 isSuccessful = false;
                 NotificationsCenter.getInstance().removeObserver(Notifications.ON_SCAN_DIALOG_DISMISSED, this); //remove observer after using
-                this.execute();
 
+                if(!scanMessage.contains("Try Again! "))
+                    this.scanMessage = "Try Again! " + this.scanMessage;
+
+                this.execute();
             }
         }
         else{
@@ -83,8 +98,18 @@ public class ScanCommand implements ICommand, NotificationListener {
 
             //create a new array value to replace value at specified index
             PseudoValue newArrayValue = new PseudoValue(null, PseudoValue.convert(pseudoArray.getPrimitiveType()));
-            newArrayValue.setValue(valueEntered);
-            pseudoArray.updateValueAt(newArrayValue, expressionCommand.getValueResult().intValue());
+            try {
+                newArrayValue.setValue(valueEntered);
+                pseudoArray.updateValueAt(newArrayValue, expressionCommand.getValueResult().intValue());
+            } catch (NumberFormatException ex) {
+                isSuccessful = false;
+                NotificationsCenter.getInstance().removeObserver(Notifications.ON_SCAN_DIALOG_DISMISSED, this); //remove observer after using
+
+                if(!scanMessage.contains("Try Again! "))
+                    this.scanMessage = "Try Again! " + this.scanMessage;
+
+                this.execute();
+            }
 
             isSuccessful = true;
         }
