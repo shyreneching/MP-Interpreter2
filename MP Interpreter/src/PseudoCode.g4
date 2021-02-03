@@ -92,7 +92,7 @@ block
 blockStatement
     :   localVariableDeclarationStatement
     |   statement
-//    |   expression
+    |   expression {notifyErrorListeners("invalid statement");}
     ;
 
 localVariableDeclarationStatement
