@@ -114,8 +114,8 @@ statement
     |   whileStatement
     |   doStatement ';'
     |   forStatement
-    |   printInvocation ';'
-    |   printInvocation {notifyErrorListeners("lacking ';' at the end of line");}
+    |   printInvocation
+//    |   printInvocation {notifyErrorListeners("lacking ';' at the end of line");}
 //    |   'if' parExpression statement ('else' statement)?
 //    |   'for' '(' forControl ')' statement
 //    |   'while' parExpression statement
@@ -177,10 +177,13 @@ ifThenStatement
 	;
 
 printInvocation
-    :   'print' '(' expression ')'
-    |   'print' '(' expression '+'')' {notifyErrorListeners("additional ‘+’ sign at end of print");}
-    |   'print' '(' ((StringLiteral | ~(StringLiteral | Identifier | ')') | Identifier ('[' expression ']')?) (StringLiteral | ~(StringLiteral | Identifier | ')') | Identifier ('[' expression ']')?)+) ')' {notifyErrorListeners("lacking 'double quotes' in print statement");}
-    |   'print' '(' ~(StringLiteral | Identifier | ')') ')' {notifyErrorListeners("value of keyword cannot be printed");}
+    :   'print' '(' expression ')' ';'
+    |   'print' '(' expression '+'')' ';' {notifyErrorListeners("additional ‘+’ sign at end of print");}
+//    |   'print' '(' DQUOTE (StringLiteral | Identifier )+ ')' ';'{notifyErrorListeners("no closing 'double quote'");}
+//    |   'print' '(' '"'  Identifier Identifier ')' ';' {notifyErrorListeners("lacking 'double quotes' in print statement");}
+    |   'print' '(' '"' ((StringLiteral | ~(StringLiteral | Identifier | ')' | ';') | Identifier ('[' expression ']')?) (StringLiteral | ~(StringLiteral | Identifier | ')' | ';') | Identifier ('[' expression ']')?)+) ')' ';' {notifyErrorListeners("lacking 'double quotes' in print statement");}
+    |   'print' '(' ((StringLiteral | ~(StringLiteral | Identifier | ')' | ';') | Identifier ('[' expression ']')?) (StringLiteral | ~(StringLiteral | Identifier | ')' | ';') | Identifier ('[' expression ']')?)+) ')' ';' {notifyErrorListeners("lacking 'double quotes' in print statement");}
+    |   'print' '(' ~(StringLiteral | Identifier | ')') ')' ';' {notifyErrorListeners("value of keyword cannot be printed");}
     ;
 
 scanInvocation
@@ -574,14 +577,14 @@ StringCharacters
 	;
 fragment
 StringCharacter
-	:	~["\\]
+	:	~["\\)]
 	|	EscapeSequence
 	;
 
 // §3.10.6 Escape Sequences for Character and String Literals
 fragment
 EscapeSequence
-	:	'\\' [btnfr"'\\]
+	:	'\\' [btnfr"'\\)]
 //	|	OctalEscape
 //    |   UnicodeEscape // This is not in the spec but prevents having to preprocess the input
 	;

@@ -118,6 +118,10 @@ public class ErrorListener extends BaseErrorListener {
 //            msg = msg.substring(0, 9) +" '"+ ((Token)offendingSymbol).getText()+ "' " +msg.substring(9, msg.length());
         }
 
+        if(charPositionInLine == 0){
+            line = line - 1;
+        }
+
 //        underlineError(recognizer, offendingSymbol, line, charPositionInLine);
         //System.err.println(msg+ ", line "+line+":"+charPositionInLine+" in file: "+ sourceName);
 //        errorMsg = errorMsg + "\n" + "Syntax Error: " + msg+ ", (Line "+line+")[Char "+charPositionInLine+"] in file: "+ sourceName;

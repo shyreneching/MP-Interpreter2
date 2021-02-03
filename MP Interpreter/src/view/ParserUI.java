@@ -227,7 +227,7 @@ public class ParserUI extends Application implements NotificationListener {
                 //printToOutput("I hate this 2");
 
 //            CharStream input = CharStreams.fromFileName("input/test2.java");
-                CharStream input = CharStreams.fromStream(new ByteArrayInputStream(codeArea.getText().getBytes(StandardCharsets.UTF_8)));
+                CharStream input = CharStreams.fromStream(new ByteArrayInputStream(codeArea.getText().trim().getBytes(StandardCharsets.UTF_8)));
                 PseudoCodeLexer lexer = new PseudoCodeLexer(input);
                 PseudoCodeParser parser = new PseudoCodeParser(new CommonTokenStream(lexer));
                 parser.addParseListener(new PseudoCodeBaseListener());
