@@ -16,6 +16,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import model.*;
 import model.ErrorChecking.ErrorRepository;
 import model.ErrorChecking.PseudoErrorListener;
@@ -188,6 +189,16 @@ public class ParserUI extends Application implements NotificationListener {
         AnchorPane.setTopAnchor(vbox, 0.0);
         AnchorPane.setLeftAnchor(vbox, 0.0);
         AnchorPane.setRightAnchor(vbox, 0.0);
+
+        dialog.getDialogPane().getButtonTypes().remove(1);
+        dialog.initStyle(StageStyle.UNDECORATED);
+        dialog.getDialogPane();
+        dialog.setTitle("Input Box");
+        dialog.setHeaderText("Input Box");
+        dialog.setGraphic(null);
+        dialog.getDialogPane().getStylesheets().add("./public/dialog.css");
+        dialog.getDialogPane().getScene().getWindow().setOnCloseRequest(event -> event.consume());
+        dialog.getDialogPane().setMinHeight(200);
 
         NotificationsCenter.getInstance().addObserver(Notifications.ON_FOUND_SCAN_STATEMENT, this);
 
@@ -389,10 +400,6 @@ public class ParserUI extends Application implements NotificationListener {
         if(notificationString == Notifications.ON_FOUND_SCAN_STATEMENT) {
             System.out.println("Scan dialog should appear!");
 
-            dialog.getDialogPane();
-            dialog.setTitle("Scan Dialog");
-            dialog.setHeaderText(null);
-            dialog.getDialogPane().getButtonTypes().remove(1);
 
             dialog.getEditor().setText("");
             dialog.setContentText(params.getStringExtra("MESSAGE_DISPLAY_KEY", "Input: "));

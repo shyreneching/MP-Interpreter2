@@ -33,7 +33,13 @@ public class ScanCommand implements ICommand, NotificationListener {
     @Override
     public void execute() {
         ExpressionCommand expressionCommand = new ExpressionCommand(this.scanMessage);
-        String expCommandString = expressionCommand.getStringResult();
+        expressionCommand.execute();
+        String expCommandString;
+        System.out.println(scanMessage.getText());
+        if(expressionCommand.isString())
+            expCommandString = expressionCommand.getStringResult();
+        else
+            expCommandString = expressionCommand.getValueResult().toEngineeringString();
 
         NotificationsCenter.getInstance().addObserver(Notifications.ON_SCAN_DIALOG_DISMISSED, this); //add an observer to listen to when the dialog has been dismissed
 

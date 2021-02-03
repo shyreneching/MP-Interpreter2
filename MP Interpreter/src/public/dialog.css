@@ -1,0 +1,29 @@
+.dialog-pane {
+   -fx-background-color: black;
+   -fx-text-fill: white;
+   -fx-font: 20px "Helvetica";
+   -fx-height: 100px;
+  }
+
+.dialog-pane:header .header-panel {
+   -fx-background-color: black;
+  }
+
+.dialog-pane:header .header-panel .label{
+   -fx-background-color: black;
+   -fx-text-fill: salmon;
+   -fx-font-weight: bold;
+   -fx-font: 17px "Helvetica";
+  }
+
+.dialog-pane .content {
+   -fx-background-color: black;
+   -fx-text-fill: white;
+   -fx-font: 20px "Helvetica";
+   -fx-padding-top: 10;
+  }
+
+.dialog-pane .button {
+    -fx-background-color: salmon;
+    -fx-text-fill: white;
+}
