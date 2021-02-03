@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 
 public class ExpressionCommand implements ICommand, ParseTreeListener {
 
-    private boolean isNumeric, hasException = false, isString = false;
+    private boolean isNumeric, hasException = false, isString = false, isBool = false;
     private PseudoCodeParser.ExpressionContext exprCtx;
     private String modifiedExp, stringResult = "";
     private BigDecimal valueResult;
@@ -44,13 +44,16 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
 
 
         this.modifiedExp = this.exprCtx.getText();
+
+        if(modifiedExp.equals("T") || modifiedExp.equals("F"))
+            isBool = true;
 //        if(modifiedExp.equals("T")){
 //            modifiedExp = "true";
 //        } else if(modifiedExp.equals("F")){
 //            modifiedExp = "false";
 //        }
 
-        if(modifiedExp.charAt(modifiedExp.length() - 1) == 'f'){
+        if(exprCtx.primary() != null && isFloat(exprCtx)){
 //            System.out.println(TypeChecker.isDecimal(modifiedExp.substring(0,modifiedExp.length()-1)));
             modifiedExp = modifiedExp.substring(0,modifiedExp.length()-1);
         }
@@ -134,6 +137,7 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
 
                 this.valueResult = e.eval();
                 isString = false;
+                isBool = true;
             }else if (this.exprCtx.expression().size() != 0 && !isArrayElement(exprCtx) && !isFunctionCall(exprCtx)) {
                 for (PseudoCodeParser.ExpressionContext expCtx :
                         this.exprCtx.expression()) {
@@ -166,7 +170,11 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
             if (this.modifiedExp.contains("!")) {
                 this.modifiedExp = this.modifiedExp.replaceAll("!", "not");
                 this.modifiedExp = this.modifiedExp.replaceAll("not=", "!=");
+                isBool = true;
             }
+
+            if (this.modifiedExp.contains("&&") || this.modifiedExp.contains("||"))
+                isBool = true;
 
             Expression evalEx = new Expression(this.modifiedExp);
             evalEx = change(evalEx, map);
@@ -306,6 +314,16 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
 
     }
 
+    public static boolean isFloat(PseudoCodeParser.ExpressionContext exprCtx) {
+        Pattern functionPattern = Pattern.compile("(([0-9]+).([0-9]*) | .([0-9]+))f");
+
+        if (functionPattern.matcher(exprCtx.getText()).matches()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public static boolean isFunctionCall(PseudoCodeParser.ExpressionContext exprCtx) {
         Pattern functionPattern = Pattern.compile("([a-zA-Z0-9]+)\\(([ ,.a-zA-Z0-9]*)\\)");
 
@@ -412,6 +430,8 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
 //                this.modifiedExp = this.modifiedExp.replace(exprCtx.getText(),
 //                        "\"" + pseudoMethod.getReturnValue().getValue().toString() + "\"");
             } else {
+                if(pseudoMethod.getReturnType() == PseudoMethod.MethodType.BOOL_TYPE)
+                    isBool = true;
                 if (pseudoMethod.getReturnValue() == null){
 //                    this.modifiedExp = "\"\"";
                     map.put(exprCtx.getText(), "\"" + "\"\"");
@@ -444,6 +464,9 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
         }
 
         try {
+
+            if(pseudoValue.getPrimitiveType() == PseudoValue.PrimitiveType.BOOLEAN)
+                isBool = true;
 
             if (pseudoValue.getPrimitiveType() == PseudoValue.PrimitiveType.STRING) {
                 if(!map.containsKey(exprCtx.getText())){
@@ -501,6 +524,8 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
                 if (arrayValue == null)
                     return;
 
+                if(arrayValue.getPrimitiveType() == PseudoValue.PrimitiveType.BOOLEAN)
+                    isBool = true;
                 if (arrayValue.getPrimitiveType() == PseudoValue.PrimitiveType.STRING) {
                     //this.modifiedExp = this.modifiedExp.replaceFirst(exprCtx.expression(0).getText() + "\\[([a-zA-Z0-9]*)]", "\"" + arrayPseudoValue.getValue().toString() + "\"");
 //                    this.modifiedExp = this.modifiedExp.replace(exprCtx.getText(), "\"" + arrayValue.getValue().toString() + "\"");
@@ -566,5 +591,9 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
 
     public boolean isHasException() {
         return hasException;
+    }
+
+    public boolean isBool() {
+        return isBool;
     }
 }
