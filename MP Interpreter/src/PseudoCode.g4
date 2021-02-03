@@ -73,6 +73,7 @@ formalParameter
 
 literal
     :   IntegerLiteral
+    |   IntegerLiteral '.' IntegerLiteral {notifyErrorListeners("invalid format for 'FLOAT', must have 'f' at the end");}
     |   FloatingPointLiteral
 //    |   CharacterLiteral
     |   StringLiteral
@@ -84,7 +85,7 @@ literal
 
 block
     :    '{' blockStatement* '}'
-//    |    '{' blockStatement* {notifyErrorListeners("no closing bracket '}' found");}
+    |    '{' blockStatement* {notifyErrorListeners("no closing curly brace '}' found");}
 //    |    blockStatement* '}' {notifyErrorListeners("no open bracket '{' found");}
     ;
 
@@ -613,6 +614,7 @@ COMMA : ',' ;
 // §3.12 Operators
 
 ASSIGN : '=' ;
+DOT : '.' ;
 GT : '>' ;
 LT : '<' ;
 BANG : '!' ;

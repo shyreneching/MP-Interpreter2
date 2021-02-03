@@ -53,7 +53,7 @@ public class ErrorListener extends BaseErrorListener {
             } else if (/*Arrays.stream(unnanType).anyMatch(msg::contains)*/Arrays.asList(unnanType).contains(temp[1] + ";") ){
                 msg = "no identifier found for '" + temp[1] + "' data type";
             } else if(msg.contains("<EOF>")){
-                msg = "missing curly brace '}'";
+                msg = "no closing curly brace '}' found";
                 line = line - 1;
             } else{
                 msg = "irrelevant character '"+ temp[1] +"' found";
@@ -70,7 +70,7 @@ public class ErrorListener extends BaseErrorListener {
 //            else if (msg.contains("missing ';'")){
 //                msg = "Excess '"+ temp[3] + "'";
             } else if (msg.contains("}")){
-                msg = "missing curly brace '}'";
+                msg = "no closing curly brace '}' found";
                 line = line - 1;
 //            } else if (msg.contains("missing {StringLiteral, Identifier}")){
 //                msg = "missing argument before '"+temp[1] + "'";

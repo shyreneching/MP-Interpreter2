@@ -108,8 +108,8 @@ public class LocalVariableAnalyzer implements ParseTreeListener {
                     Token firstToken = varCtx.getStart();
                     int lineNumber = firstToken.getLine();
                     String arrayType = this.localVariableDeclaration.result().unannType().getText();
-                    System.out.println("LocalVariableAnalyzer - arrayType: "+ arrayType);
-                    System.out.println("LocalVariableAnalyzer - ititialize type: "+ varCtx.variableInitializer().arrayInitializer().unannType().getText());
+//                    System.out.println("LocalVariableAnalyzer - arrayType: "+ arrayType);
+//                    System.out.println("LocalVariableAnalyzer - ititialize type: "+ varCtx.variableInitializer().arrayInitializer().unannType().getText());
 
                     if(!arrayType.equals(varCtx.variableInitializer().arrayInitializer().unannType().getText())){
                         PseudoErrorListener.reportCustomError(ErrorRepository.TYPE_MISMATCH, "", lineNumber);
@@ -123,8 +123,10 @@ public class LocalVariableAnalyzer implements ParseTreeListener {
                         expressionCommand.execute();
                         // evaluate varCtx.variableInitializer().arrayInitializer().expression();)
 //                    TypeChecker.isNumeric(varCtx.variableInitializer().arrayInitializer().expression().getText());
+                        System.out.println("LocalVariableAnalyzer - arrayInitializationsize: "+ expressionCommand.getValueResult());
+                        System.out.println("LocalVariableAnalyzer - isInt: "+ (expressionCommand.getValueResult().stripTrailingZeros().scale() <= 0 ));
                         int arraysize;
-                        if(!expressionCommand.isString() && expressionCommand.getValueResult().stripTrailingZeros().scale() <= 0 ){
+                        if(!expressionCommand.isString() && expressionCommand.getValueResult().stripTrailingZeros().scale() <= 0  && !expressionCommand.getValueResult().toString().contains(".")){
                             arraysize = expressionCommand.getValueResult().intValue();
                             PseudoArray pseudoArray = PseudoArray.createArray(arrayType,varCtx.Identifier().getText());
 //                    if(!(arraysize instanceof Integer)){
