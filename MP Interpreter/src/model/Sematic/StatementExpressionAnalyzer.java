@@ -57,11 +57,22 @@ public class StatementExpressionAnalyzer {
             expressionCommand.execute();
             if(!expressionCommand.isString() && expressionCommand.getValueResult().stripTrailingZeros().scale() <= 0 ){
                 PseudoValue pseudoValue = VariableSearcher.searchVariable(assignment.Identifier().getText());
-                PseudoArray pseudoArray = (PseudoArray) pseudoValue.getValue();
-                if(expressionCommand.getValueResult().intValue() < pseudoArray.getSize()){
-                    assignmentCommand = new AssignmentCommand(assignment.Identifier(), assignment.expression(0), assignment.expression(1));
-                    expressionAnalyzer.analyze(assignment.expression(1));
+                if(pseudoValue != null){
+                    if(pseudoValue.getValue() != null && !(pseudoValue.getValue() instanceof PseudoArray) && ((PseudoArray) pseudoValue.getValue()).getSize() <0){
+                        PseudoArray pseudoArray = ((PseudoArray) pseudoValue.getValue());
+                        if(expressionCommand.getValueResult().intValue() < pseudoArray.getSize()){
+                            assignmentCommand = new AssignmentCommand(assignment.Identifier(), assignment.expression(0), assignment.expression(1));
+                            expressionAnalyzer.analyze(assignment.expression(1));
+                        }
+                    } else{
+                        assignmentCommand = new AssignmentCommand(assignment.Identifier(), assignment.expression(0), assignment.expression(1));
+                        expressionAnalyzer.analyze(assignment.expression(1));
+                    }
+
+                } else {
+                    PseudoErrorListener.reportCustomError(ErrorRepository.UNDECLARED_VARIABLE, "",assignment.Identifier().getText() , assignment.getStart().getLine());
                 }
+
 
             }
 
