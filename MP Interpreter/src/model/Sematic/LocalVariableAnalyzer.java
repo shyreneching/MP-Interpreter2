@@ -116,7 +116,7 @@ public class LocalVariableAnalyzer implements ParseTreeListener {
                     }
 
                     ExpressionAnalyzer expressionAnalyzer = new ExpressionAnalyzer();
-                    expressionAnalyzer.analyze(varCtx.variableInitializer().expression());
+                    expressionAnalyzer.analyze(varCtx.variableInitializer().arrayInitializer().expression());
 
                     if(!expressionAnalyzer.isHasSemanticError()){
                         ExpressionCommand expressionCommand = new ExpressionCommand(varCtx.variableInitializer().arrayInitializer().expression());
@@ -124,7 +124,7 @@ public class LocalVariableAnalyzer implements ParseTreeListener {
                         // evaluate varCtx.variableInitializer().arrayInitializer().expression();)
 //                    TypeChecker.isNumeric(varCtx.variableInitializer().arrayInitializer().expression().getText());
                         int arraysize;
-                        if(!expressionCommand.isString() && !expressionCommand.getValueResult().toString().contains(".") ){
+                        if(!expressionCommand.isString() && expressionCommand.getValueResult().stripTrailingZeros().scale() <= 0 ){
                             arraysize = expressionCommand.getValueResult().intValue();
                             PseudoArray pseudoArray = PseudoArray.createArray(arrayType,varCtx.Identifier().getText());
 //                    if(!(arraysize instanceof Integer)){
@@ -135,11 +135,14 @@ public class LocalVariableAnalyzer implements ParseTreeListener {
                                 pseudoArray.markFinal();
                             }
                             pseudoValue = new PseudoValue(pseudoArray, "array");
+                        } else{
+                            PseudoErrorListener.reportCustomError(ErrorRepository.DEFAULT, "Invalid initialization of array size. ", varCtx.getStart().getLine());
                         }
-                        Scope scope = ScopeCreator.getInstance().getActiveScope();
-                        if(pseudoValue != null){
-                            scope.addPseudoValue(varCtx.Identifier().getText(), pseudoValue);
-                        }
+
+//                        Scope scope = ScopeCreator.getInstance().getActiveScope();
+//                        if(pseudoValue != null){
+//                            scope.addPseudoValue(varCtx.Identifier().getText(), pseudoValue);
+//                        }
 //                    AssignmentCommand assignmentCommand = new AssignmentCommand(varCtx.Identifier(), varCtx.variableInitializer().expression());
 //                    CommandExecuter.handleStatementExecution(assignmentCommand);
                     }

@@ -164,8 +164,5 @@ public class MethodAnalyzer implements ParseTreeListener {
 
             }
         }
-
-
-
     }
 }

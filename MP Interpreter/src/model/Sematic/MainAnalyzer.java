@@ -68,7 +68,7 @@ public class MainAnalyzer implements ParseTreeListener {
 
             evaluated = true;
         } else if(parserRuleContext instanceof StatementContext && ((StatementContext) parserRuleContext).RETURN() != null){
-            PseudoErrorListener.reportCustomError(ErrorRepository.DEFAULT, "can not have return in main", parserRuleContext.getStart().getLine());
+            PseudoErrorListener.reportCustomError(ErrorRepository.DEFAULT, "Can not have return in main. ", parserRuleContext.getStart().getLine());
 
         }
     }
