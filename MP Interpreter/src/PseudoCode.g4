@@ -170,7 +170,7 @@ whileStatement
 	;
 
 ifThenStatement
-    :   'if' '(' conditionalExpression ')' 'then' block ('else' (block | ifThenStatement))?
+    :  'if' '(' conditionalExpression ')' 'then' block ('else' ('then' block | ifThenStatement))?
 	;
 
 printInvocation

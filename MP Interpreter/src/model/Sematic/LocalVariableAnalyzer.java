@@ -1,5 +1,6 @@
 package model.Sematic;
 
+import model.Commands.ArrayInitializationCommand;
 import model.Commands.AssignmentCommand;
 import model.Commands.ExpressionCommand;
 import model.ErrorChecking.ErrorRepository;
@@ -74,7 +75,23 @@ public class LocalVariableAnalyzer implements ParseTreeListener {
                         expressionCommand.execute();
                         Object value = null;
                         boolean sucess = true;
-                        if(this.type.equals("bool")&& !expressionCommand.isString()){
+                        if(expressionCommand.getValueResult().toString().equals("0")){
+                            pseudoValue = PseudoValue.createEmptyVariable(type);
+                            switch (type){
+                                case "bool":
+                                    value = true;
+                                    break;
+                                case "int":
+                                    value = 0;
+                                    break;
+                                case "float":
+                                    value = 0.0;
+                                    break;
+                                case "String":
+                                    value = "";
+                                    break;
+                            }
+                        } else if(this.type.equals("bool")&& !expressionCommand.isString()){
                             if(expressionCommand.getValueResult().compareTo(new BigDecimal("0")) == 0){
                                 value = false;
                             } else if(expressionCommand.getValueResult().compareTo(new BigDecimal("1")) == 0){
@@ -133,12 +150,18 @@ public class LocalVariableAnalyzer implements ParseTreeListener {
                         System.out.println("LocalVariableAnalyzer - arrayInitializationsize: "+ expressionCommand.getValueResult());
                         System.out.println("LocalVariableAnalyzer - isInt: "+ (expressionCommand.getValueResult().stripTrailingZeros().scale() <= 0 ));
                         int arraysize;
-                        if(!expressionCommand.isString() && expressionCommand.getValueResult().stripTrailingZeros().scale() <= 0  && !expressionCommand.getValueResult().toString().contains(".")){
+                        if(expressionCommand.getValueResult().toString().equals("0")){
+                            System.out.println("Jfdklsgsegh we rgehg weriouwehg");
+                            PseudoArray pseudoArray = PseudoArray.createArray(arrayType,varCtx.Identifier().getText());
+                            pseudoValue = new PseudoValue(pseudoArray, "array");
+                            ArrayInitializationCommand arrayInitializeCommand = new ArrayInitializationCommand(pseudoArray, varCtx.variableInitializer().arrayInitializer().expression());
+                            CommandExecuter.handleStatementExecution(arrayInitializeCommand);
+                        } else if(!expressionCommand.isString() && expressionCommand.getValueResult().stripTrailingZeros().scale() <= 0  && !expressionCommand.getValueResult().toString().contains(".")){
+
+
                             arraysize = expressionCommand.getValueResult().intValue();
                             PseudoArray pseudoArray = PseudoArray.createArray(arrayType,varCtx.Identifier().getText());
-//                    if(!(arraysize instanceof Integer)){
-//                        PseudoErrorListener.reportCustomError(ErrorRepository.DEFAULT, "Invalid array inatialization.", lineNumber);
-//                    }
+
                             pseudoArray.initializeSize(arraysize);
                             if(isFinal){
                                 pseudoArray.markFinal();
