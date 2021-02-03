@@ -29,6 +29,8 @@ import model.SymbolTable.SymbolTableManager;
 import model.Utils.LocalVarTracker;
 import model.notifications.NotificationListener;
 import model.notifications.Notifications;
+import model.notifications.NotificationsCenter;
+import model.notifications.Parameters;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -48,10 +50,7 @@ import java.awt.*;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.regex.Matcher;
@@ -60,6 +59,7 @@ import java.util.regex.Pattern;
 public class ParserUI extends Application implements NotificationListener {
     private CodeArea codeArea;
     private TextArea output_textArea = new TextArea();
+    private TextInputDialog dialog = new TextInputDialog();
 
     private static final String[] KEYWORDS = new String[] {
             "abstract", "assert", "bool", "break", "byte",
@@ -188,6 +188,8 @@ public class ParserUI extends Application implements NotificationListener {
         AnchorPane.setTopAnchor(vbox, 0.0);
         AnchorPane.setLeftAnchor(vbox, 0.0);
         AnchorPane.setRightAnchor(vbox, 0.0);
+
+        NotificationsCenter.getInstance().addObserver(Notifications.ON_FOUND_SCAN_STATEMENT, this);
 
         SymbolTableManager.initialize();
         PseudoErrorListener.initialize();
@@ -383,8 +385,10 @@ public class ParserUI extends Application implements NotificationListener {
     }
 
     public void notified(String notificationString, model.notifications.Parameters params){
+        System.out.println("Notified!");
         if(notificationString == Notifications.ON_FOUND_SCAN_STATEMENT) {
-            TextInputDialog dialog = new TextInputDialog();
+            System.out.println("Scan dialog should appear!");
+
             dialog.getDialogPane();
             dialog.setTitle("Scan Dialog");
             dialog.setHeaderText(null);
@@ -392,6 +396,31 @@ public class ParserUI extends Application implements NotificationListener {
 
             dialog.getEditor().setText("");
             dialog.setContentText(params.getStringExtra("MESSAGE_DISPLAY_KEY", "Input: "));
+
+            Platform.runLater(()-> {
+
+                Optional<String> result = dialog.showAndWait();
+
+                if (result.isPresent()) {
+                    System.out.println("Hello!");
+                    model.notifications.Parameters parameters = new model.notifications.Parameters();
+                    parameters.putExtra("VALUE_ENTERED_KEY", result.get());
+
+                    try {
+                        NotificationsCenter.getInstance().postNotification(Notifications.ON_SCAN_DIALOG_DISMISSED, parameters); //report back results to scan command
+                    }catch (ConcurrentModificationException cmeX){
+
+                    }
+
+                } else {
+                    try {
+                        NotificationsCenter.getInstance().postNotification(Notifications.ON_SCAN_DIALOG_DISMISSED); //report back results to scan command
+                    }catch (ConcurrentModificationException cmeX){
+
+                    }
+                }
+
+            });
         }
     }
 

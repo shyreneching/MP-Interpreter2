@@ -225,10 +225,10 @@ public class StatementAnalyzer {
     private void handleScanStatement(ScanInvocationContext scanInvocation) {
         ScanCommand scanCommand;
 
-        if(scanInvocation.expression(1) != null)
-            scanCommand = new ScanCommand(scanInvocation.expression(0).getText(), scanInvocation.expression(1), scanInvocation.Identifier().getText());
+        if(scanInvocation.expression().size() > 1)
+            scanCommand = new ScanCommand(scanInvocation.expression(0), scanInvocation.expression(1), scanInvocation.Identifier());
         else
-            scanCommand = new ScanCommand(scanInvocation.expression(0).getText(), scanInvocation.Identifier().getText());
+            scanCommand = new ScanCommand(scanInvocation.expression(0), scanInvocation.Identifier());
 
         CommandExecuter.handleStatementExecution(scanCommand);
     }

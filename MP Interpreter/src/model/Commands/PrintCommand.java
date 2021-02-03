@@ -58,6 +58,13 @@ public class PrintCommand implements ICommand, ParseTreeListener {
 //        }
 
         String s = this.printstatement.replace("\\n", "\n");
+        s = s.replace("\\b", "\b");
+        s = s.replace("\\t", "\t");
+        s = s.replace("\\f", "\f");
+        s = s.replace("\\r", "\r");
+        s = s.replace("\\\"", "\"");
+        s = s.replace("\\\'", "\\'");
+        s = s.replace("\\\\", "\\");
         System.out.println(s);
         UIHolder.getInstance().getParserUI().printToOutput(s);
 
