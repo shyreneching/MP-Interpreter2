@@ -3853,13 +3853,13 @@ public class PseudoCodeParser extends Parser {
 		public ExpressionListContext expressionList() {
 			return getRuleContext(ExpressionListContext.class,0);
 		}
-		public TerminalNode BANG() { return getToken(PseudoCodeParser.BANG, 0); }
 		public List<UnaryExpressionContext> unaryExpression() {
 			return getRuleContexts(UnaryExpressionContext.class);
 		}
 		public UnaryExpressionContext unaryExpression(int i) {
 			return getRuleContext(UnaryExpressionContext.class,i);
 		}
+		public TerminalNode BANG() { return getToken(PseudoCodeParser.BANG, 0); }
 		public List<TerminalNode> MUL() { return getTokens(PseudoCodeParser.MUL); }
 		public TerminalNode MUL(int i) {
 			return getToken(PseudoCodeParser.MUL, i);
@@ -3971,7 +3971,7 @@ public class PseudoCodeParser extends Parser {
 				match(BANG);
 				}
 				setState(724);
-				expression(16);
+				unaryExpression();
 				}
 				break;
 			case 5:
@@ -4763,12 +4763,12 @@ public class PseudoCodeParser extends Parser {
 		"\u02cd\5D#\2\u02cd\u02ce\7\"\2\2\u02ce\u02fa\3\2\2\2\u02cf\u02d0\7<\2"+
 		"\2\u02d0\u02d2\7\35\2\2\u02d1\u02d3\5:\36\2\u02d2\u02d1\3\2\2\2\u02d2"+
 		"\u02d3\3\2\2\2\u02d3\u02d4\3\2\2\2\u02d4\u02fa\7\36\2\2\u02d5\u02d6\7"+
-		"(\2\2\u02d6\u02fa\5D#\22\u02d7\u02d8\5H%\2\u02d8\u02d9\7\35\2\2\u02d9"+
-		"\u02da\7\36\2\2\u02da\u02db\b#\1\2\u02db\u02fa\3\2\2\2\u02dc\u02dd\5H"+
-		"%\2\u02dd\u02de\7\36\2\2\u02de\u02df\b#\1\2\u02df\u02fa\3\2\2\2\u02e0"+
-		"\u02e1\5H%\2\u02e1\u02e2\7\35\2\2\u02e2\u02e3\b#\1\2\u02e3\u02fa\3\2\2"+
-		"\2\u02e4\u02e5\7\35\2\2\u02e5\u02e6\7\36\2\2\u02e6\u02e7\5H%\2\u02e7\u02e8"+
-		"\b#\1\2\u02e8\u02fa\3\2\2\2\u02e9\u02ea\7\36\2\2\u02ea\u02eb\5H%\2\u02eb"+
+		"(\2\2\u02d6\u02fa\5F$\2\u02d7\u02d8\5H%\2\u02d8\u02d9\7\35\2\2\u02d9\u02da"+
+		"\7\36\2\2\u02da\u02db\b#\1\2\u02db\u02fa\3\2\2\2\u02dc\u02dd\5H%\2\u02dd"+
+		"\u02de\7\36\2\2\u02de\u02df\b#\1\2\u02df\u02fa\3\2\2\2\u02e0\u02e1\5H"+
+		"%\2\u02e1\u02e2\7\35\2\2\u02e2\u02e3\b#\1\2\u02e3\u02fa\3\2\2\2\u02e4"+
+		"\u02e5\7\35\2\2\u02e5\u02e6\7\36\2\2\u02e6\u02e7\5H%\2\u02e7\u02e8\b#"+
+		"\1\2\u02e8\u02fa\3\2\2\2\u02e9\u02ea\7\36\2\2\u02ea\u02eb\5H%\2\u02eb"+
 		"\u02ec\b#\1\2\u02ec\u02fa\3\2\2\2\u02ed\u02ee\7\35\2\2\u02ee\u02ef\5H"+
 		"%\2\u02ef\u02f0\b#\1\2\u02f0\u02fa\3\2\2\2\u02f1\u02f3\5F$\2\u02f2\u02f4"+
 		"\5F$\2\u02f3\u02f2\3\2\2\2\u02f4\u02f5\3\2\2\2\u02f5\u02f3\3\2\2\2\u02f5"+

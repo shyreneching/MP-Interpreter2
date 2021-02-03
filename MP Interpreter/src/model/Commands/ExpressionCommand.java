@@ -151,7 +151,13 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
                     }
                 }
 
-            } else {
+            } else if (isArrayElement(exprCtx) || isFunctionCall(exprCtx) || isVariableOrConst(exprCtx)){
+                Expression e = new Expression(exprCtx.getText());
+                e = change(e, map);
+
+                this.stringResult = e.getOriginalExpression().replace("\"", "");
+            }
+            else {
                 this.stringResult = modifiedExp.replace("\"", "");
             }
 
@@ -319,8 +325,8 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
     }
 
     public static boolean isArrayElement(PseudoCodeParser.ExpressionContext exprCtx) {
-        if (exprCtx.expression(0) != null && exprCtx.expression(1) != null) {
-            PseudoValue value = searchValue(exprCtx.expression(0).getText());
+        if (exprCtx.LBRACK() != null) {
+            PseudoValue value = searchValue(exprCtx.Identifier().getText());
 
             if (value != null)
                 return value.getPrimitiveType() == PseudoValue.PrimitiveType.ARRAY;
@@ -479,14 +485,14 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
     }
 
     private void evaluateArray(PseudoCodeParser.ExpressionContext exprCtx) {
-        PseudoValue value = searchValue(exprCtx.expression(0).getText());
+        PseudoValue value = searchValue(exprCtx.Identifier().getText());
 
         if (value != null) {
             if (value.getPrimitiveType() == PseudoValue.PrimitiveType.ARRAY) {
 
                 PseudoArray pseudoArray = (PseudoArray) value.getValue();
 
-                ExpressionCommand exprCmd = new ExpressionCommand(exprCtx.expression(1));
+                ExpressionCommand exprCmd = new ExpressionCommand(exprCtx.expression(0));
                 exprCmd.execute();
 
                 ExecutionManager.getInstance().setCurrentCheckedLineNumber(exprCtx.getStart().getLine());
