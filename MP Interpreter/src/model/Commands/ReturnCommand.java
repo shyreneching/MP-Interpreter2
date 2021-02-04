@@ -30,7 +30,9 @@ public class ReturnCommand implements ICommand {
             }
 
             TypeChecker typeChecker = new TypeChecker(pseudoValue, this.exprContext);
+            typeChecker.setReturnStmnt();
             typeChecker.verify();
+            typeChecker.resetReturnStmnt();
         }
     }
 
