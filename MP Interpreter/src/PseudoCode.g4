@@ -182,6 +182,7 @@ ifThenStatement
 
 printInvocation
     :   'print' '(' expression ')' ';'
+    |   'print' '(' expression ')' {notifyErrorListeners("lacking ';' at the end of line");}
     |   'print' '(' expression '+'')' ';' {notifyErrorListeners("additional ‘+’ sign at end of print");}
 //    |   'print' '(' DQUOTE (StringLiteral | Identifier )+ ')' ';'{notifyErrorListeners("no closing 'double quote'");}
 //    |   'print' '(' '"'  Identifier Identifier ')' ';' {notifyErrorListeners("lacking 'double quotes' in print statement");}
@@ -285,7 +286,7 @@ expression
     |   '(' ')' primary  {notifyErrorListeners("redundant parenthesis");}
     |   ')' primary  {notifyErrorListeners("uneven parenthesis, lacking '('");}
     |   '('  primary   {notifyErrorListeners("uneven parenthesis, lacking ')'");}
-    |   unaryExpression unaryExpression+  {notifyErrorListeners("no operators found");}
+    |   unaryExpression unaryExpression+  {notifyErrorListeners("no operators found between identifiers/functions");}
     |   expression ('+'|'-'|'*'|'/'|'%') ('+'|'-'|'*'|'/'|'%')+ expression {notifyErrorListeners("redundant arithmetic operator symbol found");}
     |   expression ('+'|'-'|'*'|'/'|'%') {notifyErrorListeners("lacking argument after operator/excess operator");}
     ;
