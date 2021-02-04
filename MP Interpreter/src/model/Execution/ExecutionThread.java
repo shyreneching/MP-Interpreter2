@@ -26,6 +26,6 @@ public class ExecutionThread extends Thread{
             System.out.println("ExecutionThread - " + "Monitor block interrupted! " +e.getMessage());
         }
 
-//        NotificationCenter.getInstance().postNotification(Notifications.ON_EXECUTION_FINISHED);
+//        NotificationCenter.getInstance().postNotification(Alerts.ON_EXECUTION_FINISHED);
     }
 }
