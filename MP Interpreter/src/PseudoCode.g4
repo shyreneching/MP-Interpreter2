@@ -376,7 +376,7 @@ fragment
 DecimalNumeral
 	:	'0'
 //	|	NonZeroDigit (Digits? | Underscores Digits)
-	|   NonZeroDigit Digits?
+	|   Sign? NonZeroDigit Digits?
 	;
 
 fragment
@@ -499,8 +499,8 @@ FloatingPointLiteral
 
 fragment
 DecimalFloatingPointLiteral
-    :   Digits '.' Digits? FloatTypeSuffix
-    |	'.' Digits FloatTypeSuffix
+    :   Sign? Digits '.' Digits? FloatTypeSuffix
+    |	Sign? '.' Digits FloatTypeSuffix
 //	:	Digits '.' Digits? ExponentPart? FloatTypeSuffix?
 //	|	'.' Digits ExponentPart? FloatTypeSuffix?
 //	|	Digits ExponentPart FloatTypeSuffix?
@@ -522,10 +522,11 @@ DecimalFloatingPointLiteral
 //	:	Sign? Digits
 //	;
 
-//fragment
-//Sign
+fragment
+Sign
 //	:	[+-]
-//	;
+	:	[-]
+	;
 
 fragment
 FloatTypeSuffix

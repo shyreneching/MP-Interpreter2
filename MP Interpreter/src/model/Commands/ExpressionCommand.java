@@ -239,7 +239,10 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
             if(t == null)
                 break;
             else {
-                if(t.toString().charAt(0) == ']' && t.toString().length() > 1){
+                if(t.toString().equals("-u")){
+                    copy.add("-");
+                }
+                else if(t.toString().charAt(0) == ']' && t.toString().length() > 1){
                     copy.add(t.toString().substring(0,1));
                     copy.add(t.toString().substring(1));
                 } else
@@ -264,7 +267,10 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
                 if(t == null)
                     break;
                 else {
-                    if(t.toString().charAt(0) == ']' && t.toString().length() > 1){
+                    if(t.toString().equals("-u")){
+                        copy2.add("-");
+                    }
+                    else if(t.toString().charAt(0) == ']' && t.toString().length() > 1){
                         copy2.add(t.toString().substring(0,1));
                         copy2.add(t.toString().substring(1));
                     } else
