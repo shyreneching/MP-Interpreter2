@@ -9,11 +9,11 @@ import org.antlr.v4.runtime.Token;
 
 public class ArrayInitializationCommand implements ICommand {
 
-    private PseudoArray assignedBaracoArray;
+    private PseudoArray assignedPseudoArray;
     private ExpressionContext exprCtx;
 
-    public ArrayInitializationCommand(PseudoArray baracoArray, ExpressionContext exprCtx) {
-        this.assignedBaracoArray = baracoArray;
+    public ArrayInitializationCommand(PseudoArray pseudoArray, ExpressionContext exprCtx) {
+        this.assignedPseudoArray = pseudoArray;
         this.exprCtx = exprCtx;
 
         if (exprCtx.expression(0) != null) {
@@ -36,7 +36,7 @@ public class ArrayInitializationCommand implements ICommand {
             evaluationCommand.execute();
 
             ExecutionManager.getInstance().setCurrentCheckedLineNumber(exprCtx.getStart().getLine());
-            this.assignedBaracoArray.initializeSize(evaluationCommand.getValueResult().intValue());
+            this.assignedPseudoArray.initializeSize(evaluationCommand.getValueResult().intValue());
         }
 
     }
