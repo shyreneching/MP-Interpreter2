@@ -178,6 +178,8 @@ whileStatement
 
 ifThenStatement
     :  'if' '(' conditionalExpression ')' 'then' block ('else' ('then' block | ifThenStatement))?
+    |  'if' '(' conditionalExpression ')' block ('else' ('then' block | ifThenStatement))? {notifyErrorListeners("lacking 'then' keyword to if statement");}
+    |  'if' '(' conditionalExpression ')' 'then' block ('else' ('then' block | ifThenStatement))? {notifyErrorListeners("lacking 'then' keyword to else statement");}
 	;
 
 printInvocation
