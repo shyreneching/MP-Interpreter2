@@ -220,6 +220,10 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
 
                 if(s.charAt(0)=='"' && s.charAt(s.length() - 1)=='"'){
                     s = s.substring(1, s.length() - 1);
+                } else if(s.contains(".")){
+                    while(s.charAt(s.length()-1) == '0' && s.charAt(s.length()-2) != '.'){
+                        s = s.substring(0, s.length() - 1);
+                    }
                 }
                 this.stringResult += s;
             }

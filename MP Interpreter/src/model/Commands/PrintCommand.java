@@ -2,6 +2,7 @@ package model.Commands;
 
 import model.ErrorChecking.UndeclaredChecker;
 import model.Item.PseudoValue;
+import model.PseudoCodeParser;
 import model.PseudoCodeParser.*;
 import model.SymbolTable.SymbolTableManager;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -11,6 +12,8 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import view.ParserUI;
 import view.UIHolder;
+
+import java.util.regex.Pattern;
 
 public class PrintCommand implements ICommand, ParseTreeListener {
 
@@ -86,7 +89,15 @@ public class PrintCommand implements ICommand, ParseTreeListener {
 
             if (!expressionCommand.isString()){
                 System.out.println("PrintCommand - numeric result for expr command ");
-                printstatement += expressionCommand.getValueResult().toEngineeringString();
+                String s = expressionCommand.getValueResult().toEngineeringString();
+
+                if(isFloat(s + "f")){
+                    while(s.charAt(s.length()-1) == '0' && s.charAt(s.length()-2) != '.'){
+                        s = s.substring(0, s.length() - 1);
+                    }
+                }
+
+                printstatement += s;
             }
 
             else
@@ -115,5 +126,15 @@ public class PrintCommand implements ICommand, ParseTreeListener {
 
     public String getStatementToPrint() {
         return this.printstatement;
+    }
+
+    public static boolean isFloat(String exprCtx) {
+        Pattern functionPattern = Pattern.compile("((\\d+\\.\\d*)|(\\.\\d+))f");
+
+        if (functionPattern.matcher(exprCtx).matches()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
