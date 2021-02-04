@@ -165,6 +165,11 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
                 isBool = true;
             }
 
+            if(this.modifiedExp.contains("!=")) {
+                String[] arr = modifiedExp.split("!=");
+                modifiedExp = "not(" + arr[0] + " == " + arr[1] + ")";
+            }
+
             if (this.modifiedExp.contains("&&") || this.modifiedExp.contains("||") || this.modifiedExp.contains("=") || this.modifiedExp.contains(">") || this.modifiedExp.contains("<"))
                 isBool = true;
 
@@ -331,7 +336,7 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
 
     @Override
     public void enterEveryRule(ParserRuleContext parserRuleContext) {
-        if (parserRuleContext instanceof PseudoCodeParser.ExpressionContext && !isInMethod(exprCtx)) {
+        if (parserRuleContext instanceof PseudoCodeParser.ExpressionContext && !isInMethod(exprCtx) && !evaluated) {
             PseudoCodeParser.ExpressionContext exprCtx = (PseudoCodeParser.ExpressionContext) parserRuleContext;
 
             if(exprCtx.AND() != null){
@@ -356,9 +361,14 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
     public boolean isInMethod(PseudoCodeParser.ExpressionContext exprCtx){
         if(exprCtx.getText().equals(this.exprCtx.getText()) || (exprCtx.getParent().getText().equals(this.exprCtx.getText()) &&
                 !(exprCtx.getParent() instanceof PseudoCodeParser.ExpressionListContext) &&
-                ((PseudoCodeParser.ExpressionContext)(exprCtx.getParent())).LBRACK() == null))
+                ((PseudoCodeParser.ExpressionContext)(exprCtx.getParent())).LBRACK() == null &&
+                ((PseudoCodeParser.ExpressionContext)(exprCtx.getParent())).AND() == null &&
+                ((PseudoCodeParser.ExpressionContext)(exprCtx.getParent())).OR() == null))
             return false;
-        else if (exprCtx.getParent() instanceof PseudoCodeParser.ExpressionListContext || ((PseudoCodeParser.ExpressionContext)(exprCtx.getParent())).LBRACK() != null)
+        else if (exprCtx.getParent() instanceof PseudoCodeParser.ExpressionListContext ||
+                ((PseudoCodeParser.ExpressionContext)(exprCtx.getParent())).LBRACK() != null ||
+                ((PseudoCodeParser.ExpressionContext)(exprCtx.getParent())).AND() != null ||
+                ((PseudoCodeParser.ExpressionContext)(exprCtx.getParent())).OR() != null )
             return true;
         else
             return isInMethod((PseudoCodeParser.ExpressionContext) exprCtx.getParent());
@@ -646,9 +656,9 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
             expressionCommand2.execute();
             String s2 = expressionCommand2.getValueResult().toEngineeringString();
             if(s1.equals("1") || s2.equals("1")){
-                this.valueResult = new BigDecimal(1);
+                this.valueResult = BigDecimal.ONE;
             } else {
-                this.valueResult = new BigDecimal(0);
+                this.valueResult = BigDecimal.ZERO;
             }
             this.stringResult = this.valueResult.toEngineeringString();
 
