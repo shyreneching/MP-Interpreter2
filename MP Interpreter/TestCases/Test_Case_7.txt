@@ -1,0 +1,35 @@
+main (){
+    int n;
+    int num;
+    scan("How many numbers? ", n);
+    
+    int[] arr = create int[n];
+    
+    for int i = 1 up to n {
+        scan("Enter number: ", num);
+        arr[i - 1] = num;    
+    }
+    
+    for int i = 1 up to n - 1 {
+        int val = arr[i];
+        int j = i - 1;
+        bool flag = F;
+        while j down to 0 {
+        if (arr[j] >= val) then {
+                    arr[j + 1] = arr[j];
+        } else if (arr[j] < val && (j + 1 == i || arr[j +  1] >= val)) then{
+            arr[j + 1] = val;
+            flag = T;
+        }
+        }
+        if(!(flag))then{
+            arr[0] = val;
+	
+        }
+    }
+    
+    print("Sorted: ");
+    for int i = 1 up to n {
+        print(arr[i - 1] + " ");
+    }
+}
