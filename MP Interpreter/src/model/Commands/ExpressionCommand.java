@@ -92,6 +92,12 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
 
                 String equalityFunction = "STREQ("+strings[0]+", " + strings[1] + ")";
 
+                if(strings[0].charAt(0) == '"' && strings[0].charAt(strings[0].length() - 1) == '"')
+                    map.put(strings[0].substring(1, strings[0].length() - 1), strings[0]);
+
+                if(strings[1].charAt(0) == '"' && strings[1].charAt(strings[1].length() - 1) == '"')
+                    map.put(strings[1].substring(1, strings[1].length() - 1), strings[1]);
+
                 if (this.modifiedExp.contains("!="))
                     equalityFunction = "not(" + equalityFunction + ")";
 
@@ -285,6 +291,7 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
         String str = "";
         for(String s : copy)
             str = str + s;
+        System.out.println("NEW MODIFIED EXPR : " + str);
 
         return new Expression(str);
     }
