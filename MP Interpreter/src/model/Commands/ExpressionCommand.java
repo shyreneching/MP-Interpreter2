@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 
 public class ExpressionCommand implements ICommand, ParseTreeListener {
 
-    private boolean isNumeric, hasException = false, isString = false, isBool = false;
+    private boolean isNumeric, hasException = false, isString = false, isBool = false, evaluated = false;
     private PseudoCodeParser.ExpressionContext exprCtx;
     private String modifiedExp, stringResult = "";
     private BigDecimal valueResult;
@@ -74,10 +74,10 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
         System.out.println("MODIFIED EXPR ORIGINALLY IS " + modifiedExp);
 
 //        isNumeric = (!this.modifiedExp.contains("\"") && !this.modifiedExp.contains("\'")) || !isString;
-            if(!isString && (this.modifiedExp.contains("\"") || this.modifiedExp.contains("\'")))
+            if(!evaluated && !isString && (this.modifiedExp.contains("\"") || this.modifiedExp.contains("\'")))
                 isString = true;
 
-        if (isString) {
+        if (isString && !evaluated) {
 
             if (this.modifiedExp.contains("==") || this.modifiedExp.contains("!=")) {
 
@@ -149,7 +149,7 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
                 this.stringResult = modifiedExp.replace("\"", "");
             }
 
-        } else {
+        } else if (!evaluated){
 
             modifiedExp = modifiedExp.replaceAll("(?<=(\\d|\\.))f", "");
 
@@ -327,7 +327,12 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
         if (parserRuleContext instanceof PseudoCodeParser.ExpressionContext && !isInMethod(exprCtx)) {
             PseudoCodeParser.ExpressionContext exprCtx = (PseudoCodeParser.ExpressionContext) parserRuleContext;
 
-            if (isFunctionCall(exprCtx)) {
+            if(exprCtx.AND() != null){
+                this.evaluateAND(exprCtx);
+            } else if(exprCtx.OR() != null){
+                this.evaluateOR(exprCtx);
+            }
+            else if (isFunctionCall(exprCtx)) {
                 System.out.println("ExprCmmd : THIS IS A FUNCTION CALLLLL - " + exprCtx.getText());
                 this.evaluateFunctionCall(exprCtx);
             } else if (isArrayElement(exprCtx)) {
@@ -595,6 +600,56 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
 //            }
 
         }
+    }
+
+    private void evaluateAND(PseudoCodeParser.ExpressionContext exprCtx) {
+        isBool = true;
+        evaluated = true;
+        try {
+            ExpressionCommand expressionCommand1 = new ExpressionCommand(exprCtx.expression(0));
+            expressionCommand1.execute();
+            String s1 = expressionCommand1.getValueResult().toEngineeringString();
+
+            ExpressionCommand expressionCommand2 = new ExpressionCommand(exprCtx.expression(1));
+            expressionCommand2.execute();
+            String s2 = expressionCommand2.getValueResult().toEngineeringString();
+            if(s1.equals("1") && s2.equals("1")){
+                this.valueResult = new BigDecimal(1);
+            } else {
+                this.valueResult = new BigDecimal(0);
+            }
+            this.stringResult = this.valueResult.toEngineeringString();
+
+        } catch (NullPointerException e) {
+            this.valueResult = new BigDecimal(0);
+            this.stringResult = this.valueResult.toEngineeringString();
+        }
+
+    }
+
+    private void evaluateOR(PseudoCodeParser.ExpressionContext exprCtx) {
+        isBool = true;
+        evaluated = true;
+        try {
+            ExpressionCommand expressionCommand1 = new ExpressionCommand(exprCtx.expression(0));
+            expressionCommand1.execute();
+            String s1 = expressionCommand1.getValueResult().toEngineeringString();
+
+            ExpressionCommand expressionCommand2 = new ExpressionCommand(exprCtx.expression(1));
+            expressionCommand2.execute();
+            String s2 = expressionCommand2.getValueResult().toEngineeringString();
+            if(s1.equals("1") || s2.equals("1")){
+                this.valueResult = new BigDecimal(1);
+            } else {
+                this.valueResult = new BigDecimal(0);
+            }
+            this.stringResult = this.valueResult.toEngineeringString();
+
+        } catch (NullPointerException e) {
+            this.valueResult = new BigDecimal(0);
+            this.stringResult = this.valueResult.toEngineeringString();
+        }
+
     }
 
     private void evaluateArray(PseudoCodeParser.ExpressionContext exprCtx) {
