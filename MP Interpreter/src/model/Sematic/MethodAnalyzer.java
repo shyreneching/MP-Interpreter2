@@ -134,7 +134,7 @@ public class MethodAnalyzer implements ParseTreeListener {
                 PseudoErrorListener.reportCustomError(ErrorHandler.DEFAULT, "Double return statement. ", lineNumber);
             }
             isIfReturn(ctx);
-            System.out.println("Method Analyzer - ifReturn:" + ifReturn);
+//            System.out.println("Method Analyzer - ifReturn:" + ifReturn);
             pseudoMethod.setValidReturns(hasReturn || pseudoMethod.hasValidReturns() || !ifReturn);
         }
     }
