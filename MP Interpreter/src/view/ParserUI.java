@@ -27,9 +27,9 @@ import model.Sematic.StatementControlOverseer;
 import model.SymbolTable.Scope.ScopeCreator;
 import model.SymbolTable.SymbolTableManager;
 import model.Utils.LocalVarTracker;
-import view.UIAlert.NotificationListener;
-import view.UIAlert.Notifications;
-import view.UIAlert.NotificationsCenter;
+import view.UIAlert.Alerts;
+import view.UIAlert.IAlert;
+import view.UIAlert.AlertHolder;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -55,7 +55,7 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ParserUI extends Application implements NotificationListener {
+public class ParserUI extends Application implements IAlert {
     private CodeArea codeArea;
     private TextArea output_textArea = new TextArea();
     private TextInputDialog dialog = new TextInputDialog();
@@ -198,7 +198,7 @@ public class ParserUI extends Application implements NotificationListener {
         dialog.getDialogPane().getScene().getWindow().setOnCloseRequest(event -> event.consume());
         dialog.getDialogPane().setMinHeight(200);
 
-        NotificationsCenter.getInstance().addObserver(Notifications.ON_FOUND_SCAN_STATEMENT, this);
+        AlertHolder.getInstance().addObserver(Alerts.ON_FOUND_SCAN_STATEMENT, this);
 
         SymbolTableManager.initialize();
         PseudoErrorListener.initialize();
@@ -397,7 +397,7 @@ public class ParserUI extends Application implements NotificationListener {
 
     public void notified(String notificationString, view.UIAlert.Parameters params){
         System.out.println("Notified!");
-        if(notificationString == Notifications.ON_FOUND_SCAN_STATEMENT) {
+        if(notificationString == Alerts.ON_FOUND_SCAN_STATEMENT) {
             System.out.println("Scan dialog should appear!");
 
 
@@ -414,7 +414,7 @@ public class ParserUI extends Application implements NotificationListener {
                     parameters.putExtra("VALUE_ENTERED_KEY", result.get());
 
                     try {
-                        NotificationsCenter.getInstance().postNotification(Notifications.ON_SCAN_DIALOG_DISMISSED, parameters); //report back results to scan command
+                        AlertHolder.getInstance().postNotification(Alerts.ON_SCAN_DIALOG_DISMISSED, parameters); //report back results to scan command
                     }catch (ConcurrentModificationException cmeX){
 
                     }
@@ -422,7 +422,7 @@ public class ParserUI extends Application implements NotificationListener {
                 } else {
                     System.out.println("Hellllllo!");
                     try {
-                        NotificationsCenter.getInstance().postNotification(Notifications.ON_SCAN_DIALOG_DISMISSED); //report back results to scan command
+                        AlertHolder.getInstance().postNotification(Alerts.ON_SCAN_DIALOG_DISMISSED); //report back results to scan command
                     }catch (ConcurrentModificationException cmeX){
 
                     }

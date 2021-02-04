@@ -5,14 +5,14 @@ import model.Execution.Adders.IExecutionAdder;
 import model.Execution.Adders.MainExecutionAdder;
 import model.Execution.Adders.MethodExecutionAdder;
 import model.Item.PseudoMethod;
-import view.UIAlert.NotificationListener;
-import view.UIAlert.Notifications;
-import view.UIAlert.NotificationsCenter;
+import view.UIAlert.Alerts;
+import view.UIAlert.IAlert;
+import view.UIAlert.AlertHolder;
 import view.UIAlert.Parameters;
 
 import java.util.ArrayList;
 
-public class ExecutionManager implements NotificationListener {
+public class ExecutionManager implements IAlert {
 
     private static ExecutionManager sharedInstance = null;
     private ExecutionThread executionThread;
@@ -42,7 +42,7 @@ public class ExecutionManager implements NotificationListener {
 
     public static void initialize() {
         sharedInstance = new ExecutionManager();
-        NotificationsCenter.getInstance().addObserver(Notifications.ON_EXECUTION_FINISHED, sharedInstance);
+        AlertHolder.getInstance().addObserver(Alerts.ON_EXECUTION_FINISHED, sharedInstance);
     }
 
     public static void reset() {
@@ -54,7 +54,7 @@ public class ExecutionManager implements NotificationListener {
 //        sharedInstance.currentTryCommand = null;
         sharedInstance.aborted = false;
 
-        NotificationsCenter.getInstance().removeObserver(Notifications.ON_EXECUTION_FINISHED, sharedInstance);
+        AlertHolder.getInstance().removeObserver(Alerts.ON_EXECUTION_FINISHED, sharedInstance);
     }
 
 //    public IAttemptCommand getCurrentTryCommand() {
@@ -180,7 +180,7 @@ public class ExecutionManager implements NotificationListener {
 
     @Override
     public void notified(String notificationString, Parameters params) {
-        if(notificationString == Notifications.ON_EXECUTION_FINISHED) {
+        if(notificationString == Alerts.ON_EXECUTION_FINISHED) {
             //SymbolTableManager.getInstance().resetClassTables(); //TODO: does not work as intended
         }
     }
