@@ -61,16 +61,10 @@ public class ParserUI extends Application implements NotificationListener {
     private TextInputDialog dialog = new TextInputDialog();
 
     private static final String[] KEYWORDS = new String[] {
-            "abstract", "assert", "bool", "break", "byte",
-            "case", "catch", "char", "class", "constant",
-            "continue", "default", "do", "double", "else",
-            "enum", "extends", "float",
-            "for", "goto", "if",
-            "int", "long", "native",
-            "new", "package", "private", "protected", "public",
-            "return", "short", "static", "strictfp", "super",
-            "switch", "synchronized", "this", "throw", "throws",
-            "transient", "try", "void", "volatile", "while",
+            "bool", "break", "char", "constant",
+            "continue", "do", "double", "else",
+            "float", "for", "if", "int", "long",
+            "return", "void", "while",
 
             "up to", "down to", "func", "print", "scan", "String",
             "create", "then", "T", "F"
@@ -153,7 +147,7 @@ public class ParserUI extends Application implements NotificationListener {
 
         VirtualizedScrollPane vsp = new VirtualizedScrollPane(codeArea);
         StackPane stack = new StackPane();
-        stack.setMinHeight(360);
+        stack.setMinHeight(scene_height * 0.45);
         stack.getChildren().add(vsp);
         stack.setStyle("-fx-padding: 20px; -fx-border-insets: 20px; -fx-background-insets: 20px;");
 
@@ -167,7 +161,7 @@ public class ParserUI extends Application implements NotificationListener {
         parse_button.setMinWidth(100.0);
 
         output_textArea = new TextArea();
-        output_textArea.setMinHeight(300.0);
+        output_textArea.setMinHeight(scene_height * 0.4);
         output_textArea.setWrapText(true);
         output_textArea.setPrefColumnCount(20);
         output_textArea.setPrefRowCount(10);
@@ -323,6 +317,7 @@ public class ParserUI extends Application implements NotificationListener {
         scene.getStylesheets().add("/public/java-keywords.css");
         primaryStage.setScene(scene);
         primaryStage.setTitle("MO - Interpreter");
+        //primaryStage.setResizable(false);
         primaryStage.show();
     }
 
