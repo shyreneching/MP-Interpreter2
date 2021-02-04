@@ -64,9 +64,9 @@ public class ParserUI extends Application implements NotificationListener {
             "abstract", "assert", "bool", "break", "byte",
             "case", "catch", "char", "class", "constant",
             "continue", "default", "do", "double", "else",
-            "enum", "extends", "final", "finally", "float",
-            "for", "goto", "if", "implements", "import",
-            "instanceof", "int", "interface", "long", "native",
+            "enum", "extends", "float",
+            "for", "goto", "if",
+            "int", "long", "native",
             "new", "package", "private", "protected", "public",
             "return", "short", "static", "strictfp", "super",
             "switch", "synchronized", "this", "throw", "throws",
@@ -77,7 +77,7 @@ public class ParserUI extends Application implements NotificationListener {
     };
 
     private static final String[] OPS = new String[]{
-            "\\+", "-", "/", "\\*", "=", "==", "!", ">", "<"
+            "\\+", "\\-", "\\/", "\\*", "=", "==", "!", ">", "<", " \\+ ", " \\- ", " \\/ ", " \\* ", " = ", " == ", " ! ", " > ", " < "
     };
 
     private static final String KEYWORD_PATTERN = "\\b(" + String.join("|", KEYWORDS) + ")\\b";
@@ -391,11 +391,11 @@ public class ParserUI extends Application implements NotificationListener {
 //        System.out.println("toPrint: " + toPrint);
 //        output_textArea.setEditable(false);
 //        output_textArea.setText(output);
-        output_textArea.appendText(toPrint);
+        //output_textArea.appendText(toPrint);
 
-//        Platform.runLater(() -> {
-//            output_textArea.setText(toPrint);
-//        });
+        Platform.runLater(() -> {
+            output_textArea.appendText(toPrint);
+        });
 
 //        System.out.println("I supposedly printed!");
     }
