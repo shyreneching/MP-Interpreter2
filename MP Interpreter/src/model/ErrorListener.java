@@ -118,7 +118,7 @@ public class ErrorListener extends BaseErrorListener {
 //            msg = msg.substring(0, 9) +" '"+ ((Token)offendingSymbol).getText()+ "' " +msg.substring(9, msg.length());
         }
 
-        if(charPositionInLine == 0){
+        if(charPositionInLine == 0 && !msg.contains("}")){
             line = line - 1;
         }
 

@@ -2,7 +2,7 @@ package model.Sematic;
 
 import model.Commands.*;
 import model.ErrorChecking.ErrorHandler;
-import model.ErrorChecking.MultipleVariableDeclarationChecker;
+import model.ErrorChecking.MultipleVariableChecker;
 import model.ErrorChecking.PseudoErrorListener;
 import model.ErrorChecking.UndeclaredChecker;
 import model.Execution.ExecutionManager;
@@ -168,7 +168,7 @@ public class StatementAnalyzer {
             isSuccess = UndeclaredChecker.verifyVariableOrConst(forStatement.forheader().forinitializer().Identifier());
 
         } else{
-            isSuccess = MultipleVariableDeclarationChecker.verifyVariableOrConst(forinitializerCtx.Identifier());
+            isSuccess = MultipleVariableChecker.verifyVariableOrConst(forinitializerCtx.Identifier());
 
         }
 
@@ -221,6 +221,8 @@ public class StatementAnalyzer {
     private void handleScanStatement(ScanInvocationContext scanInvocation) {
         ScanCommand scanCommand;
 
+        UndeclaredChecker.verifyVariableOrConst(scanInvocation.Identifier());
+
         if(scanInvocation.expression().size() > 1)
             scanCommand = new ScanCommand(scanInvocation.expression(0), scanInvocation.expression(1), scanInvocation.Identifier());
         else
@@ -239,29 +241,6 @@ public class StatementAnalyzer {
                 CommandExecuter.handleStatementExecution(printCommand);
             }
         }
-
-
-//        StatementControlOverseer statementControl = StatementControlOverseer.getInstance();
-//        //add to conditional controlled command
-//        if(statementControl.isInConditionalCommand()) {
-//            IConditionalCommand conditionalCommand = (IConditionalCommand) statementControl.getActiveControlledCommand();
-//
-//            if(statementControl.isInPositiveRule()) {
-//                conditionalCommand.addPositiveCommand(printCommand);
-//            }
-//            else {
-//                conditionalCommand.addNegativeCommand(printCommand);
-//            }
-//        }
-//
-//        else if(statementControl.isInControlledCommand()) {
-//            IControlledCommand controlledCommand = (IControlledCommand) statementControl.getActiveControlledCommand();
-//            controlledCommand.addCommand(printCommand);
-//        }
-//        else {
-//            ExecutionManager.getInstance().addCommand(printCommand);
-//        }
-
     }
     private void handleReturnStatement(ExpressionContext returnExpr) {
         ReturnCommand returnCommand = new ReturnCommand(returnExpr, ExecutionManager.getInstance().getCurrentFunction());

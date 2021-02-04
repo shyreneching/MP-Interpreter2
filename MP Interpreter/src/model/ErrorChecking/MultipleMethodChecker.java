@@ -5,12 +5,12 @@ import model.PseudoCodeParser.*;
 import model.SymbolTable.SymbolTableManager;
 import org.antlr.v4.runtime.Token;
 
-public class MultipleMethodDeclarationChecker implements IErrorChecker {
+public class MultipleMethodChecker implements IErrorChecker {
 
     private MethodDeclaratorContext methodDecCtx;
     private int lineNumber;
 
-    public MultipleMethodDeclarationChecker(MethodDeclaratorContext methodDecCtx) {
+    public MultipleMethodChecker(MethodDeclaratorContext methodDecCtx) {
         this.methodDecCtx = methodDecCtx;
 
         Token firstToken = methodDecCtx.getStart();
