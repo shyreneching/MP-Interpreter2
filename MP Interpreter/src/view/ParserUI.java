@@ -76,7 +76,12 @@ public class ParserUI extends Application implements NotificationListener {
             "create", "then", "T", "F"
     };
 
+    private static final String[] OPS = new String[]{
+            "\\+", "-", "/", "\\*", "=", "==", "!", ">", "<"
+    };
+
     private static final String KEYWORD_PATTERN = "\\b(" + String.join("|", KEYWORDS) + ")\\b";
+    private static final String OPS_PATTERN = "\\b(" + String.join("|", OPS) + ")\\b";
     private static final String PAREN_PATTERN = "\\(|\\)";
     private static final String BRACE_PATTERN = "\\{|\\}";
     private static final String BRACKET_PATTERN = "\\[|\\]";
@@ -93,6 +98,7 @@ public class ParserUI extends Application implements NotificationListener {
                     + "|(?<SEMICOLON>" + SEMICOLON_PATTERN + ")"
                     + "|(?<STRING>" + STRING_PATTERN + ")"
                     + "|(?<COMMENT>" + COMMENT_PATTERN + ")"
+                    + "|(?<OP>" + OPS_PATTERN + ")"
     );
 
     public static void launchApplication(String[] args) {
@@ -161,7 +167,7 @@ public class ParserUI extends Application implements NotificationListener {
         parse_button.setMinWidth(100.0);
 
         output_textArea = new TextArea();
-        output_textArea.minHeight(200.0);
+        output_textArea.setMinHeight(300.0);
         output_textArea.setWrapText(true);
         output_textArea.setPrefColumnCount(20);
         output_textArea.setPrefRowCount(10);
@@ -334,6 +340,7 @@ public class ParserUI extends Application implements NotificationListener {
                                                     matcher.group("SEMICOLON") != null ? "semicolon" :
                                                             matcher.group("STRING") != null ? "string" :
                                                                     matcher.group("COMMENT") != null ? "comment" :
+                                                                            matcher.group("OP") != null ? "ops" :
                                                                             null; /* never happens */ assert styleClass != null;
             spansBuilder.add(Collections.emptyList(), matcher.start() - lastKwEnd);
             spansBuilder.add(Collections.singleton(styleClass), matcher.end() - matcher.start());
