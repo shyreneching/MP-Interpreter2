@@ -8,6 +8,7 @@ import model.ErrorChecking.UndeclaredChecker;
 import model.Execution.ExecutionManager;
 import model.PseudoCodeParser.*;
 import model.SymbolTable.Scope.ScopeCreator;
+import org.antlr.v4.runtime.tree.TerminalNode;
 
 public class StatementAnalyzer {
     public void analyze(StatementContext statementCtx) {
@@ -30,8 +31,11 @@ public class StatementAnalyzer {
             blockAnalyzer.analyze(blockCtx);
 
         }
-        else if (statementCtx.RETURN() != null) {
+        else if (statementCtx.RETURN() != null && statementCtx.expression() != null) {
             this.handleReturnStatement(statementCtx.expression());
+        }
+        else if (statementCtx.RETURN() != null && statementCtx.expression() == null) {
+            this.handleReturnStatement(statementCtx.Identifier());
         }
         else if (statementCtx.scanInvocation() != null) {
             this.handleScanStatement(statementCtx.scanInvocation());
@@ -243,6 +247,32 @@ public class StatementAnalyzer {
         }
     }
     private void handleReturnStatement(ExpressionContext returnExpr) {
+        ReturnCommand returnCommand = new ReturnCommand(returnExpr, ExecutionManager.getInstance().getCurrentFunction());
+
+        StatementControlOverseer statementControl = StatementControlOverseer.getInstance();
+
+        if(statementControl.isInConditionalCommand()) {
+            IConditionalCommand conditionalCommand = (IConditionalCommand) statementControl.getActiveControlledCommand();
+
+            if(statementControl.isInPositiveRule()) {
+                conditionalCommand.addPositiveCommand(returnCommand);
+            }
+            else {
+                String functionName = ExecutionManager.getInstance().getCurrentFunction().getMethodName();
+                conditionalCommand.addNegativeCommand(returnCommand);
+            }
+        }
+
+        else if(statementControl.isInControlledCommand()) {
+            IControlledCommand controlledCommand = (IControlledCommand) statementControl.getActiveControlledCommand();
+            controlledCommand.addCommand(returnCommand);
+        }
+        else {
+            ExecutionManager.getInstance().addCommand(returnCommand);
+        }
+    }
+
+    private void handleReturnStatement(TerminalNode returnExpr) {
         ReturnCommand returnCommand = new ReturnCommand(returnExpr, ExecutionManager.getInstance().getCurrentFunction());
 
         StatementControlOverseer statementControl = StatementControlOverseer.getInstance();

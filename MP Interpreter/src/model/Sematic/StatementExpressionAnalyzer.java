@@ -50,7 +50,7 @@ public class StatementExpressionAnalyzer {
 
 
         AssignmentCommand assignmentCommand = null;
-        if(assignment.LBRACK()!= null){ // Shyrene added - for array declaration
+        if(assignment.LBRACK()!= null && assignment.expression().size() == 2){ // Shyrene added - for array declaration
             ExpressionCommand expressionCommand = new ExpressionCommand(assignment.expression(0));
             expressionCommand.execute();
             if(!expressionCommand.isString() && expressionCommand.getValueResult().stripTrailingZeros().scale() <= 0 ){
@@ -75,7 +75,11 @@ public class StatementExpressionAnalyzer {
 
             }
 
-        } else {
+        } else if(assignment.LBRACK()!= null && assignment.expression().size() == 1){
+            assignmentCommand = new AssignmentCommand(assignment.Identifier(), assignment.expression(0));
+            assignmentCommand.setArray(true);
+        }
+        else {
             expressionAnalyzer.analyze(assignment.expression(0));
             OperationsAnalyzer operationsAnalyzer = new OperationsAnalyzer();
             operationsAnalyzer.analyze(assignment.expression(0));

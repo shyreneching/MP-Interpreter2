@@ -43,7 +43,10 @@ public class MethodAnalyzer implements ParseTreeListener {
             if(mthd.result() != null){
                 String type = mthd.result().unannType().getText();
 
-                if (type.equals("bool")){
+                if (mthd.result().LBRACK() != null){
+                    pseudoMethod.setReturnType(PseudoMethod.MethodType.ARRAY_TYPE);
+                }
+                else if (type.equals("bool")){
                     pseudoMethod.setReturnType(PseudoMethod.MethodType.BOOL_TYPE);
                 } else if (type.equals("int")){
                     pseudoMethod.setReturnType(PseudoMethod.MethodType.INT_TYPE);

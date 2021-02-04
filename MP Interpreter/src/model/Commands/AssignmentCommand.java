@@ -19,6 +19,7 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AssignmentCommand implements ICommand, ParseTreeListener {
@@ -26,7 +27,7 @@ public class AssignmentCommand implements ICommand, ParseTreeListener {
     private TerminalNode leftHandExpr;
     private ExpressionContext rightHandExpr;
     private ExpressionContext arrayAssVal;
-    private boolean leftHandArrayAccessor;
+    private boolean leftHandArrayAccessor, isArray = false;
 
     public AssignmentCommand(TerminalNode leftHandExpr,
                              ExpressionContext rightHandExpr) {
@@ -56,6 +57,10 @@ public class AssignmentCommand implements ICommand, ParseTreeListener {
 
         TypeChecker typeChecker = new TypeChecker(pseudoValue, this.rightHandExpr);
         typeChecker.verify();
+    }
+
+    public void setArray(boolean array) {
+        isArray = array;
     }
 
     // Shyrene added - for variable declaration
@@ -124,35 +129,76 @@ public class AssignmentCommand implements ICommand, ParseTreeListener {
 
     @Override
     public void execute() {
-        ExpressionCommand expressionCommand = new ExpressionCommand(this.rightHandExpr);
-        expressionCommand.execute();
+        if(!isArray) {
+            ExpressionCommand expressionCommand = new ExpressionCommand(this.rightHandExpr);
+            expressionCommand.execute();
 
-        if(expressionCommand.isHasException())
-            return;
+            if (expressionCommand.isHasException())
+                return;
 
-        if(this.isLeftHandArrayAccessor()) {
+            if (this.isLeftHandArrayAccessor()) {
 
-            if(!expressionCommand.isString()) {
-                System.out.println("AssignmentCommand - " + expressionCommand.getValueResult().toEngineeringString());
-                this.handleArrayAssignment(expressionCommand.getValueResult().toEngineeringString());
-            }
-            else
-                this.handleArrayAssignment(expressionCommand.getStringResult());
-        }
-        else {
-            PseudoValue pseudoValue = VariableSearcher.searchVariable(this.leftHandExpr.getText());
-
-            if (!expressionCommand.isString()) {
-
-                if (!pseudoValue.isConst()) {
-                    AssignmentUtils.assignAppropriateValue(pseudoValue, expressionCommand.getValueResult());
-                }
-
+                if (!expressionCommand.isString()) {
+                    System.out.println("AssignmentCommand - " + expressionCommand.getValueResult().toEngineeringString());
+                    this.handleArrayAssignment(expressionCommand.getValueResult().toEngineeringString());
+                } else
+                    this.handleArrayAssignment(expressionCommand.getStringResult());
             } else {
+                PseudoValue pseudoValue = VariableSearcher.searchVariable(this.leftHandExpr.getText());
 
-                if (!pseudoValue.isConst()) {
-                    AssignmentUtils.assignAppropriateValue(pseudoValue, expressionCommand.getStringResult());
+                if (!expressionCommand.isString()) {
+
+                    if (!pseudoValue.isConst()) {
+                        AssignmentUtils.assignAppropriateValue(pseudoValue, expressionCommand.getValueResult());
+                    }
+
+                } else {
+
+                    if (!pseudoValue.isConst()) {
+                        AssignmentUtils.assignAppropriateValue(pseudoValue, expressionCommand.getStringResult());
+                    }
                 }
+            }
+        } else {
+            PseudoValue pseudoValue = VariableSearcher.searchVariable(this.leftHandExpr.getText());
+            PseudoCodeParser.ExpressionContext eCtx = this.rightHandExpr;
+
+            String functionName = eCtx.Identifier().getText();
+            System.out.println("AsmtCmmd : MY FUNCTION NAME IS " + functionName);
+            PseudoMethod pseudoMethod = SymbolTableManager.getInstance().getMethod(functionName);
+            if (pseudoMethod == null) {
+                return;
+            }
+
+            List<PseudoCodeParser.ExpressionContext> exprCtxList;
+
+            if (eCtx.expressionList() != null) {
+                exprCtxList = eCtx.expressionList().expression();
+            } else {
+                exprCtxList = new ArrayList<>();
+            }
+
+            for (int i = 0; i < exprCtxList.size(); i++) {
+                PseudoCodeParser.ExpressionContext parameterExprCtx = exprCtxList.get(i);
+
+                if (ExpressionCommand.isArray(parameterExprCtx)) {
+                    PseudoValue val = ExpressionCommand.searchValue(parameterExprCtx.getText());
+                    pseudoMethod.mapArrayAt(val, i, parameterExprCtx.getText());
+                } else {
+                    ExpressionCommand expressionCommand = new ExpressionCommand(parameterExprCtx);
+                    expressionCommand.execute();
+
+                    if (expressionCommand.getValueResult() != null || !expressionCommand.getStringResult().equals("")) {
+                        if (!expressionCommand.isString())
+                            pseudoMethod.mapParameterByValueAt(expressionCommand.getValueResult().toEngineeringString(), i);
+                        else
+                            pseudoMethod.mapParameterByValueAt(expressionCommand.getStringResult(), i);
+                    }
+                }
+            }
+            pseudoMethod.execute();
+            if (pseudoMethod.getReturnType() == PseudoMethod.MethodType.ARRAY_TYPE) {
+                pseudoValue.setValue((PseudoArray) pseudoMethod.getReturnValue().getValue());
             }
         }
     }

@@ -24,7 +24,8 @@ public class PseudoMethod implements IControlledCommand {
         FLOAT_TYPE,
         STRING_TYPE,
         CHAR_TYPE,
-        VOID_TYPE
+        VOID_TYPE,
+        ARRAY_TYPE
     }
 
     private String methodName;
@@ -39,6 +40,10 @@ public class PseudoMethod implements IControlledCommand {
         this.commandSequences = new ArrayList<ICommand>();
         this.parameterValues = new LinkedHashMap<String, PseudoValue>();
 //        this.parameterReferences = new LinkedHashMap<String, ClassScope>();
+    }
+
+    public void setReturnValue(PseudoValue returnValue) {
+        this.returnValue = returnValue;
     }
 
     public void setParentScope(Scope scope) {
@@ -72,6 +77,10 @@ public class PseudoMethod implements IControlledCommand {
                 break;
             case CHAR_TYPE:
                 this.returnValue = new PseudoValue(0, "char");
+                setValidReturns(false);
+                break;
+            case ARRAY_TYPE:
+                this.returnValue = new PseudoValue(0, "array");
                 setValidReturns(false);
                 break;
             default:

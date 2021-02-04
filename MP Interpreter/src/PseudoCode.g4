@@ -46,6 +46,7 @@ variableInitializer
 
 arrayInitializer
     :   'create' unannType '[' expression ']'
+//    |   methodInvocation
     ;
 
 result
@@ -125,6 +126,7 @@ statement
 //    |   'switch' parExpression '{' switchBlockStatementGroup* switchLabel* '}'
 //    |   'synchronized' parExpression block
     |   'return' expression? ';'
+    |   'return' Identifier '[' ']' ';'
     |   'return' result ';' {notifyErrorListeners("cannot return data type");}
 //    |   'throw' expression ';'
     |   'break' ';'
@@ -228,6 +230,7 @@ conditionalExpression
 assignment
     :   Identifier '=' expression
     |   Identifier '[' expression ']' '=' expression
+    |   Identifier '[' ']' '=' expression
 //    |   Identifier invalidAssignment expression {notifyErrorListeners("invalid operation found");}
     |   Identifier '=' expression ('=' expression)+ {notifyErrorListeners("multiple assignment operators found");}
     |   Identifier invalidAssignment expression (invalidAssignment expression)* {notifyErrorListeners("invalid operation found, multiple assignment operators found");}

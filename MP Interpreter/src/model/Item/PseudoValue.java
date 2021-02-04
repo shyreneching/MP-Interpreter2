@@ -142,6 +142,10 @@ public class PseudoValue {
         }
     }
 
+    public void setValue(PseudoArray array) {
+        this.value = array;
+    }
+
     private Object attemptTypeCast(String value) {
         switch(this.type) {
             case CHAR: return Character.valueOf(value.charAt(0));

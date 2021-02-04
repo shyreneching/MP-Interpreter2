@@ -1,5 +1,6 @@
 package model.Utils;
 
+import model.Item.PseudoArray;
 import model.Item.PseudoValue;
 import model.PseudoCodeLexer;
 
@@ -34,6 +35,12 @@ public class AssignmentUtils {
             pseudoValue.setValue(stringValue);
         }
     }
+
+//    public static void assignAppropriateValue(PseudoValue pseudoValue, PseudoArray array) {
+//        if(pseudoValue.getPrimitiveType() == PseudoValue.PrimitiveType.ARRAY ) {
+//            pseudoValue.setValue(array);
+//        }
+//    }
 
     public static void assignAppropriateValue(PseudoValue pseudoValue, BigDecimal evaluationValue, int tokenSign) {
         if(pseudoValue.getPrimitiveType() == PseudoValue.PrimitiveType.INT) {
