@@ -1,0 +1,14 @@
+main(){
+    int num;
+    int[] arr = create int[5]; 
+    
+    for int i = 0 up to 4 {
+        scan("Enter number: ", num);
+        arr[i] = num;
+        //print("Number " + i + ": " + arr[i] + "\n");
+    }
+    
+    for int i = 4 down to 0 {
+        print(arr[i] + "\n");
+    }
+}

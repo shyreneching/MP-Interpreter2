@@ -1,0 +1,27 @@
+main(){
+    int n;
+    int num;
+    int arrSize = 0;
+    scan("How many numbers do you want to enter? ", n);
+    
+    for int i = 0 up to n - 1 {
+        scan("Enter number: ", num);
+        arrSize = arrSize + num;
+        //print(arrSize + "\n");
+    }
+    
+    print("You have an array of characters with size of " + arrSize + "!" + "\n");
+    
+    String[] charArray = create String[arrSize];
+    String ch;
+    
+    for int i = 0 up to arrSize - 1 {
+        scan("Enter character: ", ch);
+        charArray[i] = ch;
+    }
+    
+    print("Character to print: ");
+    for int i = 0 up to arrSize - 1 {
+        print(charArray[i]);
+    }
+}

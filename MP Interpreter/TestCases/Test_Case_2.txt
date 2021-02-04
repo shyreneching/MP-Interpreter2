@@ -1,0 +1,10 @@
+main(){
+    String fName;
+    String mName;
+    String lName;
+    scan("First Name: ", fName);
+    scan("Middle Name: ", mName);
+    scan("Last Name: ", lName);
+    
+    print("Welcome " + fName + " " + mName + " " + lName + "!");
+}
