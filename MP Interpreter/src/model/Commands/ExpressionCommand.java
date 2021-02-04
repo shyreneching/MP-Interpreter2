@@ -217,6 +217,10 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
                     if (map.containsKey(s))
                         s = map.get(s);
                 System.out.println(s);
+
+                if(s.charAt(0)=='"' && s.charAt(s.length() - 1)=='"'){
+                    s = s.substring(1, s.length() - 1);
+                }
                 this.stringResult += s;
             }
 
@@ -320,6 +324,8 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
                 this.evaluateArray(exprCtx);
             } else if (isVariableOrConst(exprCtx)) {
                 this.evaluateVariable(exprCtx);
+            } else if (isParenExpr(exprCtx)){
+                this.evaluateParenExpr(exprCtx);
             }
         }
 
@@ -363,6 +369,14 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
 
     public static boolean isVariableOrConst(PseudoCodeParser.ExpressionContext exprCtx) {
         if (exprCtx.primary() != null && exprCtx.primary().Identifier() != null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public static boolean isParenExpr(PseudoCodeParser.ExpressionContext exprCtx) {
+        if (exprCtx.primary() != null && exprCtx.primary().expression() != null) {
             return true;
         } else {
             return false;
@@ -534,6 +548,41 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
 //                this.modifiedExp = this.modifiedExp.replaceFirst(exprCtx.getText(),
 //                        "null");
             }
+
+        }
+    }
+
+    private void evaluateParenExpr(PseudoCodeParser.ExpressionContext exprCtx) {
+        ExpressionCommand expressionCommand = new ExpressionCommand(exprCtx.primary().expression());
+        expressionCommand.execute();
+
+        try {
+            if(expressionCommand.isBool)
+                this.isBool = true;
+            if(expressionCommand.isString()){
+                if(!map.containsKey(exprCtx.getText())){
+                    map.put(exprCtx.getText(), "\"" + expressionCommand.getStringResult() + "\"");
+                }
+            } else {
+                if(!map.containsKey(exprCtx.getText())){
+                    map.put(exprCtx.getText(), expressionCommand.getValueResult().toEngineeringString());
+                }
+            }
+
+        } catch (NullPointerException e) {
+//            if (pseudoValue.getPrimitiveType() == PseudoValue.PrimitiveType.INT) {
+//                if(!map.containsKey(exprCtx.getText())){
+//                    map.put(exprCtx.getText(), "0");
+//                }
+////                this.modifiedExp = this.modifiedExp.replaceFirst(exprCtx.getText(),
+////                        "0");
+//            }else {
+//                if(!map.containsKey(exprCtx.getText())){
+//                    map.put(exprCtx.getText(), "null");
+//                }
+////                this.modifiedExp = this.modifiedExp.replaceFirst(exprCtx.getText(),
+////                        "null");
+//            }
 
         }
     }
