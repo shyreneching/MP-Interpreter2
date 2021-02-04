@@ -4,7 +4,7 @@ import model.Commands.ArrayInitializationCommand;
 import model.Commands.AssignmentCommand;
 import model.Commands.ExpressionCommand;
 import model.ErrorChecking.ErrorHandler;
-import model.ErrorChecking.MultipleVariableDeclarationChecker;
+import model.ErrorChecking.MultipleVariableChecker;
 import model.ErrorChecking.PseudoErrorListener;
 import model.ErrorChecking.TypeChecker;
 import model.Item.PseudoArray;
@@ -56,8 +56,8 @@ public class LocalVariableAnalyzer implements ParseTreeListener {
 
         if (ctx instanceof VariableDeclaratorContext) {
             VariableDeclaratorContext varCtx = (VariableDeclaratorContext) ctx;
-            MultipleVariableDeclarationChecker.verifyVariableOrConst(varCtx.Identifier());
-//            MultipleVariableDeclarationChecker multVarChecker = new MultipleVariableDeclarationChecker(varCtx.Identifier(),varCtx);
+            MultipleVariableChecker.verifyVariableOrConst(varCtx.Identifier());
+//            MultipleVariableChecker multVarChecker = new MultipleVariableChecker(varCtx.Identifier(),varCtx);
 //            multVarChecker.verify();
             PseudoValue pseudoValue = null;
             if(varCtx.variableInitializer(0) != null){

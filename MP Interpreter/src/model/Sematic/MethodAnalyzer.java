@@ -1,7 +1,7 @@
 package model.Sematic;
 
 import model.ErrorChecking.ErrorHandler;
-import model.ErrorChecking.MultipleMethodDeclarationChecker;
+import model.ErrorChecking.MultipleMethodChecker;
 import model.ErrorChecking.PseudoErrorListener;
 import model.Execution.ExecutionManager;
 import model.Execution.MethodTracker;
@@ -30,7 +30,7 @@ public class MethodAnalyzer implements ParseTreeListener {
     public void analyze(MethodDeclarationContext mthd) {
 
         if(mthd.methodDeclarator().Identifier() != null){
-            MultipleMethodDeclarationChecker checker = new MultipleMethodDeclarationChecker(mthd.methodDeclarator());
+            MultipleMethodChecker checker = new MultipleMethodChecker(mthd.methodDeclarator());
             checker.verify();
 
             String mthdName = mthd.methodDeclarator().Identifier().getText();

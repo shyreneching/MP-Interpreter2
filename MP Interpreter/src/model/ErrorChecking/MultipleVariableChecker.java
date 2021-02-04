@@ -14,12 +14,12 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
-public class MultipleVariableDeclarationChecker implements IErrorChecker, ParseTreeListener {
+public class MultipleVariableChecker implements IErrorChecker, ParseTreeListener {
 
     private TerminalNode varDecIdCtx;
     private int lineNumber;
 
-    public MultipleVariableDeclarationChecker(TerminalNode varDecIdCtx, VariableDeclaratorContext varDecctx) {
+    public MultipleVariableChecker(TerminalNode varDecIdCtx, VariableDeclaratorContext varDecctx) {
         this.varDecIdCtx = varDecIdCtx;
         System.out.println("MultipleVariableDeclaration - varDecIdCtx " + varDecIdCtx);
         System.out.println("MultipleVariableDeclaration - varDecctx " + varDecctx.getText());

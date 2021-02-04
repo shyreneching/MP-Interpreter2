@@ -142,18 +142,4 @@ public class UndeclaredChecker implements IErrorChecker, ParseTreeListener {
         return true;
     }
 
-    /*
-     * Verifies a var or const identifier from a scan statement since scan grammar is different.
-     */
-    public static void verifyVarOrConstForScan(String identifier, StatementContext statementCtx) {
-        PseudoMethod pseudoMethod = ExecutionManager.getInstance().getCurrentFunction();
-        PseudoValue pseudoValue = VariableSearcher.searchVariableCorrectly(pseudoMethod, identifier);
-
-        Token firstToken = statementCtx.getStart();
-
-        if(pseudoValue == null) {
-            PseudoErrorListener.reportCustomError(ErrorHandler.UNDECLARED_VARIABLE, "", identifier, firstToken.getLine());
-        }
-    }
-
 }
