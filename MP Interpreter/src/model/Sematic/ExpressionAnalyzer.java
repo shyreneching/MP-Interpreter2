@@ -1,9 +1,11 @@
 package model.Sematic;
 
+import model.Commands.ExpressionCommand;
 import model.ErrorChecking.Checker;
 import model.ErrorChecking.ErrorHandler;
 import model.ErrorChecking.PseudoErrorListener;
 import model.Item.PseudoMethod;
+import model.Item.PseudoValue;
 import model.PseudoCodeParser.*;
 import model.SymbolTable.SymbolTableManager;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -18,6 +20,7 @@ public class ExpressionAnalyzer implements ParseTreeListener {
 
     private boolean hasSemanticError;
     private ExpressionContext exprCtx;
+
 
     public void analyze(ExpressionContext exprCtx){
         this.exprCtx = exprCtx;
@@ -43,12 +46,7 @@ public class ExpressionAnalyzer implements ParseTreeListener {
 
             if (Checker.isFunctionCall(exprCtx)) {
                 this.semcCheck(exprCtx);
-//            } else if (isArrayElement(exprCtx)) {
-
             }
-//            else if (Checker.isVariableOrConst(exprCtx)) {
-////                this.evaluateVariable(exprCtx);
-//            }
 
         }
     }
@@ -84,13 +82,17 @@ public class ExpressionAnalyzer implements ParseTreeListener {
                     pseudoMethod.verifyParameterByValueAt(expressionContext, i);
                 }
             }
+
         }
     }
 
     @Override
-    public void exitEveryRule(ParserRuleContext parserRuleContext) {
+    public void exitEveryRule(ParserRuleContext ctx) {
 
     }
+
+
+
 
     public void setHasSemanticError() {
         this.hasSemanticError = true;

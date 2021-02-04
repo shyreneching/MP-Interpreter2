@@ -68,7 +68,7 @@ public class StatementExpressionAnalyzer {
                     }
 
                 } else {
-                    System.out.println("StatementExpressionAnalyzer - pseudoValue: " + pseudoValue);
+//                    System.out.println("StatementExpressionAnalyzer - pseudoValue: " + pseudoValue);
                     PseudoErrorListener.reportCustomError(ErrorHandler.UNDECLARED_VARIABLE, "",assignment.Identifier().getText() , assignment.getStart().getLine());
                 }
 
@@ -77,6 +77,8 @@ public class StatementExpressionAnalyzer {
 
         } else {
             expressionAnalyzer.analyze(assignment.expression(0));
+            OperationsAnalyzer operationsAnalyzer = new OperationsAnalyzer();
+            operationsAnalyzer.analyze(assignment.expression(0));
             assignmentCommand = new AssignmentCommand(assignment.Identifier(), assignment.expression(0));
         }
         CommandExecuter.handleStatementExecution(assignmentCommand);

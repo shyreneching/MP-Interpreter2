@@ -74,12 +74,12 @@ public class LocalVariableAnalyzer implements ParseTreeListener {
 
 
                     if(!expressionAnalyzer.isHasSemanticError()){
-                        System.out.println("LocalVariableAnalyzer - expr: " +varCtx.variableInitializer(0).expression().getText());
+//                        System.out.println("LocalVariableAnalyzer - expr: " +varCtx.variableInitializer(0).expression().getText());
                         ExpressionCommand expressionCommand = new ExpressionCommand(varCtx.variableInitializer(0).expression());
                         expressionCommand.execute();
                         Object value = null;
                         boolean sucess = true;
-                        if(expressionCommand.getValueResult().toString().equals("0")){
+                        if((expressionCommand.getValueResult() != null && expressionCommand.getValueResult().toString().equals("0")) || (expressionCommand.getStringResult() != null && expressionCommand.getStringResult().equals(""))){
                             pseudoValue = PseudoValue.createEmptyVariable(type);
                             switch (type){
                                 case "bool":
@@ -117,7 +117,7 @@ public class LocalVariableAnalyzer implements ParseTreeListener {
                             PseudoErrorListener.reportCustomError(ErrorHandler.TYPE_MISMATCH, "Expected value '" + type.toUpperCase() + "'. ", varCtx.getStart().getLine());
                         }
 
-                        System.out.println("LocalVariableAnalyzer - Value: "+ value);
+//                        System.out.println("LocalVariableAnalyzer - Value: "+ value);
                         TypeChecker typeChecker = new TypeChecker(pseudoValue,varCtx.variableInitializer(0).expression());
                         typeChecker.verify();
                         if(isFinal && pseudoValue != null){
@@ -191,8 +191,8 @@ public class LocalVariableAnalyzer implements ParseTreeListener {
             Scope scope = ScopeCreator.getInstance().getActiveScope();
 //            System.out.println("THIS IS CURRENT SCOPE " + scope.getParent());
             if(pseudoValue != null){
-                System.out.println("LovalVariableAnalyzer - identifier name:" + varCtx.Identifier().getText());
-                System.out.println("LovalVariableAnalyzer - ipseudoValue:" + pseudoValue.getPrimitiveType());
+//                System.out.println("LovalVariableAnalyzer - identifier name:" + varCtx.Identifier().getText());
+//                System.out.println("LovalVariableAnalyzer - ipseudoValue:" + pseudoValue.getPrimitiveType());
                 scope.addPseudoValue(varCtx.Identifier().getText(), pseudoValue);
             }
 
