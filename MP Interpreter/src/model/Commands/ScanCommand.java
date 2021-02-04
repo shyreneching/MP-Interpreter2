@@ -14,7 +14,7 @@ import static model.Commands.ExpressionCommand.searchValue;
 
 public class ScanCommand implements ICommand, NotificationListener {
 
-    private String startMessage;
+    private String startMessage = "";
     private ExpressionContext scanMessage;
     private ExpressionContext identifierArray;
     private TerminalNode identifier;

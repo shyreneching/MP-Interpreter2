@@ -135,21 +135,7 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
                 isString = false;
                 isBool = true;
             }else if (this.exprCtx.expression().size() != 0 && !isArrayElement(exprCtx) && !isFunctionCall(exprCtx)) {
-                for (PseudoCodeParser.ExpressionContext expCtx :
-                        this.exprCtx.expression()) {
-
-                    if (!isArray(expCtx)) {
-
-                        ExpressionCommand exprCmd = new ExpressionCommand(expCtx);
-                        exprCmd.execute();
-
-                        if (!exprCmd.isString())
-                            this.stringResult += exprCmd.getValueResult().toEngineeringString();
-                        else
-                            this.stringResult += exprCmd.getStringResult();
-
-                    }
-                }
+                computeString(exprCtx);
 
             } else if (isArrayElement(exprCtx) || isFunctionCall(exprCtx) || isVariableOrConst(exprCtx)){
                 Expression e = new Expression(exprCtx.getText());
@@ -207,6 +193,31 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
         }
 
 //        isString = false;
+    }
+
+    public void computeString(PseudoCodeParser.ExpressionContext exprCtx){
+        for (PseudoCodeParser.ExpressionContext expCtx :
+                exprCtx.expression()) {
+
+            if(expCtx.primary()==null && expCtx.Identifier()==null)
+                computeString(expCtx);
+            else {
+
+                String s = expCtx.getText();
+
+                if(s.equals("null"))
+                    continue;
+
+                if (expCtx.primary() != null && expCtx.primary().literal() != null && expCtx.primary().literal().StringLiteral() != null)
+                    s = s.substring(1, s.length() - 1);
+
+                    if (map.containsKey(s))
+                        s = map.get(s);
+                System.out.println(s);
+                this.stringResult += s;
+            }
+
+        }
     }
 
     public Expression change(Expression expr, HashMap<String,String> map){
