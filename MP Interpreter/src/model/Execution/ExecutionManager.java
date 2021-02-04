@@ -5,10 +5,10 @@ import model.Execution.Adders.IExecutionAdder;
 import model.Execution.Adders.MainExecutionAdder;
 import model.Execution.Adders.MethodExecutionAdder;
 import model.Item.PseudoMethod;
-import model.notifications.NotificationListener;
-import model.notifications.Notifications;
-import model.notifications.NotificationsCenter;
-import model.notifications.Parameters;
+import view.UIAlert.NotificationListener;
+import view.UIAlert.Notifications;
+import view.UIAlert.NotificationsCenter;
+import view.UIAlert.Parameters;
 
 import java.util.ArrayList;
 

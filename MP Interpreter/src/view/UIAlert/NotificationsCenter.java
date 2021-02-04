@@ -1,4 +1,4 @@
-package model.notifications;
+package view.UIAlert;
 
 import java.util.ArrayList;
 import java.util.HashMap;

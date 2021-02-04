@@ -27,9 +27,9 @@ import model.Sematic.StatementControlOverseer;
 import model.SymbolTable.Scope.ScopeCreator;
 import model.SymbolTable.SymbolTableManager;
 import model.Utils.LocalVarTracker;
-import model.notifications.NotificationListener;
-import model.notifications.Notifications;
-import model.notifications.NotificationsCenter;
+import view.UIAlert.NotificationListener;
+import view.UIAlert.Notifications;
+import view.UIAlert.NotificationsCenter;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -400,7 +400,7 @@ public class ParserUI extends Application implements NotificationListener {
 //        System.out.println("I supposedly printed!");
     }
 
-    public void notified(String notificationString, model.notifications.Parameters params){
+    public void notified(String notificationString, view.UIAlert.Parameters params){
         System.out.println("Notified!");
         if(notificationString == Notifications.ON_FOUND_SCAN_STATEMENT) {
             System.out.println("Scan dialog should appear!");
@@ -415,7 +415,7 @@ public class ParserUI extends Application implements NotificationListener {
 
                 if (result.isPresent()) {
                     System.out.println("Hello!");
-                    model.notifications.Parameters parameters = new model.notifications.Parameters();
+                    view.UIAlert.Parameters parameters = new view.UIAlert.Parameters();
                     parameters.putExtra("VALUE_ENTERED_KEY", result.get());
 
                     try {

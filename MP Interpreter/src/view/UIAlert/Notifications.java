@@ -1,4 +1,4 @@
-package model.notifications;
+package view.UIAlert;
 
 public class Notifications {
     public final static String ON_BUILD_EVENT = "ON_BUILD_EVENT"; //called by a build action request

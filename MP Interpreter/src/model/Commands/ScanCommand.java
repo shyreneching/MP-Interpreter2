@@ -4,10 +4,10 @@ import model.Execution.ExecutionManager;
 import model.Item.PseudoArray;
 import model.Item.PseudoValue;
 import model.PseudoCodeParser.*;
-import model.notifications.NotificationListener;
-import model.notifications.Notifications;
-import model.notifications.NotificationsCenter;
-import model.notifications.Parameters;
+import view.UIAlert.NotificationListener;
+import view.UIAlert.Notifications;
+import view.UIAlert.NotificationsCenter;
+import view.UIAlert.Parameters;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import static model.Commands.ExpressionCommand.searchValue;
