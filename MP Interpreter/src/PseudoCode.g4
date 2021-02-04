@@ -249,7 +249,9 @@ expression
 //    |   '(' result ')' expression
 //    |   expression ('++' | '--')
 //    |   ('+'|'-'|'++'|'--') expression
-    |   ('!') unaryExpression
+    |   ('!') '(' expression ')'
+//    |   ('!') Identifier '[' expression ']'
+//    |   ('!') Identifier '(' expressionList? ')'
     |   expression ('*'|'/'|'%') expression
     |   expression ('+'|'-') expression
 //    |   expression ('<' '<' | '>' '>' '>' | '>' '>') expression

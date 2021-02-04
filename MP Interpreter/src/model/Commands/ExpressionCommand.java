@@ -41,8 +41,9 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
 
         this.modifiedExp = this.exprCtx.getText();
 
-        if(modifiedExp.equals("T") || modifiedExp.equals("F"))
+        if(modifiedExp.equals("T") || modifiedExp.equals("F")) {
             isBool = true;
+        }
 //        if(modifiedExp.equals("T")){
 //            modifiedExp = "true";
 //        } else if(modifiedExp.equals("F")){
@@ -70,6 +71,7 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
 
         ParseTreeWalker treeWalker = new ParseTreeWalker();
         treeWalker.walk(this, this.exprCtx);
+        System.out.println("MODIFIED EXPR ORIGINALLY IS " + modifiedExp);
 
 //        isNumeric = (!this.modifiedExp.contains("\"") && !this.modifiedExp.contains("\'")) || !isString;
             if(!isString && (this.modifiedExp.contains("\"") || this.modifiedExp.contains("\'")))
@@ -152,12 +154,12 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
             modifiedExp = modifiedExp.replaceAll("(?<=(\\d|\\.))f", "");
 
             if (this.modifiedExp.contains("!")) {
-                this.modifiedExp = this.modifiedExp.replaceAll("!", "not");
-                this.modifiedExp = this.modifiedExp.replaceAll("not=", "!=");
+                this.modifiedExp = this.modifiedExp.replaceAll("!", "not ");
+                this.modifiedExp = this.modifiedExp.replaceAll("not =", "!=");
                 isBool = true;
             }
 
-            if (this.modifiedExp.contains("&&") || this.modifiedExp.contains("||"))
+            if (this.modifiedExp.contains("&&") || this.modifiedExp.contains("||") || this.modifiedExp.contains("=") || this.modifiedExp.contains(">") || this.modifiedExp.contains("<"))
                 isBool = true;
 
             Expression evalEx = new Expression(this.modifiedExp);
@@ -167,13 +169,14 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
 //            for(String s : map.keySet()){
 //                evalEx.setVariable(s, map.get(s));
 //            }
-            System.out.println("MODIFIED EXPR " + evalEx.toString());
 //
 //            evalEx = change(evalEx, map);
+            System.out.println("MODIFIED EXPR " + evalEx.toString());
 
             try {
                 this.valueResult = evalEx.eval(false);
                 this.stringResult = this.valueResult.toEngineeringString();
+                System.out.println("LOOK HERE PLS: " + modifiedExp + " " + stringResult);
             } catch (Expression.ExpressionException ex) {
 //                System.out.println("ExpressionCommand - ExpressionException");
                 this.valueResult = new BigDecimal(0);
@@ -227,8 +230,13 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
             Expression.Token t = iter.next();
             if(t == null)
                 break;
-            else
-                copy.add(t.toString());
+            else {
+                if(t.toString().charAt(0) == ']' && t.toString().length() > 1){
+                    copy.add(t.toString().substring(0,1));
+                    copy.add(t.toString().substring(1));
+                } else
+                    copy.add(t.toString());
+            }
         }
 
         for(String s: copy)
@@ -238,6 +246,7 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
         Collections.sort(list, new MyComparator());
 
         for(String s : list){
+            System.out.println("WHAT AM III?? + " + s);
             Expression temp = new Expression(s);
 
             Iterator<Expression.Token> iter2 = temp.getExpressionTokenizer();
@@ -246,8 +255,13 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
                 Expression.Token t = iter2.next();
                 if(t == null)
                     break;
-                else
-                    copy2.add(t.toString());
+                else {
+                    if(t.toString().charAt(0) == ']' && t.toString().length() > 1){
+                        copy2.add(t.toString().substring(0,1));
+                        copy2.add(t.toString().substring(1));
+                    } else
+                        copy2.add(t.toString());
+                }
             }
 
 
@@ -296,10 +310,10 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
 
     @Override
     public void enterEveryRule(ParserRuleContext parserRuleContext) {
-        if (parserRuleContext instanceof PseudoCodeParser.ExpressionContext) {
+        if (parserRuleContext instanceof PseudoCodeParser.ExpressionContext && !isInMethod(exprCtx)) {
             PseudoCodeParser.ExpressionContext exprCtx = (PseudoCodeParser.ExpressionContext) parserRuleContext;
 
-            if (isFunctionCall(exprCtx) && !isInMethod(exprCtx)) {
+            if (isFunctionCall(exprCtx)) {
                 System.out.println("ExprCmmd : THIS IS A FUNCTION CALLLLL - " + exprCtx.getText());
                 this.evaluateFunctionCall(exprCtx);
             } else if (isArrayElement(exprCtx)) {
@@ -313,9 +327,10 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
 
     public boolean isInMethod(PseudoCodeParser.ExpressionContext exprCtx){
         if(exprCtx.getText().equals(this.exprCtx.getText()) || (exprCtx.getParent().getText().equals(this.exprCtx.getText()) &&
-                !(exprCtx.getParent() instanceof PseudoCodeParser.ExpressionListContext)))
+                !(exprCtx.getParent() instanceof PseudoCodeParser.ExpressionListContext) &&
+                ((PseudoCodeParser.ExpressionContext)(exprCtx.getParent())).LBRACK() == null))
             return false;
-        else if (exprCtx.getParent() instanceof PseudoCodeParser.ExpressionListContext)
+        else if (exprCtx.getParent() instanceof PseudoCodeParser.ExpressionListContext || ((PseudoCodeParser.ExpressionContext)(exprCtx.getParent())).LBRACK() != null)
             return true;
         else
             return isInMethod((PseudoCodeParser.ExpressionContext) exprCtx.getParent());
@@ -358,9 +373,12 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
         if (exprCtx.LBRACK() != null) {
             PseudoValue value = searchValue(exprCtx.Identifier().getText());
 
-            if (value != null)
+            if (value != null) {
+                System.out.println("iSARRAYELEMENT: " + exprCtx.getText() + " " + value.getValue().toString());
                 return value.getPrimitiveType() == PseudoValue.PrimitiveType.ARRAY;
+            }
             else
+                System.out.println("iSARRAYELEMENT: FAILL " + exprCtx.getText());
                 return false;
         } else {
             return false;
@@ -477,8 +495,6 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
 
         try {
 
-            if(pseudoValue.getPrimitiveType() == PseudoValue.PrimitiveType.BOOLEAN)
-                isBool = true;
 
             if (pseudoValue.getPrimitiveType() == PseudoValue.PrimitiveType.STRING) {
                 if(!map.containsKey(exprCtx.getText())){
@@ -488,11 +504,14 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
 //                this.modifiedExp = this.modifiedExp.replaceFirst(exprCtx.getText(),
 //                        "\"" + pseudoValue.getValue().toString() + "\"");
             } else {
+                if(pseudoValue.getPrimitiveType() == PseudoValue.PrimitiveType.BOOLEAN)
+                    isBool = true;
                 String s = pseudoValue.getValue().toString();
-                if(s.equals("true") && pseudoValue.getPrimitiveType() == PseudoValue.PrimitiveType.BOOLEAN)
-                    s = "T";
-                else if(s.equals("false") && pseudoValue.getPrimitiveType() == PseudoValue.PrimitiveType.BOOLEAN)
-                    s = "F";
+                System.out.println("IM EVALUATING + " + exprCtx.getText() + " " + s);
+//                if(s.equals("true") && pseudoValue.getPrimitiveType() == PseudoValue.PrimitiveType.BOOLEAN)
+//                    s = "T";
+//                else if(s.equals("false") && pseudoValue.getPrimitiveType() == PseudoValue.PrimitiveType.BOOLEAN)
+//                    s = "F";
                 if(!map.containsKey(exprCtx.getText())){
                     map.put(exprCtx.getText(), s);
                 }
@@ -520,7 +539,8 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
     }
 
     private void evaluateArray(PseudoCodeParser.ExpressionContext exprCtx) {
-        PseudoValue value = searchValue(exprCtx.Identifier().getText());
+//        PseudoValue value = searchValue(exprCtx.Identifier().getText());
+        PseudoValue value = VariableSearcher.searchVariable(exprCtx.Identifier().getText());
 
         if (value != null) {
             if (value.getPrimitiveType() == PseudoValue.PrimitiveType.ARRAY) {
@@ -533,9 +553,11 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
                 ExecutionManager.getInstance().setCurrentCheckedLineNumber(exprCtx.getStart().getLine());
                 PseudoValue arrayValue = pseudoArray.getValueAt(exprCmd.getValueResult().intValue());
 
-                if (arrayValue == null)
+                if (arrayValue == null) {
                     return;
+                }
 
+                System.out.println("MY ARRAY VALUE ISSSS " + arrayValue.getValue().toString());
                 if(arrayValue.getPrimitiveType() == PseudoValue.PrimitiveType.BOOLEAN)
                     isBool = true;
                 if (arrayValue.getPrimitiveType() == PseudoValue.PrimitiveType.STRING) {
@@ -556,7 +578,8 @@ public class ExpressionCommand implements ICommand, ParseTreeListener {
                 }
 
             }
-        }
+        } else
+            System.out.println("ARRAY NOT FOUUUUUND");
 
     }
 
