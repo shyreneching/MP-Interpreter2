@@ -1,0 +1,19 @@
+main(){
+    int size;
+    
+    scan("Enter table size: ", size);
+    
+    for int i = 1 up to size {
+        print("\t" + "\t" + i);
+    }
+    
+    print("\n\n");
+    
+    for int i = 1 up to size {
+        print(i);
+        for int j = 1 up to size {
+            print("\t" + "\t" + (i * j));
+        }
+        print("\n");
+    }
+}
