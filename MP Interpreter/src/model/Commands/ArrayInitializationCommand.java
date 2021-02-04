@@ -14,6 +14,7 @@ public class ArrayInitializationCommand implements ICommand {
 
     public ArrayInitializationCommand(PseudoArray pseudoArray, ExpressionContext exprCtx) {
         this.assignedArray = pseudoArray;
+
         this.exprCtx = exprCtx;
 
         if (exprCtx.expression(0) != null) {
@@ -37,6 +38,7 @@ public class ArrayInitializationCommand implements ICommand {
 
             ExecutionManager.getInstance().setCurrentCheckedLineNumber(exprCtx.getStart().getLine());
             this.assignedArray.initializeSize(evaluationCommand.getValueResult().intValue());
+
         }
 
     }
